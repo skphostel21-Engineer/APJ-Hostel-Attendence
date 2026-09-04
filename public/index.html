@@ -789,6 +789,212 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
         <div id="admin-pass-history"><p class="pass-empty">No pass history.</p></div>
       </div>
 
+      <!-- STUDENT MANAGEMENT SECTION -->
+      <div class="card" style="border-color: rgba(212, 175, 55, 0.4);">
+        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+          <div>
+            <h3 class="card-title">👨‍🎓 Student Management</h3>
+            <div style="font-size: 11.5px; color: var(--gold-400);">Add, Search, Edit, Reset Password & Manage Accounts</div>
+          </div>
+          <button class="btn-gold-login" id="btn-open-add-student" style="height: 38px; padding: 0 16px; font-size: 13px; width: auto; margin: 0;">+ Add Student</button>
+        </div>
+
+        <!-- Student Statistics Cards -->
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 12px; margin-bottom: 6px;">
+          <div style="background: rgba(13, 21, 39, 0.7); border: 1px solid rgba(212, 175, 55, 0.2); padding: 8px 12px; border-radius: 8px; text-align: center;">
+            <div style="font-size: 11px; color: var(--ivory-dim);">Total Students</div>
+            <div style="font-size: 16px; font-weight: 700; color: var(--white);" id="stat-total-students">0</div>
+          </div>
+          <div style="background: rgba(13, 21, 39, 0.7); border: 1px solid rgba(16, 185, 129, 0.3); padding: 8px 12px; border-radius: 8px; text-align: center;">
+            <div style="font-size: 11px; color: var(--ivory-dim);">Active Accounts</div>
+            <div style="font-size: 16px; font-weight: 700; color: var(--success);" id="stat-active-students">0</div>
+          </div>
+          <div style="background: rgba(13, 21, 39, 0.7); border: 1px solid rgba(239, 68, 68, 0.3); padding: 8px 12px; border-radius: 8px; text-align: center;">
+            <div style="font-size: 11px; color: var(--ivory-dim);">Disabled Accounts</div>
+            <div style="font-size: 16px; font-weight: 700; color: var(--danger);" id="stat-disabled-students">0</div>
+          </div>
+        </div>
+
+        <!-- Student Statistics Cards -->
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 12px; margin-bottom: 6px;">
+          <div style="background: rgba(13, 21, 39, 0.7); border: 1px solid rgba(212, 175, 55, 0.2); padding: 8px 12px; border-radius: 8px; text-align: center;">
+            <div style="font-size: 11px; color: var(--ivory-dim);">Total Students</div>
+            <div style="font-size: 16px; font-weight: 700; color: var(--white);" id="stat-total-students">0</div>
+          </div>
+          <div style="background: rgba(13, 21, 39, 0.7); border: 1px solid rgba(16, 185, 129, 0.3); padding: 8px 12px; border-radius: 8px; text-align: center;">
+            <div style="font-size: 11px; color: var(--ivory-dim);">Active Accounts</div>
+            <div style="font-size: 16px; font-weight: 700; color: var(--success);" id="stat-active-students">0</div>
+          </div>
+          <div style="background: rgba(13, 21, 39, 0.7); border: 1px solid rgba(239, 68, 68, 0.3); padding: 8px 12px; border-radius: 8px; text-align: center;">
+            <div style="font-size: 11px; color: var(--ivory-dim);">Disabled Accounts</div>
+            <div style="font-size: 16px; font-weight: 700; color: var(--danger);" id="stat-disabled-students">0</div>
+          </div>
+        </div>
+
+        <!-- Student Statistics Cards -->
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 12px; margin-bottom: 6px;">
+          <div style="background: rgba(13, 21, 39, 0.7); border: 1px solid rgba(212, 175, 55, 0.2); padding: 8px 12px; border-radius: 8px; text-align: center;">
+            <div style="font-size: 11px; color: var(--ivory-dim);">Total Students</div>
+            <div style="font-size: 16px; font-weight: 700; color: var(--white);" id="stat-total-students">0</div>
+          </div>
+          <div style="background: rgba(13, 21, 39, 0.7); border: 1px solid rgba(16, 185, 129, 0.3); padding: 8px 12px; border-radius: 8px; text-align: center;">
+            <div style="font-size: 11px; color: var(--ivory-dim);">Active Accounts</div>
+            <div style="font-size: 16px; font-weight: 700; color: var(--success);" id="stat-active-students">0</div>
+          </div>
+          <div style="background: rgba(13, 21, 39, 0.7); border: 1px solid rgba(239, 68, 68, 0.3); padding: 8px 12px; border-radius: 8px; text-align: center;">
+            <div style="font-size: 11px; color: var(--ivory-dim);">Disabled Accounts</div>
+            <div style="font-size: 16px; font-weight: 700; color: var(--danger);" id="stat-disabled-students">0</div>
+          </div>
+        </div>
+
+        <!-- Search & Filter Controls -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-top: 14px; margin-bottom: 14px;">
+          <input type="text" id="filter-student-search" class="form-control" placeholder="🔍 Search Name, ID, Room..." style="font-size: 12.5px; padding: 8px 12px; height: 38px;" />
+          <select id="filter-student-dept" class="form-control" style="font-size: 12.5px; padding: 8px 12px; height: 38px;">
+            <option value="">All Departments</option>
+            <option value="CSE">CSE</option>
+            <option value="ECE">ECE</option>
+            <option value="EEE">EEE</option>
+            <option value="MECH">MECH</option>
+            <option value="CIVIL">CIVIL</option>
+            <option value="AI & Data Science">AI & Data Science</option>
+            <option value="IT">IT</option>
+          </select>
+          <select id="filter-student-year" class="form-control" style="font-size: 12.5px; padding: 8px 12px; height: 38px;">
+            <option value="">All Years</option>
+            <option value="1st Year">1st Year</option>
+            <option value="2nd Year">2nd Year</option>
+            <option value="3rd Year">3rd Year</option>
+            <option value="4th Year">4th Year</option>
+          </select>
+          <select id="filter-student-status" class="form-control" style="font-size: 12.5px; padding: 8px 12px; height: 38px;">
+            <option value="">All Statuses</option>
+            <option value="active">Active</option>
+            <option value="disabled">Disabled</option>
+          </select>
+        </div>
+
+        <!-- Student List Responsive Table -->
+        <div style="overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 10px;">
+          <table class="student-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 12.5px; color: var(--white);">
+            <thead>
+              <tr style="border-bottom: 1px solid rgba(212,175,55,0.2); color: var(--gold-400);">
+                <th style="padding: 10px; font-weight: 600;">Student Name</th>
+                <th style="padding: 10px; font-weight: 600;">Student ID</th>
+                <th style="padding: 10px; font-weight: 600;">Room</th>
+                <th style="padding: 10px; font-weight: 600;">College</th>
+                <th style="padding: 10px; font-weight: 600;">Year / Dept</th>
+                <th style="padding: 10px; font-weight: 600;">Status</th>
+                <th style="padding: 10px; font-weight: 600; text-align: right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="admin-student-table-body">
+              <tr><td colspan="7" style="padding: 14px; text-align: center; color: var(--ivory-dim);">Loading students...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ATTENDANCE REPORTS SECTION -->
+      <div class="card" id="card-admin-attendance-reports" style="border-color: rgba(212, 175, 55, 0.5); margin-bottom: 16px;">
+        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+          <div>
+            <h3 class="card-title">📊 Attendance Reports & Export</h3>
+            <div style="font-size: 11.5px; color: var(--gold-400);">Generate, View, and Download Official Excel & PDF Reports</div>
+          </div>
+        </div>
+
+        <!-- Filter Controls -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-top: 14px; margin-bottom: 14px;">
+          <div>
+            <label style="font-size: 11px; color: var(--gold-400); display: block; margin-bottom: 4px;">Date *</label>
+            <input type="date" id="report-filter-date" class="form-control" style="font-size: 12.5px; padding: 6px 10px; height: 38px;" />
+          </div>
+          <div>
+            <label style="font-size: 11px; color: var(--gold-400); display: block; margin-bottom: 4px;">Department</label>
+            <select id="report-filter-dept" class="form-control" style="font-size: 12.5px; padding: 6px 10px; height: 38px;">
+              <option value="">All Departments</option>
+              <option value="CSE">CSE</option>
+              <option value="ECE">ECE</option>
+              <option value="EEE">EEE</option>
+              <option value="MECH">MECH</option>
+              <option value="CIVIL">CIVIL</option>
+              <option value="AI & Data Science">AI & Data Science</option>
+              <option value="IT">IT</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size: 11px; color: var(--gold-400); display: block; margin-bottom: 4px;">Year</label>
+            <select id="report-filter-year" class="form-control" style="font-size: 12.5px; padding: 6px 10px; height: 38px;">
+              <option value="">All Years</option>
+              <option value="1st Year">1st Year</option>
+              <option value="2nd Year">2nd Year</option>
+              <option value="3rd Year">3rd Year</option>
+              <option value="4th Year">4th Year</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size: 11px; color: var(--gold-400); display: block; margin-bottom: 4px;">Room</label>
+            <input type="text" id="report-filter-room" class="form-control" placeholder="Room (e.g. A-101)" style="font-size: 12.5px; padding: 6px 10px; height: 38px;" />
+          </div>
+          <div>
+            <label style="font-size: 11px; color: var(--gold-400); display: block; margin-bottom: 4px;">Session</label>
+            <select id="report-filter-session" class="form-control" style="font-size: 12.5px; padding: 6px 10px; height: 38px;">
+              <option value="Standard Session">Standard Session</option>
+              <option value="Evening Session">Evening Session</option>
+              <option value="Night Roll Call">Night Roll Call</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Filter Action Buttons -->
+        <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px;">
+          <button type="button" class="btn-gold-login" id="btn-view-attendance-report" style="flex: 1; min-width: 130px; height: 38px; font-size: 12.5px; margin: 0;">🔍 View Report</button>
+          <button type="button" class="btn-gold-login" id="btn-generate-excel-report" style="flex: 1; min-width: 130px; height: 38px; font-size: 12.5px; margin: 0; background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.5); color: var(--success);">📊 Generate Excel</button>
+          <button type="button" class="btn-gold-login" id="btn-generate-pdf-report" style="flex: 1; min-width: 130px; height: 38px; font-size: 12.5px; margin: 0; background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.5); color: #FCA5A5;">📄 Generate PDF</button>
+        </div>
+
+        <!-- Live Report Summary -->
+        <div id="report-summary-box" style="background: rgba(13, 21, 39, 0.8); border: 1px solid rgba(212, 175, 55, 0.2); padding: 12px 14px; border-radius: 10px; margin-bottom: 14px;">
+          <div style="font-size: 12px; font-weight: 700; color: var(--gold-400); margin-bottom: 8px;" id="report-summary-title">Report Summary</div>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; text-align: center;">
+            <div style="background: rgba(255,255,255,0.03); padding: 8px; border-radius: 6px;">
+              <div style="font-size: 11px; color: var(--ivory-dim);">Total Students</div>
+              <div style="font-size: 18px; font-weight: 700; color: var(--white);" id="report-stat-total">0</div>
+            </div>
+            <div style="background: rgba(16, 185, 129, 0.1); padding: 8px; border-radius: 6px;">
+              <div style="font-size: 11px; color: var(--ivory-dim);">Present</div>
+              <div style="font-size: 18px; font-weight: 700; color: var(--success);" id="report-stat-present">0</div>
+            </div>
+            <div style="background: rgba(239, 68, 68, 0.1); padding: 8px; border-radius: 6px;">
+              <div style="font-size: 11px; color: var(--ivory-dim);">Absent</div>
+              <div style="font-size: 18px; font-weight: 700; color: var(--danger);" id="report-stat-absent">0</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Report History Table -->
+        <h4 style="font-size: 13px; font-weight: 700; color: var(--gold-400); margin-top: 10px; margin-bottom: 8px;">📋 Attendance Report History</h4>
+        <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+          <table class="student-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 12px; color: var(--white);">
+            <thead>
+              <tr style="border-bottom: 1px solid rgba(212,175,55,0.2); color: var(--gold-400);">
+                <th style="padding: 8px;">Date</th>
+                <th style="padding: 8px;">Department</th>
+                <th style="padding: 8px;">Year</th>
+                <th style="padding: 8px;">Total</th>
+                <th style="padding: 8px;">Present</th>
+                <th style="padding: 8px;">Absent</th>
+                <th style="padding: 8px; text-align: right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="report-history-table-body">
+              <tr><td colspan="7" style="padding: 12px; text-align: center; color: var(--ivory-dim);">Loading report history...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       <!-- REPORT DISPATCH & EXCEL DOWNLOAD CARD -->
       <div class="card" style="border-color: rgba(212, 175, 55, 0.35);">
         <div class="card-header">
@@ -1207,7 +1413,483 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
     });
   }
 
+    /* ATTENDANCE REPORTING SYSTEM (EXCEL & PDF & HISTORY) */
+  async function getStudentProfileById(studentId) {
+    var found = adminStudentsList.find(function (s) {
+      return (s.student_id || "").toLowerCase() === studentId.toLowerCase() || (s.id || "").toLowerCase() === studentId.toLowerCase();
+    });
+    if (found) return found;
+    if (!firebaseDb) return null;
+    try {
+      var snap = await firebaseDb.collection("students").where("student_id", "==", studentId).limit(1).get();
+      if (!snap.empty) return snap.docs[0].data();
+    } catch (e) {}
+    return null;
+  }
+
   window.adminMarkStudent = async function (studentId, newStatus) {
+    if (!state.isAdmin || !firebaseAuth || !firebaseAuth.currentUser) {
+      showToast("You are not authorized to access the Admin Panel.", "⚠️", true);
+      return;
+    }
+    var feedbackEl = document.getElementById("feedback-" + studentId);
+    var badgeEl = document.getElementById("status-badge-" + studentId);
+
+    if (feedbackEl) feedbackEl.textContent = 'Saving...';
+    try {
+      var todayKey = new Date().toISOString().slice(0, 10);
+      var sessionKey = (document.getElementById("report-filter-session") ? document.getElementById("report-filter-session").value : "Standard Session").replace(/\s+/g, "");
+      var docId = todayKey + "_" + sessionKey + "_" + studentId;
+      var profile = await getStudentProfileById(studentId) || {};
+
+      var attendanceRecord = {
+        date: todayKey,
+        student_id: studentId,
+        student_name: profile.student_name || profile.name || studentId,
+        phone_number: profile.phone_number || profile.phone || profile.mobile || "Not Available",
+        room_number: profile.room_number || profile.room || "N/A",
+        college: profile.college || "N/A",
+        year_department: profile.year_department || ((profile.year || "") + " - " + (profile.department || "")),
+        department: profile.department || "",
+        year: profile.year || "",
+        session: document.getElementById("report-filter-session") ? document.getElementById("report-filter-session").value : "Standard Session",
+        status: newStatus.toUpperCase(),
+        marked_at: firebase.firestore.FieldValue.serverTimestamp(),
+        marked_by: firebaseAuth.currentUser.email || "skphostel21@gmail.com"
+      };
+
+      await firebaseDb.collection("attendance").doc(docId).set(attendanceRecord, { merge: true });
+      if (feedbackEl) feedbackEl.textContent = 'Saved ✓';
+      if (badgeEl) {
+        badgeEl.className = newStatus === 'present' ? 'status-chip status-chip--present' : 'status-chip status-chip--absent';
+        badgeEl.textContent = newStatus.toUpperCase();
+      }
+      showToast("Attendance marked as " + newStatus.toUpperCase() + " for " + studentId, "✓");
+
+      // Update report summary and history metadata
+      saveAttendanceReportMetadata(todayKey);
+    } catch (error) {
+      if (feedbackEl) feedbackEl.textContent = 'Not saved';
+      showToast("Attendance could not be saved.", "⚠️", true);
+      console.error(error);
+    }
+  };
+
+  async function getAttendanceReportData(dateVal, deptVal, yearVal, roomVal, sessionVal) {
+    if (!firebaseDb) return { records: [], total: 0, present: 0, absent: 0, presentList: [], absentList: [] };
+
+    // Fetch all student roster profiles to ensure complete roster coverage
+    var allStudents = adminStudentsList && adminStudentsList.length ? adminStudentsList : [];
+    if (!allStudents.length) {
+      try {
+        var studentSnap = await firebaseDb.collection("students").limit(200).get();
+        allStudents = studentSnap.docs.map(function(doc) { return Object.assign({ uid: doc.id }, doc.data()); });
+      } catch (e) {}
+    }
+
+    // Apply student filters for Department, Year, Room
+    var targetStudents = allStudents.filter(function (s) {
+      var deptMatch = !deptVal || (s.department || s.year_department || "").toLowerCase().indexOf(deptVal.toLowerCase()) !== -1;
+      var yearMatch = !yearVal || (s.year || s.year_department || "").toLowerCase().indexOf(yearVal.toLowerCase()) !== -1;
+      var roomMatch = !roomVal || (s.room_number || s.room || "").toLowerCase().indexOf(roomVal.toLowerCase()) !== -1;
+      return deptMatch && yearMatch && roomMatch;
+    });
+
+    // Query Firestore attendance records for date
+    var queryDate = dateVal || new Date().toISOString().slice(0, 10);
+    var attSnap = await firebaseDb.collection("attendance").where("date", "==", queryDate).get();
+    var attMap = {};
+    attSnap.docs.forEach(function (doc) {
+      var data = doc.data();
+      var sId = String(data.student_id || "").toLowerCase();
+      if (sId) attMap[sId] = data;
+    });
+
+    var presentList = [];
+    var absentList = [];
+
+    targetStudents.forEach(function (s) {
+      var sId = s.student_id || s.id || "";
+      var attRecord = attMap[sId.toLowerCase()];
+      var status = attRecord ? String(attRecord.status).toUpperCase() : "ABSENT";
+      var studentObj = {
+        student_name: s.student_name || s.name || attRecord?.student_name || "N/A",
+        student_id: sId || "N/A",
+        room_number: s.room_number || s.room || attRecord?.room_number || "N/A",
+        mobile_number: s.phone_number || s.phone || s.mobile || attRecord?.phone_number || "Not Available",
+        college: s.college || attRecord?.college || "N/A",
+        year_department: s.year_department || ((s.year || "") + " - " + (s.department || "")),
+        status: status
+      };
+
+      if (status === "PRESENT") {
+        presentList.push(studentObj);
+      } else {
+        absentList.push(studentObj);
+      }
+    });
+
+    var totalCount = targetStudents.length;
+    var presentCount = presentList.length;
+    var absentCount = absentList.length;
+
+    // Validate Data Accuracy: Present + Absent must equal Total
+    if (presentCount + absentCount !== totalCount) {
+      console.warn("Attendance validation mismatch: Present (" + presentCount + ") + Absent (" + absentCount + ") != Total (" + totalCount + ")");
+    }
+
+    return {
+      date: queryDate,
+      department: deptVal || "All Departments",
+      year: yearVal || "All Years",
+      room: roomVal || "All Rooms",
+      session: sessionVal || "Standard Session",
+      total: totalCount,
+      present: presentCount,
+      absent: absentCount,
+      presentList: presentList,
+      absentList: absentList
+    };
+  }
+
+  async function updateAttendanceReportSummary() {
+    var dateVal = document.getElementById("report-filter-date") ? document.getElementById("report-filter-date").value : "";
+    var deptVal = document.getElementById("report-filter-dept") ? document.getElementById("report-filter-dept").value : "";
+    var yearVal = document.getElementById("report-filter-year") ? document.getElementById("report-filter-year").value : "";
+    var roomVal = document.getElementById("report-filter-room") ? document.getElementById("report-filter-room").value : "";
+    var sessionVal = document.getElementById("report-filter-session") ? document.getElementById("report-filter-session").value : "";
+
+    var reportData = await getAttendanceReportData(dateVal, deptVal, yearVal, roomVal, sessionVal);
+
+    var totalEl = document.getElementById("report-stat-total");
+    var presentEl = document.getElementById("report-stat-present");
+    var absentEl = document.getElementById("report-stat-absent");
+    var titleEl = document.getElementById("report-summary-title");
+
+    if (totalEl) totalEl.textContent = reportData.total;
+    if (presentEl) presentEl.textContent = reportData.present;
+    if (absentEl) absentEl.textContent = reportData.absent;
+    if (titleEl) titleEl.textContent = "Report Summary — " + reportData.date + " (" + reportData.department + " · " + reportData.year + ")";
+
+    return reportData;
+  }
+
+  async function generateAttendanceExcelReport() {
+    if (typeof XLSX === "undefined") {
+      showToast("SheetJS library unavailable.", "⚠️", true);
+      return;
+    }
+
+    var btn = document.getElementById("btn-generate-excel-report");
+    if (btn) { btn.disabled = true; btn.textContent = "Generating Excel..."; }
+
+    try {
+      var dateVal = document.getElementById("report-filter-date") ? document.getElementById("report-filter-date").value : "";
+      var deptVal = document.getElementById("report-filter-dept") ? document.getElementById("report-filter-dept").value : "";
+      var yearVal = document.getElementById("report-filter-year") ? document.getElementById("report-filter-year").value : "";
+      var roomVal = document.getElementById("report-filter-room") ? document.getElementById("report-filter-room").value : "";
+      var sessionVal = document.getElementById("report-filter-session") ? document.getElementById("report-filter-session").value : "";
+
+      var data = await getAttendanceReportData(dateVal, deptVal, yearVal, roomVal, sessionVal);
+
+      // Validate counts: Present + Absent must equal Total
+      if (data.present + data.absent !== data.total) {
+        showToast("Attendance validation error. Counts do not match.", "⚠️", true);
+        return;
+      }
+
+      // Build Single Worksheet Excel Layout
+      var sheetRows = [
+        ["HOSTEL ATTENDANCE REPORT — APJ ABDUL KALAM BLOCK"],
+        ["Date:", data.date],
+        ["Department:", data.department],
+        ["Year:", data.year],
+        ["Attendance Session:", data.session],
+        ["Total Students:", data.total],
+        ["Present Count:", data.present],
+        ["Absent Count:", data.absent],
+        [],
+        ["PRESENT STUDENTS"],
+        ["S.No", "Student Name", "Student ID", "Room Number", "Mobile Number"]
+      ];
+
+      data.presentList.forEach(function (s, idx) {
+        sheetRows.push([
+          idx + 1,
+          s.student_name,
+          String(s.student_id),
+          s.room_number,
+          String(s.mobile_number)
+        ]);
+      });
+
+      sheetRows.push([]);
+      sheetRows.push([]);
+      sheetRows.push([]);
+      sheetRows.push(["ABSENT STUDENTS"]);
+      sheetRows.push(["S.No", "Student Name", "Student ID", "Room Number", "Mobile Number"]);
+
+      data.absentList.forEach(function (s, idx) {
+        sheetRows.push([
+          idx + 1,
+          s.student_name,
+          String(s.student_id),
+          s.room_number,
+          String(s.mobile_number)
+        ]);
+      });
+
+      var ws = XLSX.utils.aoa_to_sheet(sheetRows);
+
+      // Auto adjust column widths
+      ws["!cols"] = [
+        { wch: 8 },  // S.No
+        { wch: 26 }, // Student Name
+        { wch: 18 }, // Student ID
+        { wch: 14 }, // Room Number
+        { wch: 18 }  // Mobile Number
+      ];
+
+      var wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Attendance Report");
+
+      var fileName = "Hostel_Attendance_Report_" + data.date + "_" + (data.department.replace(/\s+/g, "_")) + ".xlsx";
+      XLSX.writeFile(wb, fileName);
+
+      showToast("Attendance Excel Report Generated", "📥");
+      saveAttendanceReportMetadata(data.date, data.department, data.year, data.session, data.total, data.present, data.absent);
+    } catch (err) {
+      showToast("Unable to generate Excel file. Please try again.", "⚠️", true);
+      console.error(err);
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = "📊 Generate Excel"; }
+    }
+  }
+
+  async function generateAttendancePdfReport() {
+    if (!window.jspdf || !window.jspdf.jsPDF) {
+      showToast("PDF Engine library unavailable.", "⚠️", true);
+      return;
+    }
+
+    var btn = document.getElementById("btn-generate-pdf-report");
+    if (btn) { btn.disabled = true; btn.textContent = "Generating PDF..."; }
+
+    try {
+      var dateVal = document.getElementById("report-filter-date") ? document.getElementById("report-filter-date").value : "";
+      var deptVal = document.getElementById("report-filter-dept") ? document.getElementById("report-filter-dept").value : "";
+      var yearVal = document.getElementById("report-filter-year") ? document.getElementById("report-filter-year").value : "";
+      var roomVal = document.getElementById("report-filter-room") ? document.getElementById("report-filter-room").value : "";
+      var sessionVal = document.getElementById("report-filter-session") ? document.getElementById("report-filter-session").value : "";
+
+      var data = await getAttendanceReportData(dateVal, deptVal, yearVal, roomVal, sessionVal);
+
+      // Validate counts: Present + Absent = Total
+      if (data.present + data.absent !== data.total) {
+        showToast("Attendance count mismatch. Report generation aborted.", "⚠️", true);
+        return;
+      }
+
+      var doc = new window.jspdf.jsPDF();
+
+      // Title & Header Styling
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(16);
+      doc.setTextColor(11, 31, 58);
+      doc.text("APJ ABDUL KALAM BLOCK", 105, 20, { align: "center" });
+
+      doc.setFontSize(13);
+      doc.setTextColor(201, 162, 39);
+      doc.text("HOSTEL ATTENDANCE REPORT", 105, 28, { align: "center" });
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+      doc.setTextColor(55, 65, 81);
+
+      doc.text("Date: " + data.date, 20, 38);
+      doc.text("Department: " + data.department, 20, 44);
+      doc.text("Year: " + data.year, 120, 38);
+      doc.text("Session: " + data.session, 120, 44);
+
+      // Summary Card / Box
+      doc.setDrawColor(212, 175, 55);
+      doc.setFillColor(248, 250, 252);
+      doc.roundedRect(20, 50, 170, 26, 3, 3, "FD");
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(11);
+      doc.setTextColor(11, 31, 58);
+      doc.text("ATTENDANCE SUMMARY", 25, 57);
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+      doc.setTextColor(31, 41, 55);
+      doc.text("Total Students  : " + data.total, 25, 65);
+      doc.text("Present Count  : " + data.present, 85, 65);
+      doc.text("Absent Count   : " + data.absent, 140, 65);
+
+      // ABSENT STUDENTS SECTION
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(12);
+      doc.setTextColor(185, 28, 28);
+      doc.text("ABSENT STUDENTS", 20, 86);
+
+      var y = 94;
+
+      if (!data.absentList.length) {
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(10);
+        doc.setTextColor(16, 185, 129);
+        doc.text("✓ No absent students for this session.", 20, y);
+        y += 12;
+      } else {
+        // Table Header
+        doc.setFillColor(243, 244, 246);
+        doc.rect(20, y, 170, 8, "F");
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(9.5);
+        doc.setTextColor(31, 41, 55);
+        doc.text("S.No", 24, y + 5.5);
+        doc.text("Student Name", 50, y + 5.5);
+        doc.text("Mobile Number", 140, y + 5.5);
+        doc.setDrawColor(209, 213, 219);
+        doc.line(20, y + 8, 190, y + 8);
+        y += 8;
+
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(9.5);
+
+        data.absentList.forEach(function (s, idx) {
+          if (y > 270) {
+            doc.addPage();
+            y = 20;
+            // Repeat Header on new page
+            doc.setFillColor(243, 244, 246);
+            doc.rect(20, y, 170, 8, "F");
+            doc.setFont("helvetica", "bold");
+            doc.text("S.No", 24, y + 5.5);
+            doc.text("Student Name", 50, y + 5.5);
+            doc.text("Mobile Number", 140, y + 5.5);
+            doc.line(20, y + 8, 190, y + 8);
+            y += 8;
+            doc.setFont("helvetica", "normal");
+          }
+
+          doc.setTextColor(17, 24, 39);
+          doc.text(String(idx + 1), 24, y + 5.5);
+          doc.text(s.student_name, 50, y + 5.5);
+          doc.text(String(s.mobile_number), 140, y + 5.5);
+          doc.line(20, y + 7.5, 190, y + 7.5);
+          y += 8;
+        });
+      }
+
+      // Footer
+      var todayStr = new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
+      doc.setFontSize(8);
+      doc.setTextColor(156, 163, 175);
+      doc.text("Generated by Admin · " + todayStr + " IST", 105, 287, { align: "center" });
+
+      var fileName = "Hostel_Attendance_Report_" + data.date + "_" + (data.department.replace(/\s+/g, "_")) + ".pdf";
+      doc.save(fileName);
+
+      showToast("Attendance PDF Report Downloaded", "📥");
+      saveAttendanceReportMetadata(data.date, data.department, data.year, data.session, data.total, data.present, data.absent);
+    } catch (err) {
+      showToast("Unable to generate PDF. Please try again.", "⚠️", true);
+      console.error(err);
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = "📄 Generate PDF"; }
+    }
+  }
+
+  async function saveAttendanceReportMetadata(dateStr, deptStr, yearStr, sessionStr, totalNum, presentNum, absentNum) {
+    if (!firebaseDb || !state.isAdmin) return;
+    try {
+      var dStr = dateStr || new Date().toISOString().slice(0, 10);
+      var reportId = dStr + "_" + (deptStr || "ALL").replace(/\s+/g, "") + "_" + (yearStr || "ALL").replace(/\s+/g, "");
+      var reportMeta = {
+        date: dStr,
+        department: deptStr || "All Departments",
+        year: yearStr || "All Years",
+        session: sessionStr || "Standard Session",
+        total: totalNum || 0,
+        present: presentNum || 0,
+        absent: absentNum || 0,
+        created_at: firebase.firestore.FieldValue.serverTimestamp(),
+        created_by: firebaseAuth.currentUser ? firebaseAuth.currentUser.email : "skphostel21@gmail.com"
+      };
+      await firebaseDb.collection("attendance_reports").doc(reportId).set(reportMeta, { merge: true });
+      loadAttendanceReportHistory();
+    } catch (e) {
+      console.error("Error saving report metadata:", e);
+    }
+  }
+
+  async function loadAttendanceReportHistory() {
+    var tbody = document.getElementById("report-history-table-body");
+    if (!tbody || !firebaseDb || !state.isAdmin) return;
+    try {
+      var snap = await firebaseDb.collection("attendance_reports").orderBy("date", "desc").limit(20).get();
+      if (snap.empty) {
+        tbody.innerHTML = '<tr><td colspan="7" style="padding: 12px; text-align: center; color: var(--ivory-dim);">No previous report history found.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = snap.docs.map(function (doc) {
+        var r = doc.data();
+        return '<tr style="border-bottom: 1px solid rgba(212,175,55,0.1);">' +
+          '<td style="padding: 8px; font-weight: 600; color: var(--white);">' + escapeHtml(r.date || "N/A") + '</td>' +
+          '<td style="padding: 8px;">' + escapeHtml(r.department || "All") + '</td>' +
+          '<td style="padding: 8px;">' + escapeHtml(r.year || "All") + '</td>' +
+          '<td style="padding: 8px;">' + (r.total || 0) + '</td>' +
+          '<td style="padding: 8px; color: var(--success); font-weight: 600;">' + (r.present || 0) + '</td>' +
+          '<td style="padding: 8px; color: var(--danger); font-weight: 600;">' + (r.absent || 0) + '</td>' +
+          '<td style="padding: 8px; text-align: right;">' +
+            '<button class="btn-one-tap" onclick="window.viewReportHistoryItem(\'' + (r.date || "") + '\', \'' + (r.department || "") + '\', \'' + (r.year || "") + '\')" style="padding: 3px 6px; font-size: 11px; margin-right: 4px;">View</button>' +
+            '<button class="btn-one-tap" onclick="window.downloadReportHistoryExcel(\'' + (r.date || "") + '\', \'' + (r.department || "") + '\', \'' + (r.year || "") + '\')" style="padding: 3px 6px; font-size: 11px; margin-right: 4px; color: var(--success);">Excel</button>' +
+            '<button class="btn-one-tap btn-one-tap--absent" onclick="window.downloadReportHistoryPdf(\'' + (r.date || "") + '\', \'' + (r.department || "") + '\', \'' + (r.year || "") + '\')" style="padding: 3px 6px; font-size: 11px;">PDF</button>' +
+          '</td>' +
+        '</tr>';
+      }).join("");
+    } catch (e) {
+      console.error("Error loading report history:", e);
+    }
+  }
+
+  window.viewReportHistoryItem = function (d, dept, yr) {
+    if (document.getElementById("report-filter-date")) document.getElementById("report-filter-date").value = d;
+    if (document.getElementById("report-filter-dept")) document.getElementById("report-filter-dept").value = dept === "All Departments" ? "" : dept;
+    if (document.getElementById("report-filter-year")) document.getElementById("report-filter-year").value = yr === "All Years" ? "" : yr;
+    updateAttendanceReportSummary();
+    showToast("Loaded attendance report for " + d, "🔍");
+  };
+
+  window.downloadReportHistoryExcel = function (d, dept, yr) {
+    window.viewReportHistoryItem(d, dept, yr);
+    generateAttendanceExcelReport();
+  };
+
+  window.downloadReportHistoryPdf = function (d, dept, yr) {
+    window.viewReportHistoryItem(d, dept, yr);
+    generateAttendancePdfReport();
+  };
+
+  // Event Listeners for Attendance Report Buttons
+  if (document.getElementById("btn-view-attendance-report")) {
+    document.getElementById("btn-view-attendance-report").addEventListener("click", updateAttendanceReportSummary);
+  }
+  if (document.getElementById("btn-generate-excel-report")) {
+    document.getElementById("btn-generate-excel-report").addEventListener("click", generateAttendanceExcelReport);
+  }
+  if (document.getElementById("btn-generate-pdf-report")) {
+    document.getElementById("btn-generate-pdf-report").addEventListener("click", generateAttendancePdfReport);
+  }
+
+  // Set default report filter date to today
+  if (document.getElementById("report-filter-date")) {
+    document.getElementById("report-filter-date").value = new Date().toISOString().slice(0, 10);
+  }
+
     if (!state.isAdmin || !firebaseAuth || !firebaseAuth.currentUser) {
       showToast("You are not authorized to access the Admin Panel.", "⚠️", true);
       return;
@@ -1381,6 +2063,7 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
   document.getElementById("download-out-pass-pdf").addEventListener("click", downloadApprovedPassPdf);
 
   setInterval(function () {
+    if (document.hidden) return;
     if (state.isAdmin) loadAdminPasses();
     else if (state.isLoggedIn) loadStudentPassStatus();
   }, 60000);
@@ -1556,7 +2239,7 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
       document.getElementById("app-bottom-nav").style.display = "none";
       document.getElementById("topbar-sublabel").textContent = "Admin Control Portal";
       switchView("view-admin-dashboard");
-      await loadAdminPasses();
+      await Promise.all([loadAdminPasses(), loadAdminStudents(), loadAttendanceReportHistory()]);
       showToast("Authenticated as Warden Admin", "🔑");
     });
   }
@@ -1605,17 +2288,411 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
   if (document.getElementById("login-form")) {
     document.getElementById("login-form").addEventListener("submit", async function (e) {
       e.preventDefault();
-      if (!firebaseAuth) { showToast("Firebase authentication is unavailable.", "⚠️", true); return; }
+      if (!firebaseAuth || !firebaseDb) { showToast("Firebase authentication is unavailable.", "⚠️", true); return; }
+      var inputStudentId = document.getElementById("student-id").value.trim();
+      var inputPassword = document.getElementById("password").value;
+
+      if (!inputStudentId || !inputPassword) {
+        showToast("Invalid Student ID or Password.", "⚠️", true);
+        return;
+      }
+
       try {
+        // Query Firestore for Student Document by student_id
+        var snap = await firebaseDb.collection("students").where("student_id", "==", inputStudentId).limit(1).get();
+        if (snap.empty) {
+          // Check fallback field name 'id'
+          snap = await firebaseDb.collection("students").where("id", "==", inputStudentId).limit(1).get();
+        }
+        if (snap.empty) {
+          showToast("Invalid Student ID or Password.", "⚠️", true);
+          return;
+        }
+
+        var studentDoc = snap.docs[0].data();
+        if (String(studentDoc.status || "active").toLowerCase() === "disabled") {
+          showToast("Your account has been disabled. Please contact the administrator.", "⚠️", true);
+          return;
+        }
+
+        var authEmail = studentDoc.auth_email || (inputStudentId.toLowerCase() + "@kalam.hostel");
         await firebaseAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-        await firebaseAuth.signInWithEmailAndPassword(document.getElementById("student-id").value.trim(), document.getElementById("password").value);
+        await firebaseAuth.signInWithEmailAndPassword(authEmail, inputPassword);
         await setStudentLogin(true);
         showToast("Signed in successfully.", "👋");
       } catch (error) {
-        showToast("Student authentication failed.", "⚠️", true);
+        showToast("Invalid Student ID or Password.", "⚠️", true);
+        console.error(error);
       }
     });
   }
+
+  /* ==================================================
+     STUDENT MANAGEMENT & ADMIN-CREATED STUDENT LOGIN
+     ================================================== */
+  var adminStudentsList = [];
+  var pendingDeleteStudentUid = null;
+
+  async function createStudentAuthAccount(studentId, password) {
+    var tempAppName = "TempApp_" + Date.now() + "_" + Math.floor(Math.random() * 10000);
+    var tempApp = firebase.initializeApp(firebaseConfig, tempAppName);
+    var tempAuth = tempApp.auth();
+    var email = studentId.toLowerCase().trim() + "@kalam.hostel";
+    try {
+      var userCred = await tempAuth.createUserWithEmailAndPassword(email, password);
+      var uid = userCred.user.uid;
+      await tempAuth.signOut();
+      await tempApp.delete();
+      return { uid: uid, email: email };
+    } catch (err) {
+      try { await tempApp.delete(); } catch (e) {}
+      throw err;
+    }
+  }
+
+  function closeModalByTarget(targetId) {
+    var modal = document.getElementById(targetId);
+    if (!modal) return;
+    modal.classList.remove("is-open");
+    modal.setAttribute("aria-hidden", "true");
+  }
+
+  function openModalByTarget(targetId) {
+    var modal = document.getElementById(targetId);
+    if (!modal) return;
+    modal.classList.add("is-open");
+    modal.setAttribute("aria-hidden", "false");
+  }
+
+  document.querySelectorAll("[data-modal-close]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var target = btn.getAttribute("data-modal-close");
+      if (target === "student-form") closeModalByTarget("modal-student-form");
+   function debounce(func, wait) {
+    var timeout;
+    return function () {
+      var context = this, args = arguments;
+      clearTimeout(timeout);
+      timeout = setTimeout(function () {
+        func.apply(context, args);
+      }, wait);
+    };
+  }
+
+  function updateStudentStats() {
+    var totalEl = document.getElementById("stat-total-students");
+    var activeEl = document.getElementById("stat-active-students");
+    var disabledEl = document.getElementById("stat-disabled-students");
+
+    var total = adminStudentsList.length;
+    var active = 0;
+    var disabled = 0;
+    adminStudentsList.forEach(function (s) {
+      if ((s.status || "active").toLowerCase() === "disabled") disabled++;
+      else active++;
+    });
+
+    if (totalEl) totalEl.textContent = total;
+    if (activeEl) activeEl.textContent = active;
+    if (disabledEl) disabledEl.textContent = disabled;
+  }
+
+  async function loadAdminStudents() {
+    if (!firebaseDb || !firebaseAuth || !firebaseAuth.currentUser || !state.isAdmin) return;
+    try {
+      var snap = await firebaseDb.collection("students").limit(200).get();
+      adminStudentsList = snap.docs.map(function (doc) {
+        return Object.assign({ uid: doc.id }, doc.data());
+      });
+      updateStudentStats();
+      renderAdminStudentsTable();
+    } catch (err) {
+      console.error("Error loading students:", err);
+    }
+  }
+
+  function renderAdminStudentsTable() {
+    updateStudentStats();
+    var tbody = document.getElementById("admin-student-table-body");
+    if (!tbody) return;
+
+    var searchVal = (document.getElementById("filter-student-search") ? document.getElementById("filter-student-search").value : "").trim().toLowerCase();
+    var deptVal = document.getElementById("filter-student-dept") ? document.getElementById("filter-student-dept").value : "";
+    var yearVal = document.getElementById("filter-student-year") ? document.getElementById("filter-student-year").value : "";
+    var statusVal = document.getElementById("filter-student-status") ? document.getElementById("filter-student-status").value : "";
+
+    var filtered = adminStudentsList.filter(function (s) {
+      var nameMatch = !searchVal || (s.student_name || "").toLowerCase().indexOf(searchVal) !== -1 || (s.name || "").toLowerCase().indexOf(searchVal) !== -1;
+      var idMatch = !searchVal || (s.student_id || "").toLowerCase().indexOf(searchVal) !== -1 || (s.id || "").toLowerCase().indexOf(searchVal) !== -1;
+      var roomMatch = !searchVal || (s.room_number || "").toLowerCase().indexOf(searchVal) !== -1 || (s.room || "").toLowerCase().indexOf(searchVal) !== -1;
+      var textMatch = nameMatch || idMatch || roomMatch;
+
+      var deptMatch = !deptVal || (s.department || s.year_department || "").indexOf(deptVal) !== -1;
+      var yearMatch = !yearVal || (s.year || s.year_department || "").indexOf(yearVal) !== -1;
+      var statusMatch = !statusVal || (s.status || "active").toLowerCase() === statusVal.toLowerCase();
+
+      return textMatch && deptMatch && yearMatch && statusMatch;
+    });
+
+    if (!filtered.length) {
+      tbody.innerHTML = '<tr><td colspan="7" style="padding: 14px; text-align: center; color: var(--ivory-dim);">No matching student records found.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = filtered.map(function (s) {
+      var statusClass = (s.status || "active").toLowerCase() === "disabled" ? "status-chip--absent" : "status-chip--present";
+      var statusText = (s.status || "active").toUpperCase();
+      var toggleBtnText = (s.status || "active").toLowerCase() === "disabled" ? "Enable" : "Disable";
+      var toggleBtnClass = (s.status || "active").toLowerCase() === "disabled" ? "color: var(--success);" : "color: var(--warning);";
+
+      return '<tr style="border-bottom: 1px solid rgba(212,175,55,0.1);">' +
+        '<td style="padding: 10px; font-weight: 600; color: var(--white);">' + escapeHtml(s.student_name || s.name || "N/A") + '</td>' +
+        '<td style="padding: 10px; font-family: monospace; color: var(--gold-400);">' + escapeHtml(s.student_id || s.id || "N/A") + '</td>' +
+        '<td style="padding: 10px;">' + escapeHtml(s.room_number || s.room || "N/A") + '</td>' +
+        '<td style="padding: 10px;">' + escapeHtml(s.college || "N/A") + '</td>' +
+        '<td style="padding: 10px;">' + escapeHtml(s.year_department || ((s.year || "") + " - " + (s.department || ""))) + '</td>' +
+        '<td style="padding: 10px;"><span class="status-chip ' + statusClass + '">' + statusText + '</span></td>' +
+        '<td style="padding: 10px; text-align: right;">' +
+          '<button class="btn-one-tap" onclick="window.openEditStudent(\'' + s.uid + '\')" style="padding: 4px 8px; font-size: 11px; margin-right: 4px;">Edit</button>' +
+          '<button class="btn-one-tap" onclick="window.openResetPassword(\'' + s.uid + '\')" style="padding: 4px 8px; font-size: 11px; margin-right: 4px;">Reset Pass</button>' +
+          '<button class="btn-one-tap" onclick="window.toggleStudentStatus(\'' + s.uid + '\')" style="padding: 4px 8px; font-size: 11px; margin-right: 4px; ' + toggleBtnClass + '">' + toggleBtnText + '</button>' +
+          '<button class="btn-one-tap btn-one-tap--absent" onclick="window.confirmDeleteStudent(\'' + s.uid + '\')" style="padding: 4px 8px; font-size: 11px;">Delete</button>' +
+        '</td>' +
+      '</tr>';
+    }).join("");
+  }
+
+  var debouncedRenderStudentsTable = debounce(renderAdminStudentsTable, 300);
+
+  ["filter-student-dept", "filter-student-year", "filter-student-status"].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (el) {
+      el.addEventListener("change", renderAdminStudentsTable);
+    }
+  });
+
+  var searchInputEl = document.getElementById("filter-student-search");
+  if (searchInputEl) {
+    searchInputEl.addEventListener("input", debouncedRenderStudentsTable);
+    searchInputEl.addEventListener("change", renderAdminStudentsTable);
+  }
+
+  document.addEventListener("visibilitychange", function() {
+    if (document.visibilityState === "visible" && state.isAdmin) loadAdminStudents();
+  });
+
+  if (document.getElementById("btn-open-add-student")) {
+    document.getElementById("btn-open-add-student").addEventListener("click", function () {
+      document.getElementById("modal-student-form-title").textContent = "Add New Student";
+      document.getElementById("student-manage-uid").value = "";
+      document.getElementById("student-form-name").value = "";
+      document.getElementById("student-form-id").value = "";
+      document.getElementById("student-form-id").readOnly = false;
+      document.getElementById("student-form-room").value = "";
+      document.getElementById("student-form-college").value = "";
+      document.getElementById("student-form-year-dept").value = "";
+      document.getElementById("student-form-password").value = "";
+      document.getElementById("student-form-confirm-password").value = "";
+      document.getElementById("student-password-fields").style.display = "grid";
+      document.getElementById("student-form-error").textContent = "";
+      openModalByTarget("modal-student-form");
+    });
+  }
+
+  window.openEditStudent = function (uid) {
+    var s = adminStudentsList.find(function (item) { return item.uid === uid; });
+    if (!s) return;
+    document.getElementById("modal-student-form-title").textContent = "Edit Student Profile";
+    document.getElementById("student-manage-uid").value = s.uid;
+    document.getElementById("student-form-name").value = s.student_name || s.name || "";
+    document.getElementById("student-form-id").value = s.student_id || s.id || "";
+    document.getElementById("student-form-id").readOnly = false;
+    document.getElementById("student-form-room").value = s.room_number || s.room || "";
+    document.getElementById("student-form-college").value = s.college || "";
+    document.getElementById("student-form-year-dept").value = s.year_department || ((s.year || "") + " - " + (s.department || ""));
+    document.getElementById("student-password-fields").style.display = "none";
+    document.getElementById("student-form-error").textContent = "";
+    openModalByTarget("modal-student-form");
+  };
+
+  window.openResetPassword = function (uid) {
+    var s = adminStudentsList.find(function (item) { return item.uid === uid; });
+    if (!s) return;
+    document.getElementById("reset-password-uid").value = s.uid;
+    document.getElementById("reset-password-subtitle").textContent = "Reset password for " + (s.student_name || s.student_id) + " (" + s.student_id + ")";
+    document.getElementById("reset-new-password").value = "";
+    document.getElementById("reset-confirm-password").value = "";
+    document.getElementById("reset-password-error").textContent = "";
+    openModalByTarget("modal-reset-password");
+  };
+
+  window.confirmDeleteStudent = function (uid) {
+    var s = adminStudentsList.find(function (item) { return item.uid === uid; });
+    if (!s) return;
+    pendingDeleteStudentUid = uid;
+    document.getElementById("delete-student-prompt").textContent = "Are you sure you want to delete student " + (s.student_name || s.student_id) + " (" + s.student_id + ")?";
+    openModalByTarget("modal-delete-student");
+  };
+
+  if (document.getElementById("btn-confirm-delete-student")) {
+    document.getElementById("btn-confirm-delete-student").addEventListener("click", async function () {
+      if (!pendingDeleteStudentUid || !firebaseDb || !state.isAdmin) return;
+      try {
+        await firebaseDb.collection("students").doc(pendingDeleteStudentUid).delete();
+        showToast("Student deleted successfully.", "✓");
+        closeModalByTarget("modal-delete-student");
+        pendingDeleteStudentUid = null;
+        await loadAdminStudents();
+      } catch (err) {
+        showToast("Could not delete student.", "⚠️", true);
+        console.error(err);
+      }
+    });
+  }
+
+  window.toggleStudentStatus = async function (uid) {
+    var s = adminStudentsList.find(function (item) { return item.uid === uid; });
+    if (!s || !firebaseDb || !state.isAdmin) return;
+    var newStatus = (s.status || "active").toLowerCase() === "disabled" ? "active" : "disabled";
+    try {
+      await firebaseDb.collection("students").doc(uid).update({ status: newStatus });
+      s.status = newStatus;
+      renderAdminStudentsTable();
+      showToast("Student account " + (newStatus === "disabled" ? "disabled" : "enabled") + ".", "ℹ️");
+    } catch (err) {
+      showToast("Account status update failed.", "⚠️", true);
+      console.error(err);
+    }
+  };
+
+  if (document.getElementById("form-student-manage")) {
+    document.getElementById("form-student-manage").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      var uid = document.getElementById("student-manage-uid").value;
+      var name = document.getElementById("student-form-name").value.trim();
+      var studentId = document.getElementById("student-form-id").value.trim();
+      var room = document.getElementById("student-form-room").value.trim();
+      var college = document.getElementById("student-form-college").value.trim();
+      var yearDept = document.getElementById("student-form-year-dept").value.trim();
+      var password = document.getElementById("student-form-password").value;
+      var confirmPassword = document.getElementById("student-form-confirm-password").value;
+      var errEl = document.getElementById("student-form-error");
+
+      errEl.textContent = "";
+      if (!name || !studentId || !room || !college || !yearDept) {
+        errEl.textContent = "All required fields must be filled.";
+        return;
+      }
+
+      // Check Student ID uniqueness
+      var existingIdDoc = adminStudentsList.find(function (item) {
+        return (item.student_id || "").toLowerCase() === studentId.toLowerCase() && item.uid !== uid;
+      });
+      if (existingIdDoc) {
+        errEl.textContent = "Student ID already exists. Please use a unique Student ID.";
+        return;
+      }
+
+      var saveBtn = document.getElementById("btn-save-student");
+      saveBtn.disabled = true;
+      saveBtn.textContent = "Saving...";
+
+      try {
+        if (!uid) {
+          // Creating New Student
+          if (!password || password.length < 6) {
+            errEl.textContent = "Password must be at least 6 characters.";
+            saveBtn.disabled = false;
+            saveBtn.textContent = "Save Student";
+            return;
+          }
+          if (password !== confirmPassword) {
+            errEl.textContent = "Password and Confirm Password do not match.";
+            saveBtn.disabled = false;
+            saveBtn.textContent = "Save Student";
+            return;
+          }
+
+          var authRes = await createStudentAuthAccount(studentId, password);
+          var newStudentDoc = {
+            auth_uid: authRes.uid,
+            student_id: studentId,
+            student_name: name,
+            room_number: room,
+            college: college,
+            year_department: yearDept,
+            status: "active",
+            auth_email: authRes.email,
+            created_at: firebase.firestore.FieldValue.serverTimestamp()
+          };
+          await firebaseDb.collection("students").doc(authRes.uid).set(newStudentDoc);
+          showToast("Student account created successfully.", "✓");
+        } else {
+          // Editing Existing Student
+          var updateDoc = {
+            student_id: studentId,
+            student_name: name,
+            room_number: room,
+            college: college,
+            year_department: yearDept
+          };
+          await firebaseDb.collection("students").doc(uid).update(updateDoc);
+          showToast("Student profile updated successfully.", "✓");
+        }
+        closeModalByTarget("modal-student-form");
+        await loadAdminStudents();
+      } catch (err) {
+        errEl.textContent = err.message || "Failed to save student record.";
+        console.error(err);
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = "Save Student";
+      }
+    });
+  }
+
+  if (document.getElementById("form-reset-password")) {
+    document.getElementById("form-reset-password").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      var uid = document.getElementById("reset-password-uid").value;
+      var newPass = document.getElementById("reset-new-password").value;
+      var confirmPass = document.getElementById("reset-confirm-password").value;
+      var errEl = document.getElementById("reset-password-error");
+
+      errEl.textContent = "";
+      if (!newPass || newPass.length < 6) {
+        errEl.textContent = "New password must be at least 6 characters.";
+        return;
+      }
+      if (newPass !== confirmPass) {
+        errEl.textContent = "New Password and Confirm Password do not match.";
+        return;
+      }
+
+      var s = adminStudentsList.find(function (item) { return item.uid === uid; });
+      if (!s) return;
+
+      var btn = document.getElementById("btn-submit-reset-password");
+      btn.disabled = true;
+      btn.textContent = "Updating...";
+
+      try {
+        // Update password flag / record in student document
+        await firebaseDb.collection("students").doc(uid).update({
+          password_updated_at: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        showToast("Password reset successfully for " + s.student_id + ".", "✓");
+        closeModalByTarget("modal-reset-password");
+      } catch (err) {
+        errEl.textContent = err.message || "Failed to reset password.";
+        console.error(err);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Update Password";
+      }
+    });
+  }
+
 
   if (document.getElementById("logout-btn")) {
     document.getElementById("logout-btn").addEventListener("click", async function () {
@@ -1654,7 +2731,7 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
           document.getElementById("app-bottom-nav").style.display = "none";
           document.getElementById("topbar-sublabel").textContent = "Admin Control Portal";
           switchView("view-admin-dashboard");
-          await loadAdminPasses();
+          await Promise.all([loadAdminPasses(), loadAdminStudents(), loadAttendanceReportHistory()]);
         } else {
           state.isLoggedIn = true;
           state.isAdmin = false;
@@ -1699,5 +2776,110 @@ if ('serviceWorker' in navigator) {
   });
 }
 </script>
+
+  <!-- MODAL: ADD / EDIT STUDENT -->
+  <div class="admin-access-modal" id="modal-student-form" aria-hidden="true">
+    <div class="admin-access-backdrop" data-modal-close="student-form"></div>
+    <div class="admin-access-card" style="max-width: 480px; text-align: left;">
+      <button type="button" class="admin-access-close" data-modal-close="student-form" aria-label="Close modal">&times;</button>
+      <h3 class="admin-access-title" id="modal-student-form-title">Add New Student</h3>
+      <p class="admin-access-subtitle">Create or edit student account and profile credentials.</p>
+
+      <form id="form-student-manage" style="margin-top: 14px;">
+        <input type="hidden" id="student-manage-uid" value="" />
+
+        <div style="margin-bottom: 12px;">
+          <label style="font-size: 11.5px; color: var(--gold-400); display: block; margin-bottom: 4px;">Student Name *</label>
+          <input type="text" id="student-form-name" class="form-control" placeholder="e.g. Arun Kumar" required />
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+          <div>
+            <label style="font-size: 11.5px; color: var(--gold-400); display: block; margin-bottom: 4px;">Student ID (Unique) *</label>
+            <input type="text" id="student-form-id" class="form-control" placeholder="e.g. AIDS2026001" required />
+          </div>
+          <div>
+            <label style="font-size: 11.5px; color: var(--gold-400); display: block; margin-bottom: 4px;">Room Number *</label>
+            <input type="text" id="student-form-room" class="form-control" placeholder="e.g. A-204" required />
+          </div>
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <label style="font-size: 11.5px; color: var(--gold-400); display: block; margin-bottom: 4px;">College *</label>
+          <input type="text" id="student-form-college" class="form-control" placeholder="e.g. ABC Engineering College" required />
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <label style="font-size: 11.5px; color: var(--gold-400); display: block; margin-bottom: 4px;">Year / Department *</label>
+          <input type="text" id="student-form-year-dept" class="form-control" placeholder="e.g. 3rd Year – AI & Data Science" required />
+        </div>
+
+        <div id="student-password-fields" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px;">
+          <div>
+            <label style="font-size: 11.5px; color: var(--gold-400); display: block; margin-bottom: 4px;">Password *</label>
+            <input type="password" id="student-form-password" class="form-control" placeholder="Min 6 characters" />
+          </div>
+          <div>
+            <label style="font-size: 11.5px; color: var(--gold-400); display: block; margin-bottom: 4px;">Confirm Password *</label>
+            <input type="password" id="student-form-confirm-password" class="form-control" placeholder="Repeat password" />
+          </div>
+        </div>
+
+        <div id="student-form-error" style="color: var(--danger); font-size: 12px; margin-bottom: 10px;"></div>
+
+        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+          <button type="button" class="btn-one-tap" data-modal-close="student-form" style="background: transparent; border: 1px solid var(--ivory-dim); color: var(--ivory-dim);">Cancel</button>
+          <button type="submit" class="btn-gold-login" id="btn-save-student" style="height: 38px; font-size: 13px; width: auto; padding: 0 18px;">Save Student</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: RESET PASSWORD -->
+  <div class="admin-access-modal" id="modal-reset-password" aria-hidden="true">
+    <div class="admin-access-backdrop" data-modal-close="reset-password"></div>
+    <div class="admin-access-card" style="max-width: 400px; text-align: left;">
+      <button type="button" class="admin-access-close" data-modal-close="reset-password" aria-label="Close modal">&times;</button>
+      <h3 class="admin-access-title">Reset Password</h3>
+      <p class="admin-access-subtitle" id="reset-password-subtitle">Set a new password for the student account.</p>
+
+      <form id="form-reset-password" style="margin-top: 14px;">
+        <input type="hidden" id="reset-password-uid" value="" />
+
+        <div style="margin-bottom: 12px;">
+          <label style="font-size: 11.5px; color: var(--gold-400); display: block; margin-bottom: 4px;">New Password *</label>
+          <input type="password" id="reset-new-password" class="form-control" placeholder="Min 6 characters" required />
+        </div>
+
+        <div style="margin-bottom: 14px;">
+          <label style="font-size: 11.5px; color: var(--gold-400); display: block; margin-bottom: 4px;">Confirm Password *</label>
+          <input type="password" id="reset-confirm-password" class="form-control" placeholder="Repeat new password" required />
+        </div>
+
+        <div id="reset-password-error" style="color: var(--danger); font-size: 12px; margin-bottom: 10px;"></div>
+
+        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+          <button type="button" class="btn-one-tap" data-modal-close="reset-password" style="background: transparent; border: 1px solid var(--ivory-dim); color: var(--ivory-dim);">Cancel</button>
+          <button type="submit" class="btn-gold-login" id="btn-submit-reset-password" style="height: 38px; font-size: 13px; width: auto; padding: 0 18px;">Update Password</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: DELETE CONFIRMATION -->
+  <div class="admin-access-modal" id="modal-delete-student" aria-hidden="true">
+    <div class="admin-access-backdrop" data-modal-close="delete-student"></div>
+    <div class="admin-access-card" style="max-width: 400px; text-align: left;">
+      <button type="button" class="admin-access-close" data-modal-close="delete-student" aria-label="Close modal">&times;</button>
+      <h3 class="admin-access-title" style="color: var(--danger);">Delete Student</h3>
+      <p class="admin-access-subtitle" id="delete-student-prompt">Are you sure you want to delete this student?</p>
+
+      <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+        <button type="button" class="btn-one-tap" data-modal-close="delete-student" style="background: transparent; border: 1px solid var(--ivory-dim); color: var(--ivory-dim);">Cancel</button>
+        <button type="button" class="btn-one-tap btn-one-tap--absent" id="btn-confirm-delete-student" style="height: 38px; padding: 0 16px; font-size: 13px;">Delete Student</button>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>

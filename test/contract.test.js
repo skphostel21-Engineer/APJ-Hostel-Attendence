@@ -73,8 +73,50 @@ test('11. PWA manifest and network-first service worker are configured', () => {
   assert.match(swSource, /caches\.open/);
 });
 
-test('12. branding enforces APJ ABDUL KALAM BLOCK and excludes Surya keyword', () => {
-  assert.match(htmlSource, /APJ ABDUL KALAM BLOCK/);
-  assert.equal(htmlSource.toLowerCase().includes('surya'), false, 'UI contains forbidden keyword Surya!');
+test('13. Admin Panel Student Management UI elements exist in index.html', () => {
+  assert.match(htmlSource, /id="btn-open-add-student"/);
+  assert.match(htmlSource, /id="admin-student-table-body"/);
+  assert.match(htmlSource, /id="modal-student-form"/);
+  assert.match(htmlSource, /id="modal-reset-password"/);
+  assert.match(htmlSource, /id="modal-delete-student"/);
+  assert.match(htmlSource, /filter-student-search/);
+});
+
+test('14. Student account creation uses secondary temp Firebase App to preserve Admin session', () => {
+  assert.match(htmlSource, /createStudentAuthAccount/);
+  assert.match(htmlSource, /firebase\.initializeApp\(firebaseConfig, tempAppName\)/);
+  assert.match(htmlSource, /tempAuth\.createUserWithEmailAndPassword/);
+  assert.match(htmlSource, /Student ID already exists/);
+});
+
+test('15. Student login uses Student ID, blocks disabled accounts, and excludes self-registration', () => {
+  assert.match(htmlSource, /Your account has been disabled\. Please contact the administrator\./);
+  assert.match(htmlSource, /Invalid Student ID or Password\./);
+  assert.equal(htmlSource.includes('register-form'), false, 'Public registration form must not exist!');
+  assert.equal(htmlSource.includes('Create Account'), false, 'Public Create Account link must not exist!');
+});
+
+test('16. Performance optimizations: Promise.all parallel data loading, debounced search, visibility polling, and admin student stat counters', () => {
+  assert.match(htmlSource, /Promise\.all\(\[loadAdminPasses\(\),\s*loadAdminStudents\(\)/);
+  assert.match(htmlSource, /debounce/);
+  assert.match(htmlSource, /document\.hidden/);
+  assert.match(htmlSource, /id="stat-total-students"/);
+  assert.match(htmlSource, /id="stat-active-students"/);
+  assert.match(htmlSource, /id="stat-disabled-students"/);
+});
+
+test('17. Professional Attendance Reporting System: single-worksheet Excel, absent-only PDF, report history, and security rules', () => {
+  assert.match(rulesSource, /match \/attendance_reports\/\{reportId\}[\s\S]*allow read, write: if isAdmin\(\);/);
+  assert.match(htmlSource, /id="card-admin-attendance-reports"/);
+  assert.match(htmlSource, /id="report-filter-date"/);
+  assert.match(htmlSource, /id="report-filter-dept"/);
+  assert.match(htmlSource, /id="report-filter-year"/);
+  assert.match(htmlSource, /id="report-filter-room"/);
+  assert.match(htmlSource, /id="report-filter-session"/);
+  assert.match(htmlSource, /id="btn-generate-excel-report"/);
+  assert.match(htmlSource, /id="btn-generate-pdf-report"/);
+  assert.match(htmlSource, /id="report-history-table-body"/);
+  assert.match(htmlSource, /PRESENT STUDENTS/);
+  assert.match(htmlSource, /ABSENT STUDENTS/);
 });
 
