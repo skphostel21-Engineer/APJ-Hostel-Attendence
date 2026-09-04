@@ -1,0 +1,13 @@
+{
+  "name": "apj-abdul-kalam-block",
+  "version": "1.0.0",
+  "description": "APJ ABDUL KALAM BLOCK — Student Attendance & Pass Management Portal (Firebase Spark ₹0 Plan)",
+  "private": true,
+  "scripts": {
+    "test": "node --test",
+    "lint": "node --check test/contract.test.js"
+  },
+  "devDependencies": {
+    "eslint": "^9.17.0"
+  }
+}

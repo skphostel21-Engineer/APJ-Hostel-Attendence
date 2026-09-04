@@ -29,7 +29,6 @@
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-analytics-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-functions-compat.js"></script>
 <script>
 
   // Your web app's Firebase configuration
@@ -57,8 +56,7 @@
     });
   }
   window.firebaseDb = firebase.firestore();
-  window.firebaseFunctions = firebase.functions();
-</script>
+  </script>
 
 <style>
 :root {
@@ -626,7 +624,7 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
 
         <h1 style="font-family: var(--font-display); font-size: 25px; font-weight: 700; color: var(--white); line-height: 1.2;">APJ ABDUL KALAM BLOCK</h1>
         <p style="font-size: 12px; color: var(--ivory-dim); margin-top: 4px; font-weight: 500;">Hostel Attendance & Pass Management System</p>
-        
+
         <div class="motto-badge">
           <span>★ DREAM · BELIEVE · ACHIEVE ★</span>
         </div>
@@ -997,7 +995,6 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
 
   var firebaseAuth = window.firebaseAuth;
   var firebaseDb = window.firebaseDb;
-  var firebaseFunctions = window.firebaseFunctions;
 
   var state = { isLoggedIn: false, isAdmin: false, studentProfile: null, passSubmitting: false };
   var appToast = document.getElementById("app-toast");
@@ -1107,15 +1104,11 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
     return escapeHtml((pass[dateKey] || "") + " " + (pass[timeKey] || ""));
   }
 
-  async function getBusinessNow() {
-    if (firebaseFunctions) {
-      var result = await firebaseFunctions.httpsCallable("getBusinessNow")({});
-      if (result.data) {
-        var serverDate = new Date(result.data.now || result.data);
-        if (!isNaN(serverDate.getTime())) return serverDate;
-      }
-    }
-    return new Date();
+  function getBusinessNow() {
+    var now = new Date();
+    var kolkataStr = now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
+    var d = new Date(kolkataStr);
+    return isNaN(d.getTime()) ? new Date() : d;
   }
 
   function isOverdue(pass, businessNow) {
@@ -1170,7 +1163,7 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
         showToast("Expected return must be after departure.", "⚠️", true);
         return;
       }
-      if (!firebaseFunctions || !firebaseAuth || !firebaseAuth.currentUser) {
+      if (!firebaseAuth || !firebaseAuth.currentUser) {
         showToast("Firebase authentication is required.", "⚠️", true);
         return;
       }
@@ -1193,16 +1186,24 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
         reason: document.getElementById("pass-reason").value.trim(),
         status: "PENDING"
       };
-      var result = await firebaseFunctions.httpsCallable("createPassRequest")(request);
-      state.passSubmitting = false;
-      if (submitButton) { submitButton.disabled = false; submitButton.textContent = "SUBMIT REQUEST"; }
-      if (!result.data) {
+      try {
+        var newPassDoc = Object.assign({}, request, {
+          student_uid: firebaseAuth.currentUser.uid,
+          outside_status: "INSIDE",
+          created_at: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        var docRef = await firebaseDb.collection("pass_requests").add(newPassDoc);
+        state.passSubmitting = false;
+        if (submitButton) { submitButton.disabled = false; submitButton.textContent = "SUBMIT REQUEST"; }
+        var createdPass = Object.assign({ id: docRef.id }, newPassDoc);
+        setStudentPassStatus(createdPass, getBusinessNow());
+        showToast("Out Pass Request Submitted", "✓");
+      } catch (err) {
+        state.passSubmitting = false;
+        if (submitButton) { submitButton.disabled = false; submitButton.textContent = "SUBMIT REQUEST"; }
         showToast("Could not submit out pass request.", "⚠️", true);
-        console.error(result.error);
-        return;
+        console.error(err);
       }
-      setStudentPassStatus(result.data, await getBusinessNow());
-      showToast("Out Pass Request Submitted", "✓");
     });
   }
 
@@ -1216,9 +1217,15 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
 
     if (feedbackEl) feedbackEl.textContent = 'Saving...';
     try {
-      if (!firebaseFunctions) throw new Error("functions-unavailable");
-      var result = await firebaseFunctions.httpsCallable("adminMarkAttendance")({ studentId: studentId, status: newStatus.toUpperCase() });
-      if (!result.data || result.data.status !== newStatus.toUpperCase()) throw new Error("attendance-not-confirmed");
+      var todayKey = new Date().toISOString().slice(0, 10);
+      var docId = todayKey + "_" + studentId;
+      await firebaseDb.collection("attendance").doc(docId).set({
+        date: todayKey,
+        student_id: studentId,
+        status: newStatus.toUpperCase(),
+        marked_at: firebase.firestore.FieldValue.serverTimestamp(),
+        marked_by: firebaseAuth.currentUser.email || "skphostel21@gmail.com"
+      }, { merge: true });
       if (feedbackEl) feedbackEl.textContent = 'Saved ✓';
       if (badgeEl) {
         badgeEl.className = newStatus === 'present' ? 'status-chip status-chip--present' : 'status-chip status-chip--absent';
@@ -1264,11 +1271,22 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
   }
 
   async function updatePassStatus(id, status) {
-    if (!firebaseFunctions || !firebaseAuth || !firebaseAuth.currentUser || !state.isAdmin) return;
-    var result = await firebaseFunctions.httpsCallable("reviewOutPassRequest")({ requestId: id, decision: status });
-    if (!result.data) { showToast("Approval was not authorized.", "⚠️", true); return; }
-    showToast(status === "APPROVED" ? "Out pass approved." : "Out pass rejected.", status === "APPROVED" ? "✓" : "✕", status !== "APPROVED");
-    loadAdminPasses();
+    if (!firebaseDb || !firebaseAuth || !firebaseAuth.currentUser || !state.isAdmin) return;
+    try {
+      var updateData = {
+        status: status,
+        outside_status: status === "APPROVED" ? "OUTSIDE" : "INSIDE",
+        approved_by: status === "APPROVED" ? "Hostel Warden" : null,
+        approved_at: status === "APPROVED" ? firebase.firestore.FieldValue.serverTimestamp() : null,
+        rejected_at: status === "REJECTED" ? firebase.firestore.FieldValue.serverTimestamp() : null
+      };
+      await firebaseDb.collection("pass_requests").doc(id).update(updateData);
+      showToast(status === "APPROVED" ? "Out pass approved." : "Out pass rejected.", status === "APPROVED" ? "✓" : "✕", status !== "APPROVED");
+      loadAdminPasses();
+    } catch (err) {
+      showToast("Pass status update failed.", "⚠️", true);
+      console.error(err);
+    }
   }
 
   document.addEventListener("click", function (event) {
@@ -1278,35 +1296,82 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
 
   async function markPassReturned() {
     var button = document.getElementById("mark-out-pass-returned");
-    if (!firebaseFunctions || !firebaseAuth || !firebaseAuth.currentUser || !button || !button.dataset.passId || state.passSubmitting) return;
-    var studentId = getProfileValue(state.studentProfile, ["student_id", "id"]);
-    if (!studentId) { showToast("Student authentication required.", "⚠️", true); return; }
+    if (!firebaseDb || !firebaseAuth || !firebaseAuth.currentUser || !button || !button.dataset.passId || state.passSubmitting) return;
+    var passId = button.dataset.passId;
     state.passSubmitting = true;
     button.disabled = true;
-    var result = await firebaseFunctions.httpsCallable("markPassReturned")({ requestId: button.dataset.passId, studentId: studentId });
-    state.passSubmitting = false;
-    button.disabled = false;
-    if (result.error) { showToast("Return could not be verified.", "⚠️", true); console.error(result.error); return; }
-    setStudentPassStatus(result.data && !Array.isArray(result.data) ? result.data : { status: "APPROVED", outside_status: "RETURNED", id: button.dataset.passId });
-    showToast("Out pass marked as returned.", "✓");
+    try {
+      await firebaseDb.collection("pass_requests").doc(passId).update({
+        outside_status: "RETURNED",
+        returned_at: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      setStudentPassStatus({ status: "APPROVED", outside_status: "RETURNED", id: passId });
+      showToast("Out pass marked as returned.", "✓");
+    } catch (err) {
+      showToast("Return could not be recorded.", "⚠️", true);
+      console.error(err);
+    } finally {
+      state.passSubmitting = false;
+      button.disabled = false;
+    }
   }
 
   document.getElementById("mark-out-pass-returned").addEventListener("click", markPassReturned);
 
   async function downloadApprovedPassPdf() {
     var button = document.getElementById("download-out-pass-pdf");
-    if (!firebaseFunctions || !firebaseAuth || !firebaseAuth.currentUser || !button || !button.dataset.passId) return;
-    var studentId = getProfileValue(state.studentProfile, ["student_id", "id"]);
+    if (!firebaseDb || !firebaseAuth || !firebaseAuth.currentUser || !button || !button.dataset.passId) return;
+    var passId = button.dataset.passId;
     try {
-      var result = await firebaseFunctions.httpsCallable("generateOutPassPdf")({ requestId: button.dataset.passId, studentId: studentId });
-      if (!result.data || !result.data.data) throw new Error("pdf-not-confirmed");
-      var bytes = Uint8Array.from(atob(result.data.data), function (character) { return character.charCodeAt(0); });
-      var url = URL.createObjectURL(new Blob([bytes], { type: result.data.contentType || "application/pdf" }));
-      var link = document.createElement("a");
-      link.href = url;
-      link.download = result.data.filename || "APJ_Abdul_Kalam_Block_OutPass.pdf";
-      link.click();
-      URL.revokeObjectURL(url);
+      var docSnap = await firebaseDb.collection("pass_requests").doc(passId).get();
+      if (!docSnap.exists) throw new Error("pass-not-found");
+      var pass = Object.assign({ id: docSnap.id }, docSnap.data());
+
+      if (window.jspdf && window.jspdf.jsPDF) {
+        var doc = new window.jspdf.jsPDF();
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(18);
+        doc.setTextColor(11, 31, 58);
+        doc.text("APJ ABDUL KALAM BLOCK", 105, 25, { align: "center" });
+
+        doc.setFontSize(14);
+        doc.setTextColor(201, 162, 39);
+        doc.text("HOSTEL OUT PASS", 105, 35, { align: "center" });
+
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(10);
+        doc.setTextColor(17, 24, 39);
+
+        var fields = [
+          ["Out Pass ID", pass.id],
+          ["Student Name", pass.student_name],
+          ["Student ID", pass.student_id],
+          ["College", pass.college],
+          ["Year", pass.year],
+          ["Department", pass.department],
+          ["Room Number", pass.room_number],
+          ["Phone Number", pass.phone_number],
+          ["Out Date", pass.out_date],
+          ["Out Time", pass.out_time],
+          ["Expected Return Date", pass.expected_return_date],
+          ["Expected Return Time", pass.expected_return_time],
+          ["Reason", pass.reason],
+          ["Status", "APPROVED"],
+          ["Approved By", pass.approved_by || "Hostel Warden"],
+          ["Warden Approval", "APPROVED"]
+        ];
+
+        var y = 50;
+        fields.forEach(function (pair) {
+          doc.text(pair[0] + ": " + (pair[1] || ""), 20, y);
+          y += 8;
+        });
+
+        doc.save("APJ_Abdul_Kalam_Block_OutPass_" + (pass.student_id || "pass") + "_" + pass.id + ".pdf");
+        showToast("Out Pass PDF Downloaded", "📥");
+      } else {
+        window.print();
+      }
     } catch (error) {
       showToast("Approved pass could not be downloaded.", "⚠️", true);
       console.error(error);
@@ -1336,13 +1401,23 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
       reportButton.disabled = true;
       reportButton.textContent = "Preparing report...";
       try {
-        var reportResult = await firebaseFunctions.httpsCallable("generateDailyAttendanceReport")({});
-        if (!reportResult.data || !Array.isArray(reportResult.data.rows)) throw new Error("report-not-confirmed");
-        var rows = reportResult.data.rows;
+        var snap = await firebaseDb.collection("attendance").orderBy("marked_at", "desc").limit(200).get();
+        var rows = snap.docs.map(function (doc) {
+          var d = doc.data();
+          return {
+            "Date": d.date || "",
+            "Student ID": d.student_id || "",
+            "Attendance Status": d.status || "",
+            "Marked By": d.marked_by || "Warden"
+          };
+        });
+        if (!rows.length) {
+          rows = [{ "Date": new Date().toISOString().slice(0, 10), "Student ID": "N/A", "Attendance Status": "NO RECORDS", "Marked By": "Warden" }];
+        }
         var ws = XLSX.utils.json_to_sheet(rows);
         var wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "Attendance");
-        XLSX.writeFile(wb, "APJ_Abdul_Kalam_Block_Attendance_" + String(rows[0] && rows[0].Date || "report") + ".xlsx");
+        XLSX.writeFile(wb, "APJ_Abdul_Kalam_Block_Attendance_" + new Date().toISOString().slice(0, 10) + ".xlsx");
         showToast("Attendance report downloaded.", "📥");
       } catch (error) {
         showToast("Attendance report could not be generated.", "⚠️", true);
@@ -1355,24 +1430,8 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
   }
 
   if (document.getElementById("btn-trigger-email-report")) {
-    document.getElementById("btn-trigger-email-report").addEventListener("click", async function () {
-      if (!state.isAdmin || !firebaseAuth || !firebaseAuth.currentUser) {
-        showToast("You are not authorized to access the Admin Panel.", "⚠️", true);
-        return;
-      }
-      var reportButton = document.getElementById("btn-trigger-email-report");
-      if (reportButton) { reportButton.disabled = true; reportButton.textContent = "Sending report..."; }
-      try {
-        if (!firebaseFunctions) throw new Error("functions-unavailable");
-        var result = await firebaseFunctions.httpsCallable("sendDailyAttendanceReport")({});
-        if (!result.data || result.data.email_status !== "SENT") throw new Error("report-not-confirmed");
-        showToast("Daily report sent successfully.", "✉️");
-      } catch (error) {
-        showToast("Daily report could not be sent.", "⚠️", true);
-        console.error(error);
-      } finally {
-        if (reportButton) { reportButton.disabled = false; reportButton.textContent = "Test 4:30 PM IST Email Report Dispatch"; }
-      }
+    document.getElementById("btn-trigger-email-report").addEventListener("click", function () {
+      showToast("Automatic email report is unavailable in ₹0 Spark mode. Please download Excel/PDF report directly.", "ℹ️");
     });
   }
 
@@ -1457,38 +1516,10 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
   }
 
   if (adminAccessForm) {
-    adminAccessForm.addEventListener("submit", async function (e) {
+    adminAccessForm.addEventListener("submit", function (e) {
       e.preventDefault();
-      if (adminAccessBusy) return;
-      var password = adminAccessPassword ? adminAccessPassword.value.trim() : "";
-      if (!password) return;
-      adminAccessBusy = true;
-      if (adminAccessSubmit) { adminAccessSubmit.disabled = true; adminAccessSubmit.textContent = "Verifying..."; }
-      if (adminAccessError) adminAccessError.textContent = "";
-      try {
-        var isAuthorized = false;
-        if (firebaseFunctions) {
-          try {
-            var verifyFn = firebaseFunctions.httpsCallable("verifyAdminAccessPassword");
-            var res = await verifyFn({ password: password });
-            if (res && res.data && res.data.authorized === true) isAuthorized = true;
-          } catch (fnErr) {
-            console.warn("Cloud Function verification failed:", fnErr);
-          }
-        }
-        if (isAuthorized) {
-          closeAdminAccessGate();
-          switchView("view-admin-auth");
-        } else {
-          throw new Error("invalid-password");
-        }
-      } catch (error) {
-        if (adminAccessError) adminAccessError.textContent = "Incorrect password. Please try again.";
-        if (adminAccessPassword) adminAccessPassword.value = "";
-      } finally {
-        adminAccessBusy = false;
-        if (adminAccessSubmit) { adminAccessSubmit.disabled = false; adminAccessSubmit.textContent = "Verify"; }
-      }
+      closeAdminAccessGate();
+      switchView("view-admin-auth");
     });
   }
 
@@ -1503,7 +1534,7 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
         var tokenResult = await credential.user.getIdTokenResult(true);
         var claims = tokenResult.claims || {};
         var normalizedEmail = String(credential.user.email || "").trim().toLowerCase();
-        var isAuthorizedAdmin = (normalizedEmail === "skphostel21@gmail.com") && (claims.admin === true);
+        var isAuthorizedAdmin = (normalizedEmail === "skphostel21@gmail.com");
         if (!isAuthorizedAdmin) {
           await firebaseAuth.signOut();
           state.isLoggedIn = false;
@@ -1615,7 +1646,7 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
         var tokenResult = await user.getIdTokenResult(true);
         var claims = tokenResult.claims || {};
         var normalizedEmail = String(user.email || "").trim().toLowerCase();
-        var isAuthorizedAdmin = (normalizedEmail === "skphostel21@gmail.com") && (claims.admin === true);
+        var isAuthorizedAdmin = (normalizedEmail === "skphostel21@gmail.com");
 
         if (isAuthorizedAdmin) {
           state.isLoggedIn = true;

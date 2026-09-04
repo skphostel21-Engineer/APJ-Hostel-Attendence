@@ -8,7 +8,6 @@ service cloud.firestore {
 
     function isAdmin() {
       return signedIn()
-        && request.auth.token.admin == true
         && request.auth.token.email != null
         && request.auth.token.email.lower() == 'skphostel21@gmail.com';
     }
@@ -19,25 +18,28 @@ service cloud.firestore {
 
     match /students/{uid} {
       allow read: if isAdmin() || (signedIn() && (request.auth.uid == uid || resource.data.auth_uid == request.auth.uid));
-      allow create, delete: if isAdmin();
-      allow update: if isAdmin();
+      allow create, update, delete: if isAdmin();
     }
 
     match /attendance_sessions/{sessionId} {
-      allow read: if isAdmin();
-      allow write: if false;
+      allow read, write: if isAdmin();
     }
 
     match /attendance/{attendanceId} {
       allow read: if isAdmin()
         || (signedIn() && resource.data.student_uid == request.auth.uid);
-      allow write: if false;
+      allow create, update, delete: if isAdmin();
     }
 
     match /pass_requests/{passId} {
       allow read: if isAdmin()
         || (signedIn() && resource.data.student_uid == request.auth.uid);
-      allow create, update, delete: if false;
+      allow create: if signedIn()
+        && request.resource.data.student_uid == request.auth.uid
+        && request.resource.data.status == 'PENDING';
+      allow update: if isAdmin()
+        || (signedIn() && resource.data.student_uid == request.auth.uid && resource.data.status == 'PENDING' && request.resource.data.status == 'CANCELLED');
+      allow delete: if isAdmin();
     }
 
     match /email_recipients/{recipientId} {
@@ -45,18 +47,16 @@ service cloud.firestore {
     }
 
     match /daily_reports/{reportId} {
-      allow read: if isAdmin();
-      allow write: if false;
+      allow read, write: if isAdmin();
     }
 
     match /system_settings/{settingId} {
-      allow read: if isAdmin();
-      allow write: if false;
+      allow read, write: if isAdmin();
     }
 
     match /audit_logs/{logId} {
       allow read: if isAdmin();
-      allow write: if false;
+      allow create: if signedIn();
     }
 
     match /{document=**} {
