@@ -1,0 +1,14 @@
+{
+  "name": "APJ ABDUL KALAM BLOCK Attendance Portal",
+  "short_name": "Kalam Block",
+  "description": "Hostel attendance and out pass management portal.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#071426",
+  "theme_color": "#0B1F3A",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

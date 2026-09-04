@@ -1,0 +1,47 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "attendance",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "session_id", "order": "ASCENDING" },
+        { "fieldPath": "student_id", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "pass_requests",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "student_uid", "order": "ASCENDING" },
+        { "fieldPath": "created_at", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "pass_requests",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "created_at", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "pass_requests",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "outside_status", "order": "ASCENDING" },
+        { "fieldPath": "status", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "daily_reports",
+      "queryScope": "COLLECTION",
+      "fields": [{ "fieldPath": "report_date", "order": "DESCENDING" }]
+    },
+    {
+      "collectionGroup": "email_recipients",
+      "queryScope": "COLLECTION",
+      "fields": [{ "fieldPath": "enabled", "order": "ASCENDING" }]
+    }
+  ],
+  "fieldOverrides": []
+}
