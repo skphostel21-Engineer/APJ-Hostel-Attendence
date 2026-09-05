@@ -546,25 +546,218 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
   .pass-admin-actions .btn-one-tap { width: 100%; }
 }
 
-.admin-access-modal { display: none; position: fixed; inset: 0; z-index: 80; }
-.admin-access-modal.is-open { display: block; }
-.admin-access-modal__backdrop { position: absolute; inset: 0; background: rgba(7, 20, 38, 0.58); }
-.admin-access-modal__dialog {
-  position: relative; width: calc(100% - 24px); max-width: 390px; max-height: calc(100vh - 24px);
-  margin: max(12px, 12vh) auto 0; overflow-y: auto; padding: 24px 20px;
-  background: var(--color-surface); border: 1px solid var(--color-border); border-top: 4px solid var(--color-accent);
-  border-radius: 16px; box-shadow: 0 18px 50px rgba(7, 20, 38, 0.24);
+.admin-access-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 9999;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px;
+  box-sizing: border-box;
 }
-.admin-access-modal__close { position: absolute; top: 8px; right: 12px; min-width: 44px; min-height: 44px; color: var(--color-muted); font-size: 26px; line-height: 1; }
+.admin-access-modal.is-open {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+.admin-access-backdrop,
+.admin-access-modal__backdrop {
+  position: fixed;
+  inset: 0;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(7, 13, 24, 0.82);
+  backdrop-filter: blur(4px);
+  z-index: -1;
+}
+.admin-access-card,
+.admin-access-modal__dialog {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  margin: auto;
+  background: #0D1527;
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-top: 4px solid var(--gold-400, #D4AF37);
+  border-radius: 16px;
+  padding: clamp(18px, 4vw, 30px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+  box-sizing: border-box;
+  color: var(--white, #FFFFFF);
+  z-index: 10000;
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+  text-align: left;
+}
+.admin-access-close,
+.admin-access-modal__close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  color: var(--gold-400, #D4AF37);
+  font-size: 24px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.admin-access-close:hover,
+.admin-access-modal__close:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+.admin-access-title {
+  font-size: clamp(18px, 2.5vw, 22px);
+  font-weight: 700;
+  color: var(--white, #FFFFFF);
+  margin: 0 0 4px 0;
+}
+.admin-access-subtitle {
+  font-size: 13px;
+  color: var(--gold-400, #D4AF37);
+  margin: 0 0 16px 0;
+}
 .admin-access-modal__eyebrow { color: var(--color-accent); font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
-.admin-access-modal__dialog h2 { margin-top: 4px; color: var(--color-primary); font-size: 22px; }
-.admin-access-modal__dialog p { margin: 4px 0 20px; color: var(--color-muted); font-size: 13.5px; }
-.admin-access-modal__dialog label { display: block; margin-bottom: 7px; color: var(--color-primary); font-size: 12.5px; font-weight: 600; }
 .admin-access-modal__password-wrap { position: relative; }
 .admin-access-modal__password-wrap .input-field { padding-right: 72px; }
 .admin-access-modal__toggle { position: absolute; top: 1px; right: 1px; min-width: 64px; height: 44px; color: var(--color-primary); font-size: 12px; font-weight: 700; }
 .admin-access-modal__error { min-height: 20px; margin: 7px 0 8px; color: var(--color-danger); font-size: 12.5px; }
-.admin-access-modal__dialog .btn-gold-login { width: 100%; }
+
+/* Student Form Responsive Layout */
+.student-form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  margin-bottom: 14px;
+  width: 100%;
+  box-sizing: border-box;
+}
+@media (min-width: 640px) {
+  .student-form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px 20px;
+  }
+}
+.student-password-grid {
+  display: contents;
+}
+@media (max-width: 639px) {
+  .student-password-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+  }
+}
+.form-group {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+.form-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gold-400, #D4AF37);
+  display: block;
+  margin-bottom: 5px;
+  text-align: left;
+}
+.form-control {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  height: 42px;
+  padding: 10px 14px;
+  background: rgba(8, 13, 26, 0.85);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 8px;
+  color: #FFFFFF;
+  font-size: 13.5px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.form-control:focus {
+  border-color: #D4AF37;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+}
+.form-error-msg {
+  color: #EF4444;
+  font-size: 12.5px;
+  font-weight: 600;
+  min-height: 20px;
+  margin-top: 4px;
+  margin-bottom: 12px;
+  text-align: left;
+}
+.form-actions-row {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 18px;
+  width: 100%;
+  box-sizing: border-box;
+}
+@media (max-width: 639px) {
+  .form-actions-row {
+    flex-direction: column-reverse;
+    gap: 10px;
+  }
+  .form-actions-row .btn-cancel,
+  .form-actions-row .btn-save {
+    width: 100% !important;
+  }
+}
+.btn-cancel {
+  height: 40px;
+  padding: 0 20px;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #E2E8F0;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-cancel:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+.btn-save {
+  height: 40px;
+  padding: 0 22px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #D4AF37, #AA7C11);
+  border: none;
+  color: #071426;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.25);
+  transition: opacity 0.2s, transform 0.1s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-save:hover {
+  opacity: 0.95;
+}
+.btn-save:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
 </style>
 </head>
 <body>
@@ -797,38 +990,6 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
             <div style="font-size: 11.5px; color: var(--gold-400);">Add, Search, Edit, Reset Password & Manage Accounts</div>
           </div>
           <button class="btn-gold-login" id="btn-open-add-student" style="height: 38px; padding: 0 16px; font-size: 13px; width: auto; margin: 0;">+ Add Student</button>
-        </div>
-
-        <!-- Student Statistics Cards -->
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 12px; margin-bottom: 6px;">
-          <div style="background: rgba(13, 21, 39, 0.7); border: 1px solid rgba(212, 175, 55, 0.2); padding: 8px 12px; border-radius: 8px; text-align: center;">
-            <div style="font-size: 11px; color: var(--ivory-dim);">Total Students</div>
-            <div style="font-size: 16px; font-weight: 700; color: var(--white);" id="stat-total-students">0</div>
-          </div>
-          <div style="background: rgba(13, 21, 39, 0.7); border: 1px solid rgba(16, 185, 129, 0.3); padding: 8px 12px; border-radius: 8px; text-align: center;">
-            <div style="font-size: 11px; color: var(--ivory-dim);">Active Accounts</div>
-            <div style="font-size: 16px; font-weight: 700; color: var(--success);" id="stat-active-students">0</div>
-          </div>
-          <div style="background: rgba(13, 21, 39, 0.7); border: 1px solid rgba(239, 68, 68, 0.3); padding: 8px 12px; border-radius: 8px; text-align: center;">
-            <div style="font-size: 11px; color: var(--ivory-dim);">Disabled Accounts</div>
-            <div style="font-size: 16px; font-weight: 700; color: var(--danger);" id="stat-disabled-students">0</div>
-          </div>
-        </div>
-
-        <!-- Student Statistics Cards -->
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 12px; margin-bottom: 6px;">
-          <div style="background: rgba(13, 21, 39, 0.7); border: 1px solid rgba(212, 175, 55, 0.2); padding: 8px 12px; border-radius: 8px; text-align: center;">
-            <div style="font-size: 11px; color: var(--ivory-dim);">Total Students</div>
-            <div style="font-size: 16px; font-weight: 700; color: var(--white);" id="stat-total-students">0</div>
-          </div>
-          <div style="background: rgba(13, 21, 39, 0.7); border: 1px solid rgba(16, 185, 129, 0.3); padding: 8px 12px; border-radius: 8px; text-align: center;">
-            <div style="font-size: 11px; color: var(--ivory-dim);">Active Accounts</div>
-            <div style="font-size: 16px; font-weight: 700; color: var(--success);" id="stat-active-students">0</div>
-          </div>
-          <div style="background: rgba(13, 21, 39, 0.7); border: 1px solid rgba(239, 68, 68, 0.3); padding: 8px 12px; border-radius: 8px; text-align: center;">
-            <div style="font-size: 11px; color: var(--ivory-dim);">Disabled Accounts</div>
-            <div style="font-size: 16px; font-weight: 700; color: var(--danger);" id="stat-disabled-students">0</div>
-          </div>
         </div>
 
         <!-- Student Statistics Cards -->
@@ -2986,9 +3147,10 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
       document.getElementById("student-form-room").value = "";
       document.getElementById("student-form-college").value = "";
       document.getElementById("student-form-year-dept").value = "";
+      if (document.getElementById("student-form-mobile")) document.getElementById("student-form-mobile").value = "";
       document.getElementById("student-form-password").value = "";
       document.getElementById("student-form-confirm-password").value = "";
-      document.getElementById("student-password-fields").style.display = "grid";
+      document.getElementById("student-password-fields").style.display = "";
       document.getElementById("student-form-error").textContent = "";
       openModalByTarget("modal-student-form");
     });
@@ -3005,6 +3167,7 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
     document.getElementById("student-form-room").value = s.room_number || s.room || "";
     document.getElementById("student-form-college").value = s.college || "";
     document.getElementById("student-form-year-dept").value = s.year_department || ((s.year || "") + " - " + (s.department || ""));
+    if (document.getElementById("student-form-mobile")) document.getElementById("student-form-mobile").value = s.phone_number || s.mobile_number || s.mobile || s.phone || "";
     document.getElementById("student-password-fields").style.display = "none";
     document.getElementById("student-form-error").textContent = "";
     openModalByTarget("modal-student-form");
@@ -3069,13 +3232,19 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
       var room = document.getElementById("student-form-room").value.trim();
       var college = document.getElementById("student-form-college").value.trim();
       var yearDept = document.getElementById("student-form-year-dept").value.trim();
+      var mobile = document.getElementById("student-form-mobile") ? document.getElementById("student-form-mobile").value.trim() : "";
       var password = document.getElementById("student-form-password").value;
       var confirmPassword = document.getElementById("student-form-confirm-password").value;
       var errEl = document.getElementById("student-form-error");
 
       errEl.textContent = "";
-      if (!name || !studentId || !room || !college || !yearDept) {
+      if (!name || !studentId || !room || !college || !yearDept || !mobile) {
         errEl.textContent = "All required fields must be filled.";
+        return;
+      }
+
+      if (mobile.length < 10) {
+        errEl.textContent = "Please enter a valid mobile number.";
         return;
       }
 
@@ -3116,6 +3285,8 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
             room_number: room,
             college: college,
             year_department: yearDept,
+            phone_number: mobile,
+            mobile_number: mobile,
             status: "active",
             auth_email: authRes.email,
             created_at: firebase.firestore.FieldValue.serverTimestamp()
@@ -3129,7 +3300,9 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
             student_name: name,
             room_number: room,
             college: college,
-            year_department: yearDept
+            year_department: yearDept,
+            phone_number: mobile,
+            mobile_number: mobile
           };
           await firebaseDb.collection("students").doc(uid).update(updateDoc);
           showToast("Student profile updated successfully.", "✓");
@@ -3275,56 +3448,62 @@ if ('serviceWorker' in navigator) {
   <!-- MODAL: ADD / EDIT STUDENT -->
   <div class="admin-access-modal" id="modal-student-form" aria-hidden="true">
     <div class="admin-access-backdrop" data-modal-close="student-form"></div>
-    <div class="admin-access-card" style="max-width: 480px; text-align: left;">
+    <div class="admin-access-card">
       <button type="button" class="admin-access-close" data-modal-close="student-form" aria-label="Close modal">&times;</button>
       <h3 class="admin-access-title" id="modal-student-form-title">Add New Student</h3>
       <p class="admin-access-subtitle">Create or edit student account and profile credentials.</p>
 
-      <form id="form-student-manage" style="margin-top: 14px;">
+      <form id="form-student-manage">
         <input type="hidden" id="student-manage-uid" value="" />
 
-        <div style="margin-bottom: 12px;">
-          <label style="font-size: 11.5px; color: var(--gold-400); display: block; margin-bottom: 4px;">Student Name *</label>
-          <input type="text" id="student-form-name" class="form-control" placeholder="e.g. Arun Kumar" required />
-        </div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
-          <div>
-            <label style="font-size: 11.5px; color: var(--gold-400); display: block; margin-bottom: 4px;">Student ID (Unique) *</label>
-            <input type="text" id="student-form-id" class="form-control" placeholder="e.g. AIDS2026001" required />
+        <div class="student-form-grid">
+          <div class="form-group">
+            <label for="student-form-name" class="form-label">Student Name *</label>
+            <input type="text" id="student-form-name" class="form-control" placeholder="e.g. Arun Kumar" required autocomplete="name" />
           </div>
-          <div>
-            <label style="font-size: 11.5px; color: var(--gold-400); display: block; margin-bottom: 4px;">Room Number *</label>
-            <input type="text" id="student-form-room" class="form-control" placeholder="e.g. A-204" required />
+
+          <div class="form-group">
+            <label for="student-form-id" class="form-label">Student ID (Unique) *</label>
+            <input type="text" id="student-form-id" class="form-control" placeholder="e.g. AIDS2026001" required autocomplete="off" />
+          </div>
+
+          <div class="form-group">
+            <label for="student-form-college" class="form-label">College *</label>
+            <input type="text" id="student-form-college" class="form-control" placeholder="e.g. ABC Engineering College" required autocomplete="organization" />
+          </div>
+
+          <div class="form-group">
+            <label for="student-form-year-dept" class="form-label">Year / Department *</label>
+            <input type="text" id="student-form-year-dept" class="form-control" placeholder="e.g. 3rd Year – AI & Data Science" required autocomplete="off" />
+          </div>
+
+          <div class="form-group">
+            <label for="student-form-room" class="form-label">Room Number *</label>
+            <input type="text" id="student-form-room" class="form-control" placeholder="e.g. A-204" required autocomplete="off" />
+          </div>
+
+          <div class="form-group">
+            <label for="student-form-mobile" class="form-label">Mobile Number *</label>
+            <input type="tel" id="student-form-mobile" class="form-control" placeholder="e.g. 9876543210" required autocomplete="tel" pattern="[0-9]{10,12}" />
+          </div>
+
+          <div id="student-password-fields" class="student-password-grid">
+            <div class="form-group">
+              <label for="student-form-password" class="form-label">Password *</label>
+              <input type="password" id="student-form-password" class="form-control" placeholder="Min 6 characters" autocomplete="new-password" />
+            </div>
+            <div class="form-group">
+              <label for="student-form-confirm-password" class="form-label">Confirm Password *</label>
+              <input type="password" id="student-form-confirm-password" class="form-control" placeholder="Repeat password" autocomplete="new-password" />
+            </div>
           </div>
         </div>
 
-        <div style="margin-bottom: 12px;">
-          <label style="font-size: 11.5px; color: var(--gold-400); display: block; margin-bottom: 4px;">College *</label>
-          <input type="text" id="student-form-college" class="form-control" placeholder="e.g. ABC Engineering College" required />
-        </div>
+        <div id="student-form-error" class="form-error-msg" role="alert" aria-live="polite"></div>
 
-        <div style="margin-bottom: 12px;">
-          <label style="font-size: 11.5px; color: var(--gold-400); display: block; margin-bottom: 4px;">Year / Department *</label>
-          <input type="text" id="student-form-year-dept" class="form-control" placeholder="e.g. 3rd Year – AI & Data Science" required />
-        </div>
-
-        <div id="student-password-fields" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px;">
-          <div>
-            <label style="font-size: 11.5px; color: var(--gold-400); display: block; margin-bottom: 4px;">Password *</label>
-            <input type="password" id="student-form-password" class="form-control" placeholder="Min 6 characters" />
-          </div>
-          <div>
-            <label style="font-size: 11.5px; color: var(--gold-400); display: block; margin-bottom: 4px;">Confirm Password *</label>
-            <input type="password" id="student-form-confirm-password" class="form-control" placeholder="Repeat password" />
-          </div>
-        </div>
-
-        <div id="student-form-error" style="color: var(--danger); font-size: 12px; margin-bottom: 10px;"></div>
-
-        <div style="display: flex; gap: 10px; justify-content: flex-end;">
-          <button type="button" class="btn-one-tap" data-modal-close="student-form" style="background: transparent; border: 1px solid var(--ivory-dim); color: var(--ivory-dim);">Cancel</button>
-          <button type="submit" class="btn-gold-login" id="btn-save-student" style="height: 38px; font-size: 13px; width: auto; padding: 0 18px;">Save Student</button>
+        <div class="form-actions-row">
+          <button type="button" class="btn-cancel" data-modal-close="student-form">Cancel</button>
+          <button type="submit" class="btn-save" id="btn-save-student">Save Student</button>
         </div>
       </form>
     </div>
