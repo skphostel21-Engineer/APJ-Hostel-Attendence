@@ -804,6 +804,166 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+/* ADD / EDIT STUDENT MODAL — TEAL & WHITE THEME MATCHING DESIGN SCREENSHOT */
+#modal-student-form .admin-access-card {
+  background: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  border-top: none !important;
+  border-radius: 20px !important;
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.35) !important;
+  color: #0F172A !important;
+  max-width: 680px !important;
+  padding: 28px 32px !important;
+}
+.student-modal-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.student-modal-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #00897B;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  font-weight: 400;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0, 137, 123, 0.25);
+}
+#modal-student-form .admin-access-title {
+  color: #0F172A !important;
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  margin: 0 0 4px 0 !important;
+  letter-spacing: -0.01em !important;
+}
+#modal-student-form .admin-access-subtitle {
+  color: #64748B !important;
+  font-size: 13.5px !important;
+  margin: 0 !important;
+}
+#modal-student-form .admin-access-close {
+  color: #64748B !important;
+  font-size: 20px !important;
+  top: 24px !important;
+  right: 24px !important;
+  background: transparent !important;
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: none !important;
+  cursor: pointer !important;
+  transition: background 0.2s, color 0.2s !important;
+}
+#modal-student-form .admin-access-close:hover {
+  background: #F1F5F9 !important;
+  color: #0F172A !important;
+}
+#modal-student-form .form-label {
+  color: #0F172A !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  margin-bottom: 6px !important;
+}
+#modal-student-form .required-star {
+  color: #00897B;
+  font-weight: 700;
+  margin-left: 2px;
+}
+#modal-student-form .form-control {
+  background: #FFFFFF !important;
+  border: 1.5px solid #E2E8F0 !important;
+  border-radius: 8px !important;
+  color: #0F172A !important;
+  font-size: 13.5px !important;
+  height: 44px !important;
+  padding: 10px 14px !important;
+}
+#modal-student-form .form-control::placeholder {
+  color: #94A3B8 !important;
+}
+#modal-student-form .form-control:focus {
+  border-color: #00897B !important;
+  box-shadow: 0 0 0 3.5px rgba(0, 137, 123, 0.15) !important;
+}
+.password-input-wrap {
+  position: relative;
+  width: 100%;
+}
+.password-input-wrap .form-control {
+  padding-right: 42px !important;
+}
+.password-toggle-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: #64748B;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: color 0.2s;
+}
+.password-toggle-btn:hover {
+  color: #0F172A;
+}
+#modal-student-form .form-actions-row {
+  margin-top: 24px !important;
+  padding-top: 20px !important;
+  border-top: 1px solid #F1F5F9 !important;
+}
+#modal-student-form .btn-cancel {
+  background: #FFFFFF !important;
+  border: 1.5px solid #CBD5E1 !important;
+  color: #334155 !important;
+  border-radius: 8px !important;
+  height: 42px !important;
+  padding: 0 20px !important;
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+#modal-student-form .btn-cancel:hover {
+  background: #F8FAFC !important;
+  border-color: #94A3B8 !important;
+  color: #0F172A !important;
+}
+#modal-student-form .btn-save {
+  background: #00897B !important;
+  border: none !important;
+  color: #FFFFFF !important;
+  border-radius: 8px !important;
+  height: 42px !important;
+  padding: 0 24px !important;
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+  box-shadow: 0 4px 12px rgba(0, 137, 123, 0.25) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+#modal-student-form .btn-save:hover {
+  background: #00796B !important;
+  box-shadow: 0 6px 16px rgba(0, 137, 123, 0.35) !important;
+}
 </style>
 </head>
 <body>
@@ -975,19 +1135,19 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
           <div style="background: rgba(13, 21, 39, 0.7); border: 1px solid rgba(212, 175, 55, 0.15); padding: 10px 12px; border-radius: 10px;">
             <div style="font-size: 11px; color: var(--ivory-dim);">Total Students</div>
-            <div style="font-size: 18px; font-weight: 700; color: var(--white);">120</div>
+            <div style="font-size: 18px; font-weight: 700; color: var(--white);" id="att-stat-total">0</div>
           </div>
           <div style="background: rgba(13, 21, 39, 0.7); border: 1px solid rgba(16, 185, 129, 0.3); padding: 10px 12px; border-radius: 10px;">
             <div style="font-size: 11px; color: var(--ivory-dim);">Present</div>
-            <div style="font-size: 18px; font-weight: 700; color: var(--success);">102</div>
+            <div style="font-size: 18px; font-weight: 700; color: var(--success);" id="att-stat-present">0</div>
           </div>
           <div style="background: rgba(13, 21, 39, 0.7); border: 1px solid rgba(239, 68, 68, 0.3); padding: 10px 12px; border-radius: 10px;">
             <div style="font-size: 11px; color: var(--ivory-dim);">Absent</div>
-            <div style="font-size: 18px; font-weight: 700; color: var(--danger);">12</div>
+            <div style="font-size: 18px; font-weight: 700; color: var(--danger);" id="att-stat-absent">0</div>
           </div>
           <div style="background: rgba(13, 21, 39, 0.7); border: 1px solid rgba(245, 158, 11, 0.3); padding: 10px 12px; border-radius: 10px;">
             <div style="font-size: 11px; color: var(--ivory-dim);">Not Marked</div>
-            <div style="font-size: 18px; font-weight: 700; color: var(--warning);">6</div>
+            <div style="font-size: 18px; font-weight: 700; color: var(--warning);" id="att-stat-unmarked">0</div>
           </div>
         </div>
       </div>
@@ -999,45 +1159,11 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
           <span style="font-size: 11px; color: var(--gold-400);">One-Tap Marking</span>
         </div>
         <div style="margin-bottom: 12px;">
-          <input type="text" id="admin-att-search" class="input-field" placeholder="Search Student (AKB001, Arun, B304)..." />
+          <input type="text" id="admin-att-search" class="input-field" placeholder="Search Student (Name, ID, Room)..." />
         </div>
 
         <div id="admin-att-roster-list">
-          <div class="att-mark-card">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <div>
-                <span style="font-size: 14px; font-weight: 700; color: var(--white);">Arun K.</span>
-                <span style="font-family: monospace; font-size: 12.5px; color: var(--gold-400);"> (AKB001)</span>
-                <div style="font-size: 11.5px; color: var(--ivory-dim);">Room: B-304 · 3rd Year</div>
-              </div>
-              <span class="status-chip status-chip--present" id="status-badge-AKB001">PRESENT</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(212,175,55,0.1);">
-              <div style="font-size: 11.5px; color: var(--success); font-weight: 600;" id="feedback-AKB001">Saved ✓</div>
-              <div style="display: flex; gap: 8px;">
-                <button class="btn-one-tap btn-one-tap--present" onclick="adminMarkStudent('AKB001', 'present')">PRESENT</button>
-                <button class="btn-one-tap btn-one-tap--absent" onclick="adminMarkStudent('AKB001', 'absent')">ABSENT</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="att-mark-card">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <div>
-                <span style="font-size: 14px; font-weight: 700; color: var(--white);">Alex M.</span>
-                <span style="font-family: monospace; font-size: 12.5px; color: var(--gold-400);"> (AKB002)</span>
-                <div style="font-size: 11.5px; color: var(--ivory-dim);">Room: B-305 · 2nd Year</div>
-              </div>
-              <span class="status-chip status-chip--present" id="status-badge-AKB002">PRESENT</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(212,175,55,0.1);">
-              <div style="font-size: 11.5px; color: var(--success); font-weight: 600;" id="feedback-AKB002">Saved ✓</div>
-              <div style="display: flex; gap: 8px;">
-                <button class="btn-one-tap btn-one-tap--present" onclick="adminMarkStudent('AKB002', 'present')">PRESENT</button>
-                <button class="btn-one-tap btn-one-tap--absent" onclick="adminMarkStudent('AKB002', 'absent')">ABSENT</button>
-              </div>
-            </div>
-          </div>
+          <p style="padding: 18px; text-align: center; color: var(--ivory-dim); font-size: 13px;">Loading student attendance roster...</p>
         </div>
       </div>
 
@@ -1507,12 +1633,17 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
 
   function populateStudentProfile(profile) {
     state.studentProfile = profile || {};
+    var sName = getProfileValue(profile, ["student_name", "name", "full_name"]) || "Student";
+    var sId = getProfileValue(profile, ["student_id", "id"]) || "";
+    var sRoom = getProfileValue(profile, ["room_number", "room"]) || "";
+    var sDept = getProfileValue(profile, ["department", "dept"]) || "";
+
     var values = {
-      "pass-student-name": getProfileValue(profile, ["student_name", "name", "full_name"]),
-      "pass-student-id": getProfileValue(profile, ["student_id", "id"]),
+      "pass-student-name": sName,
+      "pass-student-id": sId,
       "pass-year": getProfileValue(profile, ["year", "academic_year"]),
-      "pass-department": getProfileValue(profile, ["department", "dept"]),
-      "pass-room-number": getProfileValue(profile, ["room_number", "room"]),
+      "pass-department": sDept,
+      "pass-room-number": sRoom,
       "pass-phone-number": getProfileValue(profile, ["phone_number", "phone", "mobile"])
     };
     Object.keys(values).forEach(function (id) {
@@ -1524,6 +1655,21 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
     var college = getProfileValue(profile, ["college"]);
     var collegeField = document.getElementById("pass-college");
     if (collegeField && ["Arts", "Engineering", "Law"].indexOf(college) !== -1) collegeField.value = college;
+
+    var welcomeEl = document.getElementById("student-welcome-text");
+    if (welcomeEl) welcomeEl.textContent = "Welcome, " + sName;
+
+    var roomDeptEl = document.getElementById("student-room-dept-display");
+    if (roomDeptEl) roomDeptEl.textContent = "APJ Abdul Kalam Block" + (sRoom ? " · Room " + sRoom : "") + (sDept ? " · " + sDept : "");
+
+    var idDispEl = document.getElementById("student-id-display");
+    if (idDispEl) idDispEl.textContent = sId ? "Student ID: " + sId : "";
+
+    var profNameEl = document.getElementById("profile-student-name");
+    if (profNameEl) profNameEl.textContent = sName;
+
+    var profDetEl = document.getElementById("profile-student-details");
+    if (profDetEl) profDetEl.textContent = "Student ID: " + sId + (sRoom ? " · Room " + sRoom : "");
   }
 
   async function loadStudentProfile() {
@@ -1534,6 +1680,18 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
     if (result.empty) throw new Error("Student profile not found for authenticated user.");
     populateStudentProfile(result.docs[0].data());
     await loadStudentPassStatus();
+  }
+
+  function togglePasswordVisibility(inputId, btn) {
+    var input = document.getElementById(inputId);
+    if (!input) return;
+    if (input.type === "password") {
+      input.type = "text";
+      if (btn) btn.textContent = "🙈";
+    } else {
+      input.type = "password";
+      if (btn) btn.textContent = "👁";
+    }
   }
 
   function escapeHtml(value) {
@@ -3621,51 +3779,63 @@ if ('serviceWorker' in navigator) {
     <div class="admin-access-backdrop" data-modal-close="student-form"></div>
     <div class="admin-access-card">
       <button type="button" class="admin-access-close" data-modal-close="student-form" aria-label="Close modal">&times;</button>
-      <h3 class="admin-access-title" id="modal-student-form-title">Add New Student</h3>
-      <p class="admin-access-subtitle">Create or edit student account and profile credentials.</p>
+      
+      <div class="student-modal-header">
+        <div class="student-modal-icon">+</div>
+        <div>
+          <h3 class="admin-access-title" id="modal-student-form-title">Add New Student</h3>
+          <p class="admin-access-subtitle">Create student account and profile credentials</p>
+        </div>
+      </div>
 
       <form id="form-student-manage">
         <input type="hidden" id="student-manage-uid" value="" />
 
         <div class="student-form-grid">
           <div class="form-group">
-            <label for="student-form-name" class="form-label">Student Name *</label>
-            <input type="text" id="student-form-name" class="form-control" placeholder="e.g. Arun Kumar" required autocomplete="name" />
+            <label for="student-form-name" class="form-label">Student Name <span class="required-star">*</span></label>
+            <input type="text" id="student-form-name" class="form-control" placeholder="Enter full name" required autocomplete="name" />
           </div>
 
           <div class="form-group">
-            <label for="student-form-id" class="form-label">Student ID (Unique) *</label>
-            <input type="text" id="student-form-id" class="form-control" placeholder="e.g. AIDS2026001" required autocomplete="off" />
+            <label for="student-form-id" class="form-label">Student ID (Unique) <span class="required-star">*</span></label>
+            <input type="text" id="student-form-id" class="form-control" placeholder="Enter unique student ID" required autocomplete="off" />
           </div>
 
           <div class="form-group">
-            <label for="student-form-college" class="form-label">College *</label>
-            <input type="text" id="student-form-college" class="form-control" placeholder="e.g. ABC Engineering College" required autocomplete="organization" />
+            <label for="student-form-college" class="form-label">College <span class="required-star">*</span></label>
+            <input type="text" id="student-form-college" class="form-control" placeholder="Select college" required autocomplete="organization" />
           </div>
 
           <div class="form-group">
-            <label for="student-form-year-dept" class="form-label">Year / Department *</label>
-            <input type="text" id="student-form-year-dept" class="form-control" placeholder="e.g. 3rd Year – AI & Data Science" required autocomplete="off" />
+            <label for="student-form-year-dept" class="form-label">Year / Department <span class="required-star">*</span></label>
+            <input type="text" id="student-form-year-dept" class="form-control" placeholder="Select year / department" required autocomplete="off" />
           </div>
 
           <div class="form-group">
-            <label for="student-form-room" class="form-label">Room Number *</label>
-            <input type="text" id="student-form-room" class="form-control" placeholder="e.g. A-204" required autocomplete="off" />
+            <label for="student-form-room" class="form-label">Room Number <span class="required-star">*</span></label>
+            <input type="text" id="student-form-room" class="form-control" placeholder="Enter room number" required autocomplete="off" />
           </div>
 
           <div class="form-group">
-            <label for="student-form-mobile" class="form-label">Mobile Number *</label>
-            <input type="tel" id="student-form-mobile" class="form-control" placeholder="e.g. 9876543210" required autocomplete="tel" pattern="[0-9]{10,12}" />
+            <label for="student-form-mobile" class="form-label">Mobile Number <span class="required-star">*</span></label>
+            <input type="tel" id="student-form-mobile" class="form-control" placeholder="Enter mobile number" required autocomplete="tel" pattern="[0-9]{10,12}" />
           </div>
 
           <div id="student-password-fields" class="student-password-grid">
             <div class="form-group">
-              <label for="student-form-password" class="form-label">Password *</label>
-              <input type="password" id="student-form-password" class="form-control" placeholder="Min 6 characters" autocomplete="new-password" />
+              <label for="student-form-password" class="form-label">Password <span class="required-star">*</span></label>
+              <div class="password-input-wrap">
+                <input type="password" id="student-form-password" class="form-control" placeholder="Enter password (min 6 characters)" autocomplete="new-password" />
+                <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('student-form-password', this)" aria-label="Toggle password visibility">👁</button>
+              </div>
             </div>
             <div class="form-group">
-              <label for="student-form-confirm-password" class="form-label">Confirm Password *</label>
-              <input type="password" id="student-form-confirm-password" class="form-control" placeholder="Repeat password" autocomplete="new-password" />
+              <label for="student-form-confirm-password" class="form-label">Confirm Password <span class="required-star">*</span></label>
+              <div class="password-input-wrap">
+                <input type="password" id="student-form-confirm-password" class="form-control" placeholder="Repeat password" autocomplete="new-password" />
+                <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('student-form-confirm-password', this)" aria-label="Toggle password visibility">👁</button>
+              </div>
             </div>
           </div>
         </div>
@@ -3673,8 +3843,8 @@ if ('serviceWorker' in navigator) {
         <div id="student-form-error" class="form-error-msg" role="alert" aria-live="polite"></div>
 
         <div class="form-actions-row">
-          <button type="button" class="btn-cancel" data-modal-close="student-form">Cancel</button>
-          <button type="submit" class="btn-save" id="btn-save-student">Save Student</button>
+          <button type="button" class="btn-cancel" data-modal-close="student-form">✕ Cancel</button>
+          <button type="submit" class="btn-save" id="btn-save-student">🔒 Save Student</button>
         </div>
       </form>
     </div>
