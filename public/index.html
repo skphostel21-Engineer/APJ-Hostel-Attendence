@@ -9,7 +9,7 @@
 <!-- PWA Manifest & Mobile App Meta -->
 <link rel="manifest" href="/manifest.json" />
 <link rel="icon" type="image/webp" href="/assets/logo.webp" />
-<link rel="apple-touch-icon" href="/assets/icon-192.png" />
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
 <meta name="theme-color" content="#0D1527" />
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -300,6 +300,81 @@ button { cursor: pointer; border: none; background: none; }
 .btn-gold-login:active, .btn-one-tap:active {
   transform: scale(0.98);
 }
+
+/* PWA Splash Screen Branding */
+.pwa-splash {
+  position: fixed;
+  inset: 0;
+  top: 0; left: 0; right: 0; bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 999999;
+  background: #070D18;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+  pointer-events: auto;
+}
+.pwa-splash.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.pwa-splash__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px;
+  max-width: 340px;
+}
+.pwa-splash__logo-wrap {
+  width: 120px;
+  height: 120px;
+  margin-bottom: 20px;
+  border-radius: 50%;
+  padding: 4px;
+  background: linear-gradient(135deg, var(--gold-400, #D4AF37), var(--gold-600, #AA820A));
+  box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4);
+}
+.pwa-splash__logo {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.pwa-splash__title {
+  font-family: var(--font-display, serif);
+  font-size: 19px;
+  font-weight: 700;
+  color: #FFFFFF;
+  letter-spacing: 0.08em;
+  margin: 0 0 6px 0;
+}
+.pwa-splash__subtitle {
+  font-size: 11.5px;
+  color: var(--gold-400, #D4AF37);
+  letter-spacing: 0.1em;
+  margin: 0 0 24px 0;
+  font-weight: 600;
+}
+.pwa-splash__loader {
+  width: 28px;
+  height: 28px;
+}
+.pwa-splash__spinner {
+  width: 24px;
+  height: 24px;
+  border: 2.5px solid rgba(212, 175, 55, 0.2);
+  border-top-color: var(--gold-400, #D4AF37);
+  border-radius: 50%;
+  animation: pwaSplashSpin 0.7s linear infinite;
+}
+@keyframes pwaSplashSpin {
+  to { transform: rotate(360deg); }
+}
+
 </style>
 <style>
 /* Premium institutional theme */
@@ -729,6 +804,21 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
 </style>
 </head>
 <body>
+
+  <!-- PWA LAUNCH SPLASH SCREEN -->
+  <div id="pwa-splash-screen" class="pwa-splash" aria-hidden="true">
+    <div class="pwa-splash__content">
+      <div class="pwa-splash__logo-wrap">
+        <img src="/assets/logo.webp" alt="APJ Abdul Kalam Block Crest" class="pwa-splash__logo" />
+      </div>
+      <h1 class="pwa-splash__title">APJ HOSTEL ATTENDANCE</h1>
+      <p class="pwa-splash__subtitle">APJ ABDUL KALAM BLOCK · HOSTEL PORTAL</p>
+      <div class="pwa-splash__loader">
+        <div class="pwa-splash__spinner"></div>
+      </div>
+    </div>
+  </div>
+
 <div class="offline-banner offline-banner--offline" id="offline-banner" style="display: none;" role="status" aria-live="polite">⚡ You are currently offline</div>
 
 <div class="desktop-backdrop" aria-hidden="true"></div>
@@ -3477,6 +3567,22 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
 })();
 </script>
 <script>
+  
+  function dismissPwaSplash() {
+    var splash = document.getElementById("pwa-splash-screen");
+    if (splash && !splash.classList.contains("is-hidden")) {
+      splash.classList.add("is-hidden");
+      setTimeout(function () { splash.style.display = "none"; }, 450);
+    }
+  }
+
+  if (document.readyState === "complete" || document.readyState === "interactive") {
+    setTimeout(dismissPwaSplash, 500);
+  } else {
+    document.addEventListener("DOMContentLoaded", function () { setTimeout(dismissPwaSplash, 500); });
+  }
+  setTimeout(dismissPwaSplash, 1200);
+
   window.addEventListener("online", function () {
     var banner = document.getElementById("offline-banner");
     if (banner) {
