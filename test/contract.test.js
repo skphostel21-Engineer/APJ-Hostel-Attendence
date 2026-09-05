@@ -120,3 +120,9 @@ test('17. Professional Attendance Reporting System: single-worksheet Excel, abse
   assert.match(htmlSource, /ABSENT STUDENTS/);
 });
 
+test('18. Firestore uses named database apj-hostel-db in index.html and firebase.json', () => {
+  assert.match(firebaseJsonSource, /"database":\s*"apj-hostel-db"/);
+  assert.match(htmlSource, /firebase\.app\(\)\.firestore\("apj-hostel-db"\)/);
+});
+
+
