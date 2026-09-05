@@ -3851,6 +3851,9 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
     modal.style.display = "flex";
   }
 
+  window.closeModalByTarget = closeModalByTarget;
+  window.openModalByTarget = openModalByTarget;
+
   document.addEventListener("click", function (e) {
     var btn = e.target.closest("[data-modal-close]");
     if (btn) {
