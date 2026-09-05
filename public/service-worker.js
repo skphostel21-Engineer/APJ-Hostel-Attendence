@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kalam-block-shell-v5';
+const CACHE_NAME = 'kalam-block-shell-v6';
 const SHELL = ['/', '/index.html', '/manifest.json', '/icon.svg', '/assets/logo.webp', '/assets/icon-192.png', '/assets/icon-512.png', '/assets/apple-touch-icon.png'];
 
 self.addEventListener('install', (event) => {

@@ -2068,8 +2068,6 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
       if (btn) { btn.disabled = false; btn.textContent = "📊 Generate Excel"; }
       return;
     }
-    if (btn) btn.textContent = "Generating Excel...";
-    try { document.getElementById("btn-generate-excel-report");
     if (btn) { btn.disabled = true; btn.textContent = "Generating Excel..."; }
 
     try {
@@ -2165,8 +2163,6 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
       if (btn) { btn.disabled = false; btn.textContent = "📄 Generate PDF"; }
       return;
     }
-    if (btn) btn.textContent = "Generating PDF...";
-    try { document.getElementById("btn-generate-pdf-report");
     if (btn) { btn.disabled = true; btn.textContent = "Generating PDF..."; }
 
     try {
