@@ -378,6 +378,210 @@ button { cursor: pointer; border: none; background: none; }
   to { transform: rotate(360deg); }
 }
 
+/* ADMIN SIDEBAR & COLLAPSIBLE NAVIGATION STYLES */
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  position: relative;
+  background: var(--color-background, #F6F7F9);
+}
+
+.admin-sidebar {
+  width: 250px;
+  background: #071426;
+  border-right: 1px solid rgba(201, 162, 39, 0.25);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.2);
+}
+
+.admin-sidebar-brand {
+  padding: 16px;
+  border-bottom: 1px solid rgba(201, 162, 39, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-sidebar-brand img {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-accent, #C9A227);
+  object-fit: cover;
+}
+
+.admin-sidebar-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #FFFFFF;
+  line-height: 1.2;
+  letter-spacing: 0.03em;
+}
+
+.admin-sidebar-subtitle {
+  font-size: 10px;
+  color: var(--color-accent-soft, #E4C766);
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.admin-sidebar-menu {
+  padding: 12px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.admin-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  min-height: 44px;
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 12.5px;
+  font-weight: 600;
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  text-align: left;
+  box-sizing: border-box;
+}
+
+.admin-nav-item:hover {
+  background: rgba(201, 162, 39, 0.12);
+  color: var(--color-accent-soft, #E4C766);
+  border-color: rgba(201, 162, 39, 0.25);
+}
+
+.admin-nav-item.is-active {
+  background: linear-gradient(135deg, rgba(201, 162, 39, 0.22) 0%, rgba(11, 31, 58, 0.8) 100%);
+  color: #FFFFFF;
+  border-color: rgba(201, 162, 39, 0.5);
+  box-shadow: 0 2px 10px rgba(201, 162, 39, 0.15);
+}
+
+.admin-sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 99;
+}
+
+.admin-main-content {
+  flex: 1;
+  margin-left: 250px;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--color-background, #F6F7F9);
+}
+
+.admin-top-header {
+  height: 60px;
+  background: #0B1F3A;
+  border-bottom: 2px solid var(--color-accent, #C9A227);
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  box-shadow: 0 4px 12px rgba(7, 20, 38, 0.12);
+}
+
+.admin-top-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-hamburger-btn {
+  display: none;
+  background: rgba(201, 162, 39, 0.15);
+  border: 1px solid rgba(201, 162, 39, 0.4);
+  color: var(--color-accent-soft, #E4C766);
+  font-size: 18px;
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-page-title-text {
+  font-size: 16px;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+.admin-top-header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-badge {
+  font-size: 11px;
+  padding: 4px 10px;
+  background: rgba(201, 162, 39, 0.15);
+  border: 1px solid rgba(201, 162, 39, 0.4);
+  color: var(--color-accent-soft, #E4C766);
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+.admin-content-body {
+  padding: 20px;
+  flex: 1;
+}
+
+.admin-section {
+  display: none;
+}
+
+.admin-section.is-active {
+  display: block;
+}
+
+@media (max-width: 900px) {
+  .admin-sidebar {
+    transform: translateX(-100%);
+  }
+  .admin-sidebar.is-open {
+    transform: translateX(0);
+  }
+  .admin-sidebar-overlay.is-open {
+    display: block;
+  }
+  .admin-main-content {
+    margin-left: 0;
+  }
+  .admin-hamburger-btn {
+    display: flex;
+  }
+}
+
 </style>
 <style>
 /* Premium institutional theme */
@@ -896,32 +1100,44 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
   box-shadow: 0 0 0 3.5px rgba(0, 137, 123, 0.15) !important;
 }
 .password-input-wrap {
-  position: relative;
-  width: 100%;
+  position: relative !important;
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
 }
-.password-input-wrap .form-control {
-  padding-right: 42px !important;
+.password-input-wrap .form-control,
+.password-input-wrap .input-field {
+  padding-right: 44px !important;
+  width: 100% !important;
 }
 .password-toggle-btn {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: transparent;
-  border: none;
-  color: #64748B;
-  font-size: 16px;
-  cursor: pointer;
-  padding: 4px;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px;
-  transition: color 0.2s;
+  position: absolute !important;
+  right: 8px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  background: transparent !important;
+  border: none !important;
+  color: #00897B !important;
+  width: 32px !important;
+  height: 32px !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 6px !important;
+  transition: background-color 0.2s, color 0.2s !important;
+  z-index: 10 !important;
+  pointer-events: auto !important;
+  touch-action: manipulation !important;
+  outline: none !important;
 }
-.password-toggle-btn:hover {
-  color: #0F172A;
+.password-toggle-btn:hover,
+.password-toggle-btn:focus,
+.password-toggle-btn:active,
+.password-toggle-btn.is-visible {
+  color: #00796B !important;
+  background: rgba(0, 137, 123, 0.12) !important;
 }
 #modal-student-form .form-actions-row {
   margin-top: 24px !important;
@@ -1126,256 +1342,276 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
       </div>
     </section>
 
-    <!-- SCREEN: HIDDEN ADMIN DASHBOARD -->
-    <section class="view" id="view-admin-dashboard">
-      <div class="card" style="display: flex; align-items: center; gap: 14px; padding: 16px 18px; margin-bottom: 16px;">
-        <img src="/assets/logo.webp" alt="Crest" style="width: 54px; height: 54px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold-500);" />
-        <div>
-          <h2 style="font-size: 17.5px; font-weight: 700; color: var(--white);">APJ ABDUL KALAM BLOCK</h2>
-          <div style="font-size: 12px; color: var(--gold-400);">Warden Admin & Report Control Desk</div>
-        </div>
-      </div>
-
-      <!-- STATS SUMMARY GRID -->
-      <div class="card">
-        <div class="card-header">
-          <h3 class="card-title">Today's Attendance Summary</h3>
-          <span style="font-size: 11px; color: var(--gold-400);">Live Counts</span>
-        </div>
-        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
-          <div style="background: rgba(13, 21, 39, 0.7); border: 1px solid rgba(212, 175, 55, 0.15); padding: 10px 12px; border-radius: 10px;">
-            <div style="font-size: 11px; color: var(--ivory-dim);">Total Students</div>
-            <div style="font-size: 18px; font-weight: 700; color: var(--white);" id="att-stat-total">0</div>
-          </div>
-          <div style="background: rgba(13, 21, 39, 0.7); border: 1px solid rgba(16, 185, 129, 0.3); padding: 10px 12px; border-radius: 10px;">
-            <div style="font-size: 11px; color: var(--ivory-dim);">Present</div>
-            <div style="font-size: 18px; font-weight: 700; color: var(--success);" id="att-stat-present">0</div>
-          </div>
-          <div style="background: rgba(13, 21, 39, 0.7); border: 1px solid rgba(239, 68, 68, 0.3); padding: 10px 12px; border-radius: 10px;">
-            <div style="font-size: 11px; color: var(--ivory-dim);">Absent</div>
-            <div style="font-size: 18px; font-weight: 700; color: var(--danger);" id="att-stat-absent">0</div>
-          </div>
-          <div style="background: rgba(13, 21, 39, 0.7); border: 1px solid rgba(245, 158, 11, 0.3); padding: 10px 12px; border-radius: 10px;">
-            <div style="font-size: 11px; color: var(--ivory-dim);">Not Marked</div>
-            <div style="font-size: 18px; font-weight: 700; color: var(--warning);" id="att-stat-unmarked">0</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ONE-TAP MARK ATTENDANCE ROSTER -->
-      <div class="card">
-        <div class="card-header">
-          <h3 class="card-title">MARK ATTENDANCE</h3>
-          <span style="font-size: 11px; color: var(--gold-400);">One-Tap Marking</span>
-        </div>
-        <div style="margin-bottom: 12px;">
-          <input type="text" id="admin-att-search" class="input-field" placeholder="Search Student (Name, ID, Room)..." />
-        </div>
-
-        <div id="admin-att-roster-list">
-          <p style="padding: 18px; text-align: center; color: var(--ivory-dim); font-size: 13px;">Loading student attendance roster...</p>
-        </div>
-      </div>
-
-      <!-- OUT PASS MANAGEMENT -->
-      <div class="card" style="border-color: rgba(16, 185, 129, 0.4);">
-        <div class="card-header"><h3 class="card-title">OUT PASS</h3><span style="font-size: 11px; color: var(--success);">Approval Desk</span></div>
-        <h4 class="pass-admin-section-title">Pending Requests</h4>
-        <div id="admin-pending-passes"><p class="pass-empty">No pending requests.</p></div>
-        <h4 class="pass-admin-section-title">Currently Outside</h4>
-        <div id="admin-outside-passes"><p class="pass-empty">No students currently outside.</p></div>
-        <h4 class="pass-admin-section-title">Pass History</h4>
-        <div id="admin-pass-history"><p class="pass-empty">No pass history.</p></div>
-      </div>
-
-      <!-- STUDENT MANAGEMENT SECTION -->
-      <div class="card" style="border-color: rgba(212, 175, 55, 0.4);">
-        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-          <div>
-            <h3 class="card-title">👨‍🎓 Student Management</h3>
-            <div style="font-size: 11.5px; color: var(--gold-400);">Add, Search, Edit, Reset Password & Manage Accounts</div>
-          </div>
-          <button class="btn-gold-login" id="btn-open-add-student" style="height: 38px; padding: 0 16px; font-size: 13px; width: auto; margin: 0;">+ Add Student</button>
-        </div>
-
-        <!-- Student Statistics Cards -->
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 12px; margin-bottom: 6px;">
-          <div style="background: rgba(13, 21, 39, 0.7); border: 1px solid rgba(212, 175, 55, 0.2); padding: 8px 12px; border-radius: 8px; text-align: center;">
-            <div style="font-size: 11px; color: var(--ivory-dim);">Total Students</div>
-            <div style="font-size: 16px; font-weight: 700; color: var(--white);" id="stat-total-students">0</div>
-          </div>
-          <div style="background: rgba(13, 21, 39, 0.7); border: 1px solid rgba(16, 185, 129, 0.3); padding: 8px 12px; border-radius: 8px; text-align: center;">
-            <div style="font-size: 11px; color: var(--ivory-dim);">Active Accounts</div>
-            <div style="font-size: 16px; font-weight: 700; color: var(--success);" id="stat-active-students">0</div>
-          </div>
-          <div style="background: rgba(13, 21, 39, 0.7); border: 1px solid rgba(239, 68, 68, 0.3); padding: 8px 12px; border-radius: 8px; text-align: center;">
-            <div style="font-size: 11px; color: var(--ivory-dim);">Disabled Accounts</div>
-            <div style="font-size: 16px; font-weight: 700; color: var(--danger);" id="stat-disabled-students">0</div>
-          </div>
-        </div>
-
-        <!-- Search & Filter Controls -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-top: 14px; margin-bottom: 14px;">
-          <input type="text" id="filter-student-search" class="form-control" placeholder="🔍 Search Name, ID, Room..." style="font-size: 12.5px; padding: 8px 12px; height: 38px;" />
-          <select id="filter-student-dept" class="form-control" style="font-size: 12.5px; padding: 8px 12px; height: 38px;">
-            <option value="">All Departments</option>
-            <option value="CSE">CSE</option>
-            <option value="ECE">ECE</option>
-            <option value="EEE">EEE</option>
-            <option value="MECH">MECH</option>
-            <option value="CIVIL">CIVIL</option>
-            <option value="AI & Data Science">AI & Data Science</option>
-            <option value="IT">IT</option>
-          </select>
-          <select id="filter-student-year" class="form-control" style="font-size: 12.5px; padding: 8px 12px; height: 38px;">
-            <option value="">All Years</option>
-            <option value="1st Year">1st Year</option>
-            <option value="2nd Year">2nd Year</option>
-            <option value="3rd Year">3rd Year</option>
-            <option value="4th Year">4th Year</option>
-          </select>
-          <select id="filter-student-status" class="form-control" style="font-size: 12.5px; padding: 8px 12px; height: 38px;">
-            <option value="">All Statuses</option>
-            <option value="active">Active</option>
-            <option value="disabled">Disabled</option>
-          </select>
-        </div>
-
-        <!-- Student List Responsive Table -->
-        <div style="overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 10px;">
-          <table class="student-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 12.5px; color: var(--white);">
-            <thead>
-              <tr style="border-bottom: 1px solid rgba(212,175,55,0.2); color: var(--gold-400);">
-                <th style="padding: 10px; font-weight: 600;">Student Name</th>
-                <th style="padding: 10px; font-weight: 600;">Student ID</th>
-                <th style="padding: 10px; font-weight: 600;">Room</th>
-                <th style="padding: 10px; font-weight: 600;">College</th>
-                <th style="padding: 10px; font-weight: 600;">Year / Dept</th>
-                <th style="padding: 10px; font-weight: 600;">Status</th>
-                <th style="padding: 10px; font-weight: 600; text-align: right;">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="admin-student-table-body">
-              <tr><td colspan="7" style="padding: 14px; text-align: center; color: var(--ivory-dim);">Loading students...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- ATTENDANCE REPORTS SECTION -->
-      <div class="card" id="card-admin-attendance-reports" style="border-color: rgba(212, 175, 55, 0.5); margin-bottom: 16px;">
-        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-          <div>
-            <h3 class="card-title">📊 Attendance Reports & Export</h3>
-            <div style="font-size: 11.5px; color: var(--gold-400);">Generate, View, and Download Official Excel & PDF Reports</div>
-          </div>
-        </div>
-
-        <!-- Filter Controls -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-top: 14px; margin-bottom: 14px;">
-          <div>
-            <label style="font-size: 11px; color: var(--gold-400); display: block; margin-bottom: 4px;">Date *</label>
-            <input type="date" id="report-filter-date" class="form-control" style="font-size: 12.5px; padding: 6px 10px; height: 38px;" />
-          </div>
-          <div>
-            <label style="font-size: 11px; color: var(--gold-400); display: block; margin-bottom: 4px;">Department</label>
-            <select id="report-filter-dept" class="form-control" style="font-size: 12.5px; padding: 6px 10px; height: 38px;">
-              <option value="">All Departments</option>
-              <option value="CSE">CSE</option>
-              <option value="ECE">ECE</option>
-              <option value="EEE">EEE</option>
-              <option value="MECH">MECH</option>
-              <option value="CIVIL">CIVIL</option>
-              <option value="AI & Data Science">AI & Data Science</option>
-              <option value="IT">IT</option>
-            </select>
-          </div>
-          <div>
-            <label style="font-size: 11px; color: var(--gold-400); display: block; margin-bottom: 4px;">Year</label>
-            <select id="report-filter-year" class="form-control" style="font-size: 12.5px; padding: 6px 10px; height: 38px;">
-              <option value="">All Years</option>
-              <option value="1st Year">1st Year</option>
-              <option value="2nd Year">2nd Year</option>
-              <option value="3rd Year">3rd Year</option>
-              <option value="4th Year">4th Year</option>
-            </select>
-          </div>
-          <div>
-            <label style="font-size: 11px; color: var(--gold-400); display: block; margin-bottom: 4px;">Room</label>
-            <input type="text" id="report-filter-room" class="form-control" placeholder="Room (e.g. A-101)" style="font-size: 12.5px; padding: 6px 10px; height: 38px;" />
-          </div>
-          <div>
-            <label style="font-size: 11px; color: var(--gold-400); display: block; margin-bottom: 4px;">Session</label>
-            <select id="report-filter-session" class="form-control" style="font-size: 12.5px; padding: 6px 10px; height: 38px;">
-              <option value="Standard Session">Standard Session</option>
-              <option value="Evening Session">Evening Session</option>
-              <option value="Night Roll Call">Night Roll Call</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Filter Action Buttons -->
-        <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px;">
-          <button type="button" class="btn-gold-login" id="btn-view-attendance-report" style="flex: 1; min-width: 130px; height: 38px; font-size: 12.5px; margin: 0;">🔍 View Report</button>
-          <button type="button" class="btn-gold-login" id="btn-generate-excel-report" style="flex: 1; min-width: 130px; height: 38px; font-size: 12.5px; margin: 0; background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.5); color: var(--success);">📊 Generate Excel</button>
-          <button type="button" class="btn-gold-login" id="btn-generate-pdf-report" style="flex: 1; min-width: 130px; height: 38px; font-size: 12.5px; margin: 0; background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.5); color: #FCA5A5;">📄 Generate PDF</button>
-        </div>
-
-        <!-- Live Report Summary -->
-        <div id="report-summary-box" style="background: rgba(13, 21, 39, 0.8); border: 1px solid rgba(212, 175, 55, 0.2); padding: 12px 14px; border-radius: 10px; margin-bottom: 14px;">
-          <div style="font-size: 12px; font-weight: 700; color: var(--gold-400); margin-bottom: 8px;" id="report-summary-title">Report Summary</div>
-          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; text-align: center;">
-            <div style="background: rgba(255,255,255,0.03); padding: 8px; border-radius: 6px;">
-              <div style="font-size: 11px; color: var(--ivory-dim);">Total Students</div>
-              <div style="font-size: 18px; font-weight: 700; color: var(--white);" id="report-stat-total">0</div>
-            </div>
-            <div style="background: rgba(16, 185, 129, 0.1); padding: 8px; border-radius: 6px;">
-              <div style="font-size: 11px; color: var(--ivory-dim);">Present</div>
-              <div style="font-size: 18px; font-weight: 700; color: var(--success);" id="report-stat-present">0</div>
-            </div>
-            <div style="background: rgba(239, 68, 68, 0.1); padding: 8px; border-radius: 6px;">
-              <div style="font-size: 11px; color: var(--ivory-dim);">Absent</div>
-              <div style="font-size: 18px; font-weight: 700; color: var(--danger);" id="report-stat-absent">0</div>
+    <!-- SCREEN: ADMIN CONTROL PANEL WITH SIDEBAR NAVIGATION -->
+    <section class="view" id="view-admin">
+      <div class="admin-layout">
+        <!-- SIDEBAR -->
+        <aside class="admin-sidebar" id="admin-sidebar">
+          <div class="admin-sidebar-brand">
+            <img src="assets/icon-192.png" alt="Logo" />
+            <div>
+              <div class="admin-sidebar-title">APJ ABDUL KALAM BLOCK</div>
+              <div class="admin-sidebar-subtitle">Admin Control Panel</div>
             </div>
           </div>
-        </div>
+          <nav class="admin-sidebar-menu">
+            <button type="button" class="admin-nav-item is-active" data-section="dashboard" onclick="switchAdminSection('dashboard')">📊 Dashboard</button>
+            <button type="button" class="admin-nav-item" data-section="students" onclick="switchAdminSection('students')">👨‍🎓 Student Management</button>
+            <button type="button" class="admin-nav-item" data-section="attendance" onclick="switchAdminSection('attendance')">📝 Attendance</button>
+            <button type="button" class="admin-nav-item" data-section="outpass" onclick="switchAdminSection('outpass')">🎫 Out Pass Management</button>
+            <button type="button" class="admin-nav-item" data-section="reports" onclick="switchAdminSection('reports')">📄 Attendance Reports</button>
+            <button type="button" class="admin-nav-item" data-section="reporthistory" onclick="switchAdminSection('reporthistory')">📋 Report History</button>
+            <button type="button" class="admin-nav-item" data-section="account" onclick="switchAdminSection('account')">👤 Account Management</button>
+            <button type="button" class="admin-nav-item" data-section="settings" onclick="switchAdminSection('settings')">⚙️ Settings</button>
+            <button type="button" class="admin-nav-item" style="color: #F87171; margin-top: auto;" onclick="handleAdminLogout()">🚪 Sign Out</button>
+          </nav>
+        </aside>
 
-        <!-- Report History Table -->
-        <h4 style="font-size: 13px; font-weight: 700; color: var(--gold-400); margin-top: 10px; margin-bottom: 8px;">📋 Attendance Report History</h4>
-        <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
-          <table class="student-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 12px; color: var(--white);">
-            <thead>
-              <tr style="border-bottom: 1px solid rgba(212,175,55,0.2); color: var(--gold-400);">
-                <th style="padding: 8px;">Date</th>
-                <th style="padding: 8px;">Department</th>
-                <th style="padding: 8px;">Year</th>
-                <th style="padding: 8px;">Total</th>
-                <th style="padding: 8px;">Present</th>
-                <th style="padding: 8px;">Absent</th>
-                <th style="padding: 8px; text-align: right;">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="report-history-table-body">
-              <tr><td colspan="7" style="padding: 12px; text-align: center; color: var(--ivory-dim);">Loading report history...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+        <div class="admin-sidebar-overlay" id="admin-sidebar-overlay" onclick="closeAdminMobileSidebar()"></div>
 
-      <!-- REPORT DISPATCH & EXCEL DOWNLOAD CARD -->
-      <div class="card" style="border-color: rgba(212, 175, 55, 0.35);">
-        <div class="card-header">
-          <div>
-            <h3 class="card-title">⚙️ Report Engine & Excel</h3>
-            <div style="font-size: 11.5px; color: var(--gold-400); margin-top: 2px;">4:30 PM Report & Attachments</div>
+        <!-- MAIN CONTENT WRAPPER -->
+        <main class="admin-main-content">
+          <header class="admin-top-header">
+            <div class="admin-top-header-left">
+              <button type="button" class="admin-hamburger-btn" id="admin-mobile-hamburger" onclick="toggleAdminMobileSidebar()" aria-label="Toggle menu">☰</button>
+              <h2 class="admin-page-title-text" id="admin-page-title">Dashboard</h2>
+            </div>
+            <div class="admin-top-header-right">
+              <span class="admin-badge">Admin Panel</span>
+              <button type="button" class="btn-one-tap" onclick="handleAdminLogout()" style="padding: 6px 12px; font-size: 11.5px; font-weight: 600; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #F87171; border-radius: 6px;">Sign Out</button>
+            </div>
+          </header>
+
+          <div class="admin-content-body">
+            <!-- SECTION 1: DASHBOARD -->
+            <div class="admin-section is-active" id="admin-section-dashboard">
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 20px;">
+                <div class="card" style="padding: 16px; text-align: center; border-color: rgba(212, 175, 55, 0.4);">
+                  <div style="font-size: 12px; color: var(--ivory-dim);">Total Students</div>
+                  <div style="font-size: 24px; font-weight: 700; color: var(--white); margin-top: 4px;" id="stat-total-students">0</div>
+                </div>
+                <div class="card" style="padding: 16px; text-align: center; border-color: rgba(16, 185, 129, 0.4);">
+                  <div style="font-size: 12px; color: var(--ivory-dim);">Active Accounts</div>
+                  <div style="font-size: 24px; font-weight: 700; color: var(--success); margin-top: 4px;" id="stat-active-students">0</div>
+                </div>
+                <div class="card" style="padding: 16px; text-align: center; border-color: rgba(239, 68, 68, 0.4);">
+                  <div style="font-size: 12px; color: var(--ivory-dim);">Disabled Accounts</div>
+                  <div style="font-size: 24px; font-weight: 700; color: var(--danger); margin-top: 4px;" id="stat-disabled-students">0</div>
+                </div>
+                <div class="card" style="padding: 16px; text-align: center; border-color: rgba(16, 185, 129, 0.4);">
+                  <div style="font-size: 12px; color: var(--ivory-dim);">Today's Present</div>
+                  <div style="font-size: 24px; font-weight: 700; color: #34D399; margin-top: 4px;" id="stat-dash-present">0</div>
+                </div>
+                <div class="card" style="padding: 16px; text-align: center; border-color: rgba(239, 68, 68, 0.4);">
+                  <div style="font-size: 12px; color: var(--ivory-dim);">Today's Absent</div>
+                  <div style="font-size: 24px; font-weight: 700; color: #F87171; margin-top: 4px;" id="stat-dash-absent">0</div>
+                </div>
+                <div class="card" style="padding: 16px; text-align: center; border-color: rgba(245, 158, 11, 0.4);">
+                  <div style="font-size: 12px; color: var(--ivory-dim);">Today's Not Marked</div>
+                  <div style="font-size: 24px; font-weight: 700; color: #FBBF24; margin-top: 4px;" id="stat-dash-pending">0</div>
+                </div>
+                <div class="card" style="padding: 16px; text-align: center; border-color: rgba(212, 175, 55, 0.4);">
+                  <div style="font-size: 12px; color: var(--ivory-dim);">Pending Out Passes</div>
+                  <div style="font-size: 24px; font-weight: 700; color: var(--gold-400); margin-top: 4px;" id="stat-dash-pending-passes">0</div>
+                </div>
+                <div class="card" style="padding: 16px; text-align: center; border-color: rgba(59, 130, 246, 0.4);">
+                  <div style="font-size: 12px; color: var(--ivory-dim);">Currently Outside</div>
+                  <div style="font-size: 24px; font-weight: 700; color: #60A5FA; margin-top: 4px;" id="stat-dash-outside-passes">0</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION 2: STUDENT MANAGEMENT -->
+            <div class="admin-section" id="admin-section-students">
+              <div class="card" style="border-color: rgba(212, 175, 55, 0.4);">
+                <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                  <div>
+                    <h3 class="card-title">👨‍🎓 Student Management</h3>
+                    <div style="font-size: 11.5px; color: var(--gold-400);">Add, Search, Edit, Reset Password & Manage Accounts</div>
+                  </div>
+                  <button class="btn-gold-login" id="btn-open-add-student" style="height: 38px; padding: 0 16px; font-size: 13px; width: auto; margin: 0;">+ Add Student</button>
+                </div>
+
+                <!-- Search & Filter Controls -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-top: 14px; margin-bottom: 14px;">
+                  <input type="text" id="filter-student-search" class="form-control" placeholder="🔍 Search Name, ID, Room..." style="font-size: 12.5px; padding: 8px 12px; height: 38px;" />
+                  <select id="filter-student-dept" class="form-control" style="font-size: 12.5px; padding: 8px 12px; height: 38px;">
+                    <option value="">All Colleges</option>
+                  </select>
+                  <select id="filter-student-year" class="form-control" style="font-size: 12.5px; padding: 8px 12px; height: 38px;">
+                    <option value="">All Years</option>
+                  </select>
+                  <select id="filter-student-status" class="form-control" style="font-size: 12.5px; padding: 8px 12px; height: 38px;">
+                    <option value="">All Statuses</option>
+                    <option value="active">Active</option>
+                    <option value="disabled">Disabled</option>
+                  </select>
+                </div>
+
+                <!-- Student List Responsive Table -->
+                <div style="overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 10px;">
+                  <table class="student-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 12.5px; color: var(--white);">
+                    <thead>
+                      <tr style="border-bottom: 1px solid rgba(212,175,55,0.2); color: var(--gold-400);">
+                        <th style="padding: 10px; font-weight: 600;">Student Name</th>
+                        <th style="padding: 10px; font-weight: 600;">Student ID</th>
+                        <th style="padding: 10px; font-weight: 600;">Room</th>
+                        <th style="padding: 10px; font-weight: 600;">College</th>
+                        <th style="padding: 10px; font-weight: 600;">Year / Dept</th>
+                        <th style="padding: 10px; font-weight: 600;">Status</th>
+                        <th style="padding: 10px; font-weight: 600; text-align: right;">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="admin-student-table-body">
+                      <tr><td colspan="7" style="padding: 14px; text-align: center; color: var(--ivory-dim);">Loading students...</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION 3: ATTENDANCE -->
+            <div class="admin-section" id="admin-section-attendance">
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title">MARK ATTENDANCE</h3>
+                  <span style="font-size: 11px; color: var(--gold-400);">One-Tap Marking</span>
+                </div>
+                <div style="margin-bottom: 12px;">
+                  <input type="text" id="admin-att-search" class="input-field" placeholder="Search Student (Name, ID, Room)..." />
+                </div>
+                <div id="admin-att-roster-list">
+                  <p style="padding: 18px; text-align: center; color: var(--ivory-dim); font-size: 13px;">Loading student attendance roster...</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION 4: OUT PASS MANAGEMENT -->
+            <div class="admin-section" id="admin-section-outpass">
+              <div class="card" style="border-color: rgba(16, 185, 129, 0.4);">
+                <div class="card-header"><h3 class="card-title">OUT PASS</h3><span style="font-size: 11px; color: var(--success);">Approval Desk</span></div>
+                <h4 class="pass-admin-section-title">Pending Requests</h4>
+                <div id="admin-pending-passes"><p class="pass-empty">No pending requests.</p></div>
+                <h4 class="pass-admin-section-title">Currently Outside</h4>
+                <div id="admin-outside-passes"><p class="pass-empty">No students currently outside.</p></div>
+                <h4 class="pass-admin-section-title">Pass History</h4>
+                <div id="admin-pass-history"><p class="pass-empty">No pass history.</p></div>
+              </div>
+            </div>
+
+            <!-- SECTION 5: ATTENDANCE REPORTS -->
+            <div class="admin-section" id="admin-section-reports">
+              <div class="card" id="card-admin-attendance-reports" style="border-color: rgba(212, 175, 55, 0.5); margin-bottom: 16px;">
+                <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                  <div>
+                    <h3 class="card-title">📊 Attendance Reports & Export</h3>
+                    <div style="font-size: 11.5px; color: var(--gold-400);">Generate, View, and Download Official Excel & PDF Reports</div>
+                  </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-top: 14px; margin-bottom: 14px;">
+                  <div>
+                    <label style="font-size: 11px; color: var(--gold-400); display: block; margin-bottom: 4px;">Date (Current Session) *</label>
+                    <input type="date" id="report-filter-date" class="form-control" style="font-size: 12.5px; padding: 6px 10px; height: 38px; pointer-events: none; opacity: 0.8;" readonly />
+                  </div>
+                  <div>
+                    <label style="font-size: 11px; color: var(--gold-400); display: block; margin-bottom: 4px;">College</label>
+                    <select id="report-filter-dept" class="form-control" style="font-size: 12.5px; padding: 6px 10px; height: 38px;">
+                      <option value="">All Colleges</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label style="font-size: 11px; color: var(--gold-400); display: block; margin-bottom: 4px;">Year</label>
+                    <select id="report-filter-year" class="form-control" style="font-size: 12.5px; padding: 6px 10px; height: 38px;">
+                      <option value="">All Years</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label style="font-size: 11px; color: var(--gold-400); display: block; margin-bottom: 4px;">Room</label>
+                    <input type="text" id="report-filter-room" class="form-control" placeholder="Room (e.g. A-101)" style="font-size: 12.5px; padding: 6px 10px; height: 38px;" />
+                  </div>
+                  <div>
+                    <label style="font-size: 11px; color: var(--gold-400); display: block; margin-bottom: 4px;">Session</label>
+                    <select id="report-filter-session" class="form-control" style="font-size: 12.5px; padding: 6px 10px; height: 38px;">
+                      <option value="Standard Session">Standard Session</option>
+                      <option value="Evening Session">Evening Session</option>
+                      <option value="Night Roll Call">Night Roll Call</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px;">
+                  <button type="button" class="btn-gold-login" id="btn-view-attendance-report" style="flex: 1; min-width: 130px; height: 38px; font-size: 12.5px; margin: 0;">🔍 View Report</button>
+                  <button type="button" class="btn-gold-login" id="btn-generate-excel-report" style="flex: 1; min-width: 130px; height: 38px; font-size: 12.5px; margin: 0; background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.5); color: var(--success);">📊 Generate Excel</button>
+                  <button type="button" class="btn-gold-login" id="btn-generate-pdf-report" style="flex: 1; min-width: 130px; height: 38px; font-size: 12.5px; margin: 0; background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.5); color: #FCA5A5;">📄 Generate PDF</button>
+                </div>
+
+                <div id="report-summary-box" style="background: rgba(13, 21, 39, 0.8); border: 1px solid rgba(212, 175, 55, 0.2); padding: 12px 14px; border-radius: 10px; margin-bottom: 14px;">
+                  <div style="font-size: 12px; font-weight: 700; color: var(--gold-400); margin-bottom: 8px;" id="report-summary-title">Report Summary</div>
+                  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; text-align: center;">
+                    <div style="background: rgba(255,255,255,0.03); padding: 8px; border-radius: 6px;">
+                      <div style="font-size: 11px; color: var(--ivory-dim);">Total Students</div>
+                      <div style="font-size: 18px; font-weight: 700; color: var(--white);" id="report-stat-total">0</div>
+                    </div>
+                    <div style="background: rgba(16, 185, 129, 0.1); padding: 8px; border-radius: 6px;">
+                      <div style="font-size: 11px; color: var(--ivory-dim);">Present</div>
+                      <div style="font-size: 18px; font-weight: 700; color: var(--success);" id="report-stat-present">0</div>
+                    </div>
+                    <div style="background: rgba(239, 68, 68, 0.1); padding: 8px; border-radius: 6px;">
+                      <div style="font-size: 11px; color: var(--ivory-dim);">Absent</div>
+                      <div style="font-size: 18px; font-weight: 700; color: var(--danger);" id="report-stat-absent">0</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div style="display: none !important;" aria-hidden="true">
+                  <table class="student-table">
+                    <tbody id="report-history-table-body">
+                      <tr><td colspan="7">Report history disabled.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION 6: REPORT HISTORY -->
+            <div class="admin-section" id="admin-section-reporthistory">
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title">📋 Report History</h3>
+                </div>
+                <p style="padding: 16px; color: var(--ivory-dim); font-size: 13px;">Daily current-day-only attendance is active. Past report archives are processed automatically at 4:30 PM IST.</p>
+              </div>
+            </div>
+
+            <!-- SECTION 7: ACCOUNT MANAGEMENT -->
+            <div class="admin-section" id="admin-section-account">
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title">👤 Admin Account Management</h3>
+                </div>
+                <p style="font-size: 13px; color: var(--white); margin-bottom: 10px;">Logged in as: <strong style="color: var(--gold-400);">skphostel21@gmail.com</strong></p>
+                <div style="display: flex; gap: 10px;">
+                  <button type="button" class="btn-gold-login" onclick="handleAdminLogout()" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: var(--danger); height: 42px; font-size: 13px;">Sign Out Admin Account</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION 8: SETTINGS -->
+            <div class="admin-section" id="admin-section-settings">
+              <div class="card" style="border-color: rgba(212, 175, 55, 0.35);">
+                <div class="card-header">
+                  <div>
+                    <h3 class="card-title">⚙️ Report Engine & Excel Settings</h3>
+                    <div style="font-size: 11.5px; color: var(--gold-400); margin-top: 2px;">4:30 PM Report & Attachments</div>
+                  </div>
+                </div>
+                <button class="btn-gold-login" id="btn-trigger-email-report" style="height: 44px; font-size: 13.5px; margin-bottom: 10px;">✉️ Test 4:30 PM IST Email Report Dispatch</button>
+                <button class="btn-gold-login" id="btn-download-full-excel" style="height: 44px; font-size: 13.5px; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.4); color: var(--success);">📥 Download 8-Column Attendance Excel</button>
+              </div>
+            </div>
           </div>
-        </div>
-        <button class="btn-gold-login" id="btn-trigger-email-report" style="height: 44px; font-size: 13.5px; margin-bottom: 10px;">✉️ Test 4:30 PM IST Email Report Dispatch</button>
-        <button class="btn-gold-login" id="btn-download-full-excel" style="height: 44px; font-size: 13.5px; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.4); color: var(--success);">📥 Download 8-Column Attendance Excel</button>
-      </div>
-
-      <div class="card" style="margin-top: 14px;">
-        <button class="btn-gold-login" id="admin-logout-btn" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: var(--danger); height: 42px; font-size: 13px;">Sign Out Admin</button>
+        </main>
       </div>
     </section>
 
@@ -1593,6 +1829,7 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
   }
 
   function switchView(viewId) {
+    if (viewId === "view-admin-dashboard") viewId = "view-admin";
     if (viewId === "view-admin-dashboard" && (!state.isAdmin || !firebaseAuth || !firebaseAuth.currentUser)) {
       showToast("You are not authorized to access the Admin Panel.", "⚠️", true);
       viewId = "view-landing";
@@ -1863,7 +2100,7 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
     var todayStr = businessNow.toISOString().slice(0, 10);
     var dateStr = targetDateStr || todayStr;
     
-    // Default Attendance Session: Asia/Kolkata 3:00 PM (15:00) to 4:30 PM (16:30) IST
+    // Attendance Session Window: Asia/Kolkata 3:00 PM (15:00) to 4:30 PM (16:30) IST
     var startHours = 15;
     var startMins = 0;
     var closeHours = 16;
@@ -1909,8 +2146,8 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
     var todayKey = businessNow.toISOString().slice(0, 10);
     var sessionState = getAttendanceSessionState(todayKey);
 
-    if (sessionState.isClosed) {
-      showToast("Attendance session has been closed.", "⚠️", true);
+    if (sessionState.status !== "OPEN" && sessionState.status !== "CLOSING_SOON") {
+      showToast("Attendance submission is allowed only between 3:00 PM and 4:30 PM IST.", "⚠️", true);
       updateStudentAttendanceUI();
       return;
     }
@@ -1925,7 +2162,6 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
     if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = "SUBMITTING..."; }
 
     try {
-      // Check existing submission to prevent duplicates
       var existingDoc = await firebaseDb.collection("attendance").doc(docId).get();
       if (existingDoc.exists && String(existingDoc.data().status).toUpperCase() === "PRESENT") {
         showToast("Attendance already submitted for today.", "✓");
@@ -1977,7 +2213,11 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
     var sessionState = getAttendanceSessionState(todayKey);
 
     if (sessionBadge) {
-      if (sessionState.status === "OPEN") {
+      if (sessionState.status === "UPCOMING") {
+        sessionBadge.textContent = "ℹ️ Attendance will open at 3:00 PM IST";
+        sessionBadge.style.background = "rgba(59, 130, 246, 0.15)";
+        sessionBadge.style.color = "#60A5FA";
+      } else if (sessionState.status === "OPEN") {
         sessionBadge.textContent = "🟢 ATTENDANCE SESSION OPEN (3:00 PM – 4:30 PM IST)";
         sessionBadge.style.background = "rgba(16, 185, 129, 0.15)";
         sessionBadge.style.color = "#34D399";
@@ -1986,7 +2226,7 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
         sessionBadge.style.background = "rgba(245, 158, 11, 0.15)";
         sessionBadge.style.color = "#FBBF24";
       } else {
-        sessionBadge.textContent = "🔴 SESSION CLOSED (Asia/Kolkata 3:00 PM to 4:30 PM IST)";
+        sessionBadge.textContent = "🔴 Today's attendance session is closed.";
         sessionBadge.style.background = "rgba(239, 68, 68, 0.15)";
         sessionBadge.style.color = "#FCA5A5";
       }
@@ -2014,12 +2254,19 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
           submitBtn.style.display = "none";
         }
       } else {
-        if (sessionState.isClosed) {
+        if (sessionState.status === "UPCOMING") {
+          if (statusChip) {
+            statusChip.textContent = "UPCOMING";
+            statusChip.className = "status-chip status-chip--pending";
+          }
+          if (statusTime) statusTime.textContent = "Attendance will open at 3:00 PM IST.";
+          if (submitBtn) submitBtn.style.display = "none";
+        } else if (sessionState.isClosed) {
           if (statusChip) {
             statusChip.textContent = "ABSENT";
             statusChip.className = "status-chip status-chip--absent";
           }
-          if (statusTime) statusTime.textContent = "Attendance session has been closed.";
+          if (statusTime) statusTime.textContent = "Today's attendance session is closed.";
           if (submitBtn) submitBtn.style.display = "none";
         } else {
           if (statusChip) {
@@ -3133,6 +3380,116 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
     });
   }
 
+  
+  // Admin Sidebar & Dashboard UX Controller Functions
+  window.switchAdminSection = function (sectionName) {
+    var validSections = ['dashboard', 'students', 'attendance', 'outpass', 'reports', 'reporthistory', 'account', 'settings'];
+    if (!validSections.includes(sectionName)) sectionName = 'dashboard';
+
+    // Hide all admin sections
+    document.querySelectorAll('.admin-section').forEach(function (sec) {
+      sec.style.display = 'none';
+      sec.classList.remove('is-active');
+    });
+
+    // Show targeted section
+    var targetSec = document.getElementById('admin-section-' + sectionName);
+    if (targetSec) {
+      targetSec.style.display = 'block';
+      targetSec.classList.add('is-active');
+    }
+
+    // Update nav items
+    document.querySelectorAll('.admin-nav-item').forEach(function (btn) {
+      if (btn.getAttribute('data-section') === sectionName) {
+        btn.classList.add('is-active');
+      } else {
+        btn.classList.remove('is-active');
+      }
+    });
+
+    // Dynamic Title Mapping
+    var titleMap = {
+      dashboard: '📊 Admin Dashboard',
+      students: '👨‍🎓 Student Management',
+      attendance: '📝 Attendance Marking & Roster',
+      outpass: '🎫 Out Pass Management',
+      reports: '📄 Attendance Reports',
+      reporthistory: '📋 Report History',
+      account: '👤 Account Management',
+      settings: '⚙️ System Settings'
+    };
+    var titleEl = document.getElementById('admin-page-title');
+    if (titleEl) titleEl.textContent = titleMap[sectionName] || '📊 Admin Dashboard';
+
+    // Close mobile drawer
+    window.closeAdminMobileSidebar();
+
+    // Trigger data loader for active section if needed
+    if (sectionName === 'dashboard') {
+      window.updateDashboardMetrics();
+    } else if (sectionName === 'students' && typeof loadAdminStudents === 'function') {
+      loadAdminStudents();
+    } else if (sectionName === 'outpass' && typeof loadAdminPasses === 'function') {
+      loadAdminPasses();
+    } else if (sectionName === 'reporthistory' && typeof loadAttendanceReportHistory === 'function') {
+      loadAttendanceReportHistory();
+    } else if (sectionName === 'reports' && typeof updateAttendanceReportSummary === 'function') {
+      updateAttendanceReportSummary();
+    }
+  };
+
+  window.toggleAdminMobileSidebar = function () {
+    var sidebar = document.getElementById('admin-sidebar');
+    var overlay = document.getElementById('admin-sidebar-overlay');
+    if (sidebar) sidebar.classList.toggle('is-open');
+    if (overlay) overlay.classList.toggle('is-open');
+  };
+
+  window.closeAdminMobileSidebar = function () {
+    var sidebar = document.getElementById('admin-sidebar');
+    var overlay = document.getElementById('admin-sidebar-overlay');
+    if (sidebar) sidebar.classList.remove('is-open');
+    if (overlay) overlay.classList.remove('is-open');
+  };
+
+  window.updateDashboardMetrics = function () {
+    if (typeof adminStudentsList !== 'undefined' && Array.isArray(adminStudentsList)) {
+      var total = adminStudentsList.length;
+      var active = adminStudentsList.filter(function (s) { return String(s.status || '').toLowerCase() !== 'disabled'; }).length;
+      var disabled = total - active;
+
+      var totalEl = document.getElementById('stat-total-students');
+      var activeEl = document.getElementById('stat-active-students');
+      var disabledEl = document.getElementById('stat-disabled-students');
+
+      if (totalEl) totalEl.textContent = total;
+      if (activeEl) activeEl.textContent = active;
+      if (disabledEl) disabledEl.textContent = disabled;
+    }
+  };
+
+  window.handleAdminLogout = function () {
+    if (firebaseAuth && firebaseAuth.currentUser) {
+      firebaseAuth.signOut().then(function () {
+        state.isLoggedIn = false;
+        state.isAdmin = false;
+        showToast("Signed out successfully", "🚪");
+        switchView("view-landing");
+      }).catch(function (err) {
+        console.error("Sign out error:", err);
+        state.isLoggedIn = false;
+        state.isAdmin = false;
+        switchView("view-landing");
+      });
+    } else {
+      state.isLoggedIn = false;
+      state.isAdmin = false;
+      switchView("view-landing");
+    }
+  };
+
+
   async function processAdminAuthUser(user) {
     var normalizedEmail = String(user && user.email || "").trim().toLowerCase();
     var isAuthorizedAdmin = (normalizedEmail === "skphostel21@gmail.com");
@@ -3148,7 +3505,7 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
     state.isAdmin = true;
     document.getElementById("app-bottom-nav").style.display = "none";
     document.getElementById("topbar-sublabel").textContent = "Admin Control Portal";
-    switchView("view-admin-dashboard");
+    switchView("view-admin"); window.switchAdminSection("dashboard");
     try {
       await Promise.all([loadAdminPasses(), loadAdminStudents(), loadAttendanceReportHistory()]);
     } catch (e) {
@@ -3335,6 +3692,7 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
     if (!modal) return;
     modal.classList.remove("is-open");
     modal.setAttribute("aria-hidden", "true");
+    modal.style.display = "none";
   }
 
   function openModalByTarget(targetId) {
@@ -3342,13 +3700,19 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
     if (!modal) return;
     modal.classList.add("is-open");
     modal.setAttribute("aria-hidden", "false");
+    modal.style.display = "flex";
   }
 
-  document.querySelectorAll("[data-modal-close]").forEach(function (btn) {
-    btn.addEventListener("click", function () {
+  document.addEventListener("click", function (e) {
+    var btn = e.target.closest("[data-modal-close]");
+    if (btn) {
+      e.preventDefault();
       var target = btn.getAttribute("data-modal-close");
-      if (target) closeModalByTarget("modal-" + target);
-    });
+      if (target) {
+        var modalId = target.indexOf("modal-") === 0 ? target : "modal-" + target;
+        closeModalByTarget(modalId);
+      }
+    }
   });
 
   function debounce(func, wait) {
@@ -3387,11 +3751,92 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
       adminStudentsList = snap.docs.map(function (doc) {
         return Object.assign({ uid: doc.id }, doc.data());
       });
+      updateDynamicFilters();
       updateStudentStats();
       renderAdminStudentsTable();
     } catch (err) {
       console.error("Error loading students:", err);
     }
+  }
+
+  function updateDynamicFilters() {
+    var collegeSet = new Set();
+    var yearSet = new Set();
+
+    adminStudentsList.forEach(function (s) {
+      var c = (s.college || s.college_name || s.department || "").trim();
+      if (c) collegeSet.add(c);
+
+      var y = s.year;
+      if (!y && s.year_department) {
+        y = s.year_department.split("-")[0].trim();
+      }
+      y = (y || "").trim();
+      if (y) yearSet.add(y);
+    });
+
+    var colleges = Array.from(collegeSet).sort();
+    var years = Array.from(yearSet).sort();
+
+    var fDept = document.getElementById("filter-student-dept");
+    if (fDept) {
+      var curr = fDept.value;
+      fDept.innerHTML = '<option value="">All Colleges</option>' + colleges.map(function (c) {
+        return '<option value="' + escapeHtml(c) + '">' + escapeHtml(c) + '</option>';
+      }).join("");
+      if (curr && colleges.indexOf(curr) !== -1) fDept.value = curr;
+    }
+
+    var fYear = document.getElementById("filter-student-year");
+    if (fYear) {
+      var currY = fYear.value;
+      fYear.innerHTML = '<option value="">All Years</option>' + years.map(function (y) {
+        return '<option value="' + escapeHtml(y) + '">' + escapeHtml(y) + '</option>';
+      }).join("");
+      if (currY && years.indexOf(currY) !== -1) fYear.value = currY;
+    }
+
+    var rDept = document.getElementById("report-filter-dept");
+    if (rDept) {
+      var currRDept = rDept.value;
+      rDept.innerHTML = '<option value="">All Colleges</option>' + colleges.map(function (c) {
+        return '<option value="' + escapeHtml(c) + '">' + escapeHtml(c) + '</option>';
+      }).join("");
+      if (currRDept && colleges.indexOf(currRDept) !== -1) rDept.value = currRDept;
+    }
+
+    updateReportYearFilter();
+  }
+
+  function updateReportYearFilter() {
+    var rDept = document.getElementById("report-filter-dept");
+    var selectedCollege = rDept ? rDept.value.trim() : "";
+    var rYear = document.getElementById("report-filter-year");
+    if (!rYear) return;
+
+    var currRYear = rYear.value;
+    var relevantStudents = selectedCollege
+      ? adminStudentsList.filter(function (s) {
+          var c = (s.college || s.college_name || s.department || "").trim();
+          return c.toLowerCase() === selectedCollege.toLowerCase();
+        })
+      : adminStudentsList;
+
+    var yearSet = new Set();
+    relevantStudents.forEach(function (s) {
+      var y = s.year;
+      if (!y && s.year_department) {
+        y = s.year_department.split("-")[0].trim();
+      }
+      y = (y || "").trim();
+      if (y) yearSet.add(y);
+    });
+
+    var years = Array.from(yearSet).sort();
+    rYear.innerHTML = '<option value="">All Years</option>' + years.map(function (y) {
+      return '<option value="' + escapeHtml(y) + '">' + escapeHtml(y) + '</option>';
+    }).join("");
+    if (currRYear && years.indexOf(currRYear) !== -1) rYear.value = currRYear;
   }
 
   function renderAdminStudentsTable() {
@@ -3405,13 +3850,23 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
     var statusVal = document.getElementById("filter-student-status") ? document.getElementById("filter-student-status").value : "";
 
     var filtered = adminStudentsList.filter(function (s) {
-      var nameMatch = !searchVal || (s.student_name || "").toLowerCase().indexOf(searchVal) !== -1 || (s.name || "").toLowerCase().indexOf(searchVal) !== -1;
-      var idMatch = !searchVal || (s.student_id || "").toLowerCase().indexOf(searchVal) !== -1 || (s.id || "").toLowerCase().indexOf(searchVal) !== -1;
-      var roomMatch = !searchVal || (s.room_number || "").toLowerCase().indexOf(searchVal) !== -1 || (s.room || "").toLowerCase().indexOf(searchVal) !== -1;
-      var textMatch = nameMatch || idMatch || roomMatch;
+      var nameVal = (s.student_name || s.name || "").toLowerCase();
+      var idVal = (s.student_id || s.id || s.studentId || "").toLowerCase();
+      var roomVal = (s.room_number || s.room || s.roomNumber || "").toLowerCase();
+      var mobileVal = (s.phone_number || s.mobile_number || s.mobile || s.phone || s.mobileNumber || "").toLowerCase();
+      var collegeVal = (s.college || s.college_name || s.department || "").trim();
+      var yearValField = (s.year || (s.year_department ? s.year_department.split("-")[0].trim() : "")).trim();
 
-      var deptMatch = !deptVal || (s.department || s.year_department || "").indexOf(deptVal) !== -1;
-      var yearMatch = !yearVal || (s.year || s.year_department || "").indexOf(yearVal) !== -1;
+      var textMatch = !searchVal ||
+        nameVal.indexOf(searchVal) !== -1 ||
+        idVal.indexOf(searchVal) !== -1 ||
+        roomVal.indexOf(searchVal) !== -1 ||
+        collegeVal.toLowerCase().indexOf(searchVal) !== -1 ||
+        yearValField.toLowerCase().indexOf(searchVal) !== -1 ||
+        mobileVal.indexOf(searchVal) !== -1;
+
+      var deptMatch = !deptVal || collegeVal.toLowerCase() === deptVal.toLowerCase();
+      var yearMatch = !yearVal || yearValField.toLowerCase() === yearVal.toLowerCase();
       var statusMatch = !statusVal || (s.status || "active").toLowerCase() === statusVal.toLowerCase();
 
       return textMatch && deptMatch && yearMatch && statusMatch;
@@ -3426,20 +3881,25 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
       var statusClass = (s.status || "active").toLowerCase() === "disabled" ? "status-chip--absent" : "status-chip--present";
       var statusText = (s.status || "active").toUpperCase();
       var toggleBtnText = (s.status || "active").toLowerCase() === "disabled" ? "Enable" : "Disable";
-      var toggleBtnClass = (s.status || "active").toLowerCase() === "disabled" ? "color: var(--success);" : "color: var(--warning);";
+      var toggleBtnStyle = (s.status || "active").toLowerCase() === "disabled"
+        ? "background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.4); color: #34D399;"
+        : "background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); color: #FBBF24;";
+
+      var displayCollege = s.college || s.college_name || s.department || "N/A";
+      var displayYearDept = s.year_department || ((s.year || "") + (s.department ? " - " + s.department : ""));
 
       return '<tr style="border-bottom: 1px solid rgba(212,175,55,0.1);">' +
         '<td style="padding: 10px; font-weight: 600; color: var(--white);">' + escapeHtml(s.student_name || s.name || "N/A") + '</td>' +
-        '<td style="padding: 10px; font-family: monospace; color: var(--gold-400);">' + escapeHtml(s.student_id || s.id || "N/A") + '</td>' +
-        '<td style="padding: 10px;">' + escapeHtml(s.room_number || s.room || "N/A") + '</td>' +
-        '<td style="padding: 10px;">' + escapeHtml(s.college || "N/A") + '</td>' +
-        '<td style="padding: 10px;">' + escapeHtml(s.year_department || ((s.year || "") + " - " + (s.department || ""))) + '</td>' +
+        '<td style="padding: 10px; font-family: monospace; color: var(--gold-400);">' + escapeHtml(s.student_id || s.id || s.studentId || "N/A") + '</td>' +
+        '<td style="padding: 10px;">' + escapeHtml(s.room_number || s.room || s.roomNumber || "N/A") + '</td>' +
+        '<td style="padding: 10px;">' + escapeHtml(displayCollege) + '</td>' +
+        '<td style="padding: 10px;">' + escapeHtml(displayYearDept) + '</td>' +
         '<td style="padding: 10px;"><span class="status-chip ' + statusClass + '">' + statusText + '</span></td>' +
-        '<td style="padding: 10px; text-align: right;">' +
-          '<button class="btn-one-tap" onclick="window.openEditStudent(\'' + s.uid + '\')" style="padding: 4px 8px; font-size: 11px; margin-right: 4px;">Edit</button>' +
-          '<button class="btn-one-tap" onclick="window.openResetPassword(\'' + s.uid + '\')" style="padding: 4px 8px; font-size: 11px; margin-right: 4px;">Reset Pass</button>' +
-          '<button class="btn-one-tap" onclick="window.toggleStudentStatus(\'' + s.uid + '\')" style="padding: 4px 8px; font-size: 11px; margin-right: 4px; ' + toggleBtnClass + '">' + toggleBtnText + '</button>' +
-          '<button class="btn-one-tap btn-one-tap--absent" onclick="window.confirmDeleteStudent(\'' + s.uid + '\')" style="padding: 4px 8px; font-size: 11px;">Delete</button>' +
+        '<td style="padding: 10px; text-align: right; white-space: nowrap;">' +
+          '<button class="btn-one-tap" onclick="window.openEditStudent(\'' + s.uid + '\')" style="padding: 5px 10px; font-size: 11.5px; font-weight: 600; margin-right: 4px; background: rgba(13, 148, 136, 0.15); border: 1px solid rgba(13, 148, 136, 0.4); color: #2DD4BF; border-radius: 6px;">✏️ Edit</button>' +
+          '<button class="btn-one-tap" onclick="window.openResetPassword(\'' + s.uid + '\')" style="padding: 5px 10px; font-size: 11.5px; font-weight: 600; margin-right: 4px; background: rgba(212, 175, 55, 0.15); border: 1px solid rgba(212, 175, 55, 0.4); color: #F5D36E; border-radius: 6px;">🔑 Pass</button>' +
+          '<button class="btn-one-tap" onclick="window.toggleStudentStatus(\'' + s.uid + '\')" style="padding: 5px 10px; font-size: 11.5px; font-weight: 600; margin-right: 4px; border-radius: 6px; ' + toggleBtnStyle + '">' + (toggleBtnText === "Enable" ? "🟢 Enable" : "⏸️ Disable") + '</button>' +
+          '<button class="btn-one-tap" onclick="window.confirmDeleteStudent(\'' + s.uid + '\')" style="padding: 5px 10px; font-size: 11.5px; font-weight: 600; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #F87171; border-radius: 6px;">🗑️ Delete</button>' +
         '</td>' +
       '</tr>';
     }).join("");
@@ -3453,6 +3913,13 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
       el.addEventListener("change", renderAdminStudentsTable);
     }
   });
+
+  if (document.getElementById("report-filter-dept")) {
+    document.getElementById("report-filter-dept").addEventListener("change", function () {
+      updateReportYearFilter();
+      if (typeof updateAttendanceReportSummary === "function") updateAttendanceReportSummary();
+    });
+  }
 
   var searchInputEl = document.getElementById("filter-student-search");
   if (searchInputEl) {
@@ -3489,12 +3956,12 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
     document.getElementById("modal-student-form-title").textContent = "Edit Student Profile";
     document.getElementById("student-manage-uid").value = s.uid;
     document.getElementById("student-form-name").value = s.student_name || s.name || "";
-    document.getElementById("student-form-id").value = s.student_id || s.id || "";
+    document.getElementById("student-form-id").value = s.student_id || s.id || s.studentId || "";
     document.getElementById("student-form-id").readOnly = false;
-    document.getElementById("student-form-room").value = s.room_number || s.room || "";
-    document.getElementById("student-form-college").value = s.college || "";
-    document.getElementById("student-form-year-dept").value = s.year_department || ((s.year || "") + " - " + (s.department || ""));
-    if (document.getElementById("student-form-mobile")) document.getElementById("student-form-mobile").value = s.phone_number || s.mobile_number || s.mobile || s.phone || "";
+    document.getElementById("student-form-room").value = s.room_number || s.room || s.roomNumber || "";
+    document.getElementById("student-form-college").value = s.college || s.college_name || s.department || "";
+    document.getElementById("student-form-year-dept").value = s.year || s.year_department || "";
+    if (document.getElementById("student-form-mobile")) document.getElementById("student-form-mobile").value = s.phone_number || s.mobile_number || s.mobile || s.phone || s.mobileNumber || "";
     document.getElementById("student-password-fields").style.display = "none";
     document.getElementById("student-form-error").textContent = "";
     openModalByTarget("modal-student-form");
@@ -3558,14 +4025,14 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
       var studentId = document.getElementById("student-form-id").value.trim();
       var room = document.getElementById("student-form-room").value.trim();
       var college = document.getElementById("student-form-college").value.trim();
-      var yearDept = document.getElementById("student-form-year-dept").value.trim();
+      var yearVal = document.getElementById("student-form-year-dept").value.trim();
       var mobile = document.getElementById("student-form-mobile") ? document.getElementById("student-form-mobile").value.trim() : "";
       var password = document.getElementById("student-form-password").value;
       var confirmPassword = document.getElementById("student-form-confirm-password").value;
       var errEl = document.getElementById("student-form-error");
 
       errEl.textContent = "";
-      if (!name || !studentId || !room || !college || !yearDept || !mobile) {
+      if (!name || !studentId || !room || !college || !yearVal || !mobile) {
         errEl.textContent = "All required fields must be filled.";
         return;
       }
@@ -3577,7 +4044,8 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
 
       // Check Student ID uniqueness
       var existingIdDoc = adminStudentsList.find(function (item) {
-        return (item.student_id || "").toLowerCase() === studentId.toLowerCase() && item.uid !== uid;
+        var existingId = item.student_id || item.id || item.studentId || "";
+        return existingId.toLowerCase() === studentId.toLowerCase() && item.uid !== uid;
       });
       if (existingIdDoc) {
         errEl.textContent = "Student ID already exists. Please use a unique Student ID.";
@@ -3607,16 +4075,24 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
           var authRes = await createStudentAuthAccount(studentId, password);
           var newStudentDoc = {
             auth_uid: authRes.uid,
+            uid: authRes.uid,
             student_id: studentId,
+            studentId: studentId,
             student_name: name,
+            name: name,
             room_number: room,
+            roomNumber: room,
             college: college,
-            year_department: yearDept,
+            department: college,
+            year: yearVal,
+            year_department: yearVal + " - " + college,
             phone_number: mobile,
             mobile_number: mobile,
+            mobileNumber: mobile,
             status: "active",
             auth_email: authRes.email,
-            created_at: firebase.firestore.FieldValue.serverTimestamp()
+            created_at: firebase.firestore.FieldValue.serverTimestamp(),
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
           };
           await firebaseDb.collection("students").doc(authRes.uid).set(newStudentDoc);
           showToast("Student account created successfully.", "✓");
@@ -3624,12 +4100,19 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
           // Editing Existing Student
           var updateDoc = {
             student_id: studentId,
+            studentId: studentId,
             student_name: name,
+            name: name,
             room_number: room,
+            roomNumber: room,
             college: college,
-            year_department: yearDept,
+            department: college,
+            year: yearVal,
+            year_department: yearVal + " - " + college,
             phone_number: mobile,
-            mobile_number: mobile
+            mobile_number: mobile,
+            mobileNumber: mobile,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
           };
           await firebaseDb.collection("students").doc(uid).update(updateDoc);
           showToast("Student profile updated successfully.", "✓");
@@ -3797,9 +4280,9 @@ if ('serviceWorker' in navigator) {
 
   <!-- MODAL: ADD / EDIT STUDENT -->
   <div class="admin-access-modal" id="modal-student-form" aria-hidden="true">
-    <div class="admin-access-backdrop" data-modal-close="student-form"></div>
+    <div class="admin-access-backdrop" data-modal-close="student-form" onclick="closeModalByTarget('modal-student-form')"></div>
     <div class="admin-access-card">
-      <button type="button" class="admin-access-close" data-modal-close="student-form" aria-label="Close modal">&times;</button>
+      <button type="button" class="admin-access-close" data-modal-close="student-form" onclick="closeModalByTarget('modal-student-form')" aria-label="Close modal">&times;</button>
       
       <div class="student-modal-header">
         <div class="student-modal-icon">+</div>
@@ -3825,12 +4308,12 @@ if ('serviceWorker' in navigator) {
 
           <div class="form-group">
             <label for="student-form-college" class="form-label">College <span class="required-star">*</span></label>
-            <input type="text" id="student-form-college" class="form-control" placeholder="Select college" required autocomplete="organization" />
+            <input type="text" id="student-form-college" class="form-control" placeholder="Enter college (e.g. Engineering)" required autocomplete="organization" />
           </div>
 
           <div class="form-group">
-            <label for="student-form-year-dept" class="form-label">Year / Department <span class="required-star">*</span></label>
-            <input type="text" id="student-form-year-dept" class="form-control" placeholder="Select year / department" required autocomplete="off" />
+            <label for="student-form-year-dept" class="form-label">Year <span class="required-star">*</span></label>
+            <input type="text" id="student-form-year-dept" class="form-control" placeholder="Enter year (e.g. 2nd Year)" required autocomplete="off" />
           </div>
 
           <div class="form-group">
@@ -3868,7 +4351,7 @@ if ('serviceWorker' in navigator) {
         <div id="student-form-error" class="form-error-msg" role="alert" aria-live="polite"></div>
 
         <div class="form-actions-row">
-          <button type="button" class="btn-cancel" data-modal-close="student-form">✕ Cancel</button>
+          <button type="button" class="btn-cancel" data-modal-close="student-form" onclick="closeModalByTarget('modal-student-form')">✕ Cancel</button>
           <button type="submit" class="btn-save" id="btn-save-student">🔒 Save Student</button>
         </div>
       </form>
@@ -3918,15 +4401,21 @@ if ('serviceWorker' in navigator) {
 
   <!-- MODAL: DELETE CONFIRMATION -->
   <div class="admin-access-modal" id="modal-delete-student" aria-hidden="true">
-    <div class="admin-access-backdrop" data-modal-close="delete-student"></div>
-    <div class="admin-access-card" style="max-width: 400px; text-align: left;">
-      <button type="button" class="admin-access-close" data-modal-close="delete-student" aria-label="Close modal">&times;</button>
-      <h3 class="admin-access-title" style="color: var(--danger);">Delete Student</h3>
-      <p class="admin-access-subtitle" id="delete-student-prompt">Are you sure you want to delete this student?</p>
+    <div class="admin-access-backdrop" data-modal-close="delete-student" onclick="closeModalByTarget('modal-delete-student')"></div>
+    <div class="admin-access-card" style="max-width: 420px; text-align: left; background: #0D1527; border: 1px solid rgba(239, 68, 68, 0.4); border-top: 4px solid #EF4444; border-radius: 16px; padding: 24px;">
+      <button type="button" class="admin-access-close" data-modal-close="delete-student" onclick="closeModalByTarget('modal-delete-student')" aria-label="Close modal">&times;</button>
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+        <div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(239, 68, 68, 0.15); color: #EF4444; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold;">🗑️</div>
+        <div>
+          <h3 class="admin-access-title" style="color: #F87171; margin: 0; font-size: 18px;">Delete Student Account</h3>
+          <p style="font-size: 12px; color: var(--ivory-dim); margin: 2px 0 0 0;">This action will permanently delete the record.</p>
+        </div>
+      </div>
+      <p id="delete-student-prompt" style="font-size: 13.5px; color: var(--white); margin: 16px 0; background: rgba(239, 68, 68, 0.08); padding: 12px; border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.2);">Are you sure you want to delete this student?</p>
 
-      <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
-        <button type="button" class="btn-one-tap" data-modal-close="delete-student" style="background: transparent; border: 1px solid var(--ivory-dim); color: var(--ivory-dim);">Cancel</button>
-        <button type="button" class="btn-one-tap btn-one-tap--absent" id="btn-confirm-delete-student" style="height: 38px; padding: 0 16px; font-size: 13px;">Delete Student</button>
+      <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px;">
+        <button type="button" class="btn-cancel" data-modal-close="delete-student" onclick="closeModalByTarget('modal-delete-student')">✕ Cancel</button>
+        <button type="button" class="btn-save" id="btn-confirm-delete-student" style="background: #DC2626 !important; color: #FFFFFF !important; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3) !important;">🗑️ Delete Student</button>
       </div>
     </div>
   </div>
