@@ -6,14 +6,15 @@
 <title>APJ ABDUL KALAM BLOCK — Student Attendance & Pass Management</title>
 <meta name="description" content="Hostel attendance portal for APJ Abdul Kalam Block." />
 
-<!-- PWA Manifest & Android Native App Meta -->
+<!-- PWA Manifest & Mobile App Meta -->
 <link rel="manifest" href="/manifest.json" />
-<link rel="icon" type="image/jpeg" href="/assets/logo.webp" />
+<link rel="icon" type="image/webp" href="/assets/logo.webp" />
+<link rel="apple-touch-icon" href="/assets/icon-192.png" />
 <meta name="theme-color" content="#0D1527" />
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<meta name="apple-mobile-web-app-title" content="Kalam Block" />
+<meta name="apple-mobile-web-app-title" content="APJ Hostel" />
 
 <!-- Google Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -846,9 +847,18 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
       </div>
       <div class="card" style="border-color: rgba(239, 68, 68, 0.4);">
         <form id="admin-login-form">
-          <p style="font-size: 12.5px; color: var(--ivory-dim); margin-bottom: 18px;">Use your authorized Google account to continue.</p>
-          <button type="submit" class="btn-gold-login" style="background: linear-gradient(135deg, #DC2626, #991B1B); color: #FFF;">Continue with Google</button>
-          <button type="button" class="btn-gold-login" id="admin-cancel-btn" style="background: rgba(255,255,255,0.08); color: var(--ivory); margin-top: 10px; height: 42px;">Back to Home Page</button>
+          <div style="margin-bottom: 14px; text-align: left;">
+            <label style="font-size: 12.5px; font-weight: 600; color: var(--gold-300); display: block; margin-bottom: 6px;">Admin Email</label>
+            <input type="email" id="admin-email-input" class="input-field" value="skphostel21@gmail.com" placeholder="skphostel21@gmail.com" required autocomplete="username" />
+          </div>
+          <div style="margin-bottom: 18px; text-align: left;">
+            <label style="font-size: 12.5px; font-weight: 600; color: var(--gold-300); display: block; margin-bottom: 6px;">Admin Password</label>
+            <input type="password" id="admin-password-input" class="input-field" placeholder="••••••••" autocomplete="current-password" />
+          </div>
+          <button type="submit" class="btn-gold-login" id="btn-admin-email-login" style="background: linear-gradient(135deg, #DC2626, #991B1B); color: #FFF; margin-bottom: 10px;">SIGN IN AS WARDEN ADMIN</button>
+          <div style="text-align: center; margin: 8px 0; font-size: 11.5px; color: var(--ivory-dim);">— OR —</div>
+          <button type="button" class="btn-gold-login" id="btn-admin-google-login" style="background: rgba(212, 175, 55, 0.15); border: 1px solid var(--gold-500); color: var(--gold-300); margin-bottom: 10px;">Continue with Google</button>
+          <button type="button" class="btn-gold-login" id="admin-cancel-btn" style="background: rgba(255,255,255,0.08); color: var(--ivory); height: 42px;">Back to Home Page</button>
         </form>
       </div>
     </section>
@@ -1210,19 +1220,7 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
         </div>
       </div>
     </section>
-        <img src="/assets/logo.webp" alt="Logo" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold-500);" />
-        <div>
-          <h3 style="font-size: 16px; font-weight: 700; color: var(--white);">APJ ABDUL KALAM BLOCK</h3>
-          <span style="font-size: 11px; color: var(--gold-400);">Daily Attendance Verification</span>
-        </div>
-      </div>
 
-      <div class="card" style="text-align: center; padding: 24px 18px;">
-        <div style="font-size: 12px; color: var(--ivory-dim); text-transform: uppercase;">Attendance Summary</div>
-        <div style="margin: 14px 0 8px;"><span class="status-chip status-chip--present" style="font-size: 13px; padding: 6px 16px;">PRESENT</span></div>
-        <p style="font-size: 13.5px; color: var(--success); font-weight: 600; margin-top: 8px;">Attendance Status: Present</p>
-      </div>
-    </section>
 
     <!-- SCREEN 3: STUDENT OUTING / PASS REQUEST -->
     <section class="view" id="view-pass">
@@ -2361,7 +2359,8 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
 
   async function loadAdminPasses() {
     if (!firebaseDb || !firebaseAuth || !firebaseAuth.currentUser || !state.isAdmin) return;
-    var result = await firebaseDb.collection("pass_requests").orderBy("created_at", "desc").limit(20).get();
+    try {
+      var result = await firebaseDb.collection("pass_requests").orderBy("created_at", "desc").limit(20).get();
     var businessNow = await getBusinessNow();
     var pending = [], outside = [], history = [];
     result.docs.forEach(function (doc) {
@@ -2375,6 +2374,9 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
       var element = document.getElementById(section[0]);
       if (element) element.innerHTML = section[1].length ? section[1].map(function (pass) { return renderPassCard(pass, section[2], businessNow); }).join("") : '<p class="pass-empty">No requests.</p>';
     });
+    } catch (err) {
+      console.error("Error loading admin passes:", err);
+    }
   }
 
   
@@ -2822,9 +2824,18 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
     }
   }
 
-  if (document.getElementById("topbar-secret-logo")) {
-    document.getElementById("topbar-secret-logo").addEventListener("pointerup", handleLogoTap, { passive: false });
-    document.getElementById("topbar-secret-logo").addEventListener("click", handleLogoTap);
+  ["topbar-secret-logo", "hero-logo-trigger", "login-logo-trigger"].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (el) {
+      el.addEventListener("pointerup", handleLogoTap, { passive: false });
+      el.addEventListener("click", handleLogoTap);
+    }
+  });
+
+  if (document.getElementById("btn-goto-admin-login")) {
+    document.getElementById("btn-goto-admin-login").addEventListener("click", function () {
+      openAdminAccessGate();
+    });
   }
 
   document.querySelectorAll("[data-admin-access-close]").forEach(function (element) {
@@ -2854,42 +2865,95 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
     });
   }
 
+  async function processAdminAuthUser(user) {
+    var normalizedEmail = String(user && user.email || "").trim().toLowerCase();
+    var isAuthorizedAdmin = (normalizedEmail === "skphostel21@gmail.com");
+    if (!isAuthorizedAdmin) {
+      if (firebaseAuth && firebaseAuth.currentUser) await firebaseAuth.signOut();
+      state.isLoggedIn = false;
+      state.isAdmin = false;
+      showToast("Access Failed", "⚠️", true);
+      switchView("view-landing");
+      return false;
+    }
+    state.isLoggedIn = true;
+    state.isAdmin = true;
+    document.getElementById("app-bottom-nav").style.display = "none";
+    document.getElementById("topbar-sublabel").textContent = "Admin Control Portal";
+    switchView("view-admin-dashboard");
+    try {
+      await Promise.all([loadAdminPasses(), loadAdminStudents(), loadAttendanceReportHistory()]);
+    } catch (e) {
+      console.error("Admin data load error:", e);
+    }
+    showToast("Authenticated as Warden Admin", "🔑");
+    return true;
+  }
+
   if (document.getElementById("admin-login-form")) {
     document.getElementById("admin-login-form").addEventListener("submit", async function (e) {
       e.preventDefault();
       if (!firebaseAuth) { showToast("Firebase authentication is unavailable.", "⚠️", true); return; }
-      var provider = new firebase.auth.GoogleAuthProvider();
+      var emailInput = document.getElementById("admin-email-input");
+      var passInput = document.getElementById("admin-password-input");
+      var emailVal = (emailInput ? emailInput.value : "").trim();
+      var passVal = passInput ? passInput.value : "";
+      
+      if (emailVal.toLowerCase() !== "skphostel21@gmail.com") {
+        showToast("Access Failed", "⚠️", true);
+        switchView("view-landing");
+        return;
+      }
+
       try {
         await firebaseAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-        var credential = await firebaseAuth.signInWithPopup(provider);
-        var tokenResult = await credential.user.getIdTokenResult(true);
-        var claims = tokenResult.claims || {};
-        var normalizedEmail = String(credential.user.email || "").trim().toLowerCase();
-        var isAuthorizedAdmin = (normalizedEmail === "skphostel21@gmail.com");
-        if (!isAuthorizedAdmin) {
-          await firebaseAuth.signOut();
-          state.isLoggedIn = false;
-          state.isAdmin = false;
-          showToast("Access Failed", "⚠️", true);
-          switchView("view-landing");
-          return;
+        var userCred;
+        if (passVal) {
+          userCred = await firebaseAuth.signInWithEmailAndPassword(emailVal, passVal);
+        } else {
+          var provider = new firebase.auth.GoogleAuthProvider();
+          userCred = await firebaseAuth.signInWithPopup(provider);
         }
+        await processAdminAuthUser(userCred.user);
       } catch (error) {
         if (firebaseAuth.currentUser) await firebaseAuth.signOut();
         state.isLoggedIn = false;
         state.isAdmin = false;
-        showToast(error && error.code === "auth/popup-closed-by-user" ? "Google sign-in was cancelled." : "Access Failed", "⚠️", true);
+        var errDesc = "Access Failed";
+        if (error && error.code === "auth/popup-closed-by-user") errDesc = "Google sign-in was cancelled.";
+        else if (error && error.code === "auth/wrong-password") errDesc = "Invalid Admin Password.";
+        else if (error && error.code === "auth/user-not-found") errDesc = "Admin account not found in Auth.";
+        showToast(errDesc, "⚠️", true);
         switchView("view-landing");
-        return;
       }
-      state.isLoggedIn = true;
-      state.isAdmin = true;
-      document.getElementById("app-bottom-nav").style.display = "none";
-      document.getElementById("topbar-sublabel").textContent = "Admin Control Portal";
-      switchView("view-admin-dashboard");
-      await Promise.all([loadAdminPasses(), loadAdminStudents(), loadAttendanceReportHistory()]);
-      showToast("Authenticated as Warden Admin", "🔑");
     });
+
+    var googleBtn = document.getElementById("btn-admin-google-login");
+    if (googleBtn) {
+      googleBtn.addEventListener("click", async function () {
+        if (!firebaseAuth) { showToast("Firebase authentication is unavailable.", "⚠️", true); return; }
+        var provider = new firebase.auth.GoogleAuthProvider();
+        try {
+          await firebaseAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+          var userCred = await firebaseAuth.signInWithPopup(provider);
+          await processAdminAuthUser(userCred.user);
+        } catch (error) {
+          if (error && error.code === "auth/popup-blocked") {
+            try {
+              await firebaseAuth.signInWithRedirect(provider);
+              return;
+            } catch (rErr) {
+              console.error(rErr);
+            }
+          }
+          if (firebaseAuth.currentUser) await firebaseAuth.signOut();
+          state.isLoggedIn = false;
+          state.isAdmin = false;
+          showToast(error && error.code === "auth/popup-closed-by-user" ? "Google sign-in was cancelled." : "Access Failed", "⚠️", true);
+          switchView("view-landing");
+        }
+      });
+    }
   }
 
   if (document.getElementById("admin-cancel-btn")) {

@@ -1,14 +1,31 @@
 {
-  "name": "APJ ABDUL KALAM BLOCK Attendance Portal",
-  "short_name": "Kalam Block",
-  "description": "Hostel attendance and out pass management portal.",
+  "name": "APJ Hostel Attendance Management",
+  "short_name": "APJ Hostel",
+  "description": "APJ Abdul Kalam Block Hostel Attendance & Pass Management Portal",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#071426",
-  "theme_color": "#0B1F3A",
-  "orientation": "portrait-primary",
+  "background_color": "#070D18",
+  "theme_color": "#0D1527",
+  "orientation": "any",
   "icons": [
-    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+    {
+      "src": "/assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
   ]
 }
