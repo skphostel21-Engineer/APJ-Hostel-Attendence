@@ -2859,7 +2859,7 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
         created_by: firebaseAuth.currentUser ? firebaseAuth.currentUser.email : "skphostel21@gmail.com"
       };
       await firebaseDb.collection("attendance_reports").doc(reportId).set(reportMeta, { merge: true });
-      loadAttendanceReportHistory();
+      if (typeof window.loadAttendanceReportHistory === "function") window.loadAttendanceReportHistory();
     } catch (e) {
       console.error("Error saving report metadata:", e);
     }
@@ -2894,6 +2894,8 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
       console.error("Error loading report history:", e);
     }
   }
+
+  window.loadAttendanceReportHistory = loadAttendanceReportHistory;
 
   window.viewReportHistoryItem = function (d, dept, yr) {
     if (document.getElementById("report-filter-date")) document.getElementById("report-filter-date").value = d;
@@ -3555,8 +3557,8 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
       loadAdminStudents();
     } else if (sectionName === 'outpass' && typeof loadAdminPasses === 'function') {
       loadAdminPasses();
-    } else if (sectionName === 'reporthistory' && typeof loadAttendanceReportHistory === 'function') {
-      loadAttendanceReportHistory();
+    } else if (sectionName === 'reporthistory' && typeof window.loadAttendanceReportHistory === 'function') {
+      window.loadAttendanceReportHistory();
     } else if (sectionName === 'reports' && typeof updateAttendanceReportSummary === 'function') {
       updateAttendanceReportSummary();
     }
@@ -3633,7 +3635,7 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
     switchView("view-admin");
     if (typeof window.switchAdminSection === "function") window.switchAdminSection("dashboard");
     try {
-      await Promise.all([loadAdminPasses(), loadAdminStudents(), loadAttendanceReportHistory()]);
+      await Promise.all([loadAdminPasses(), loadAdminStudents(), typeof window.loadAttendanceReportHistory === "function" ? window.loadAttendanceReportHistory() : Promise.resolve()]);
     } catch (e) {
       console.error("Admin data load error:", e);
     }
@@ -4362,8 +4364,9 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
           state.isAdmin = true;
           document.getElementById("app-bottom-nav").style.display = "none";
           document.getElementById("topbar-sublabel").textContent = "Admin Control Portal";
-          switchView("view-admin-dashboard");
-          await Promise.all([loadAdminPasses(), loadAdminStudents(), loadAttendanceReportHistory()]);
+          switchView("view-admin");
+          if (typeof window.switchAdminSection === "function") window.switchAdminSection("dashboard");
+          await Promise.all([loadAdminPasses(), loadAdminStudents(), typeof window.loadAttendanceReportHistory === "function" ? window.loadAttendanceReportHistory() : Promise.resolve()]);
         } else {
           state.isLoggedIn = true;
           state.isAdmin = false;
