@@ -314,13 +314,16 @@ button { cursor: pointer; border: none; background: none; }
   align-items: center;
   justify-content: center;
   text-align: center;
-  transition: opacity 0.4s ease, visibility 0.4s ease;
-  pointer-events: auto;
-}
-.pwa-splash.is-hidden {
-  opacity: 0;
-  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
   pointer-events: none;
+}
+.pwa-splash.is-hidden,
+.pwa-splash[aria-hidden="true"] {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  z-index: -999999 !important;
 }
 .pwa-splash__content {
   display: flex;
@@ -3570,18 +3573,23 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
   
   function dismissPwaSplash() {
     var splash = document.getElementById("pwa-splash-screen");
-    if (splash && !splash.classList.contains("is-hidden")) {
+    if (splash) {
       splash.classList.add("is-hidden");
-      setTimeout(function () { splash.style.display = "none"; }, 450);
+      splash.setAttribute("aria-hidden", "true");
+      splash.style.display = "none";
+      splash.style.pointerEvents = "none";
     }
   }
 
+  dismissPwaSplash();
   if (document.readyState === "complete" || document.readyState === "interactive") {
-    setTimeout(dismissPwaSplash, 500);
+    dismissPwaSplash();
   } else {
-    document.addEventListener("DOMContentLoaded", function () { setTimeout(dismissPwaSplash, 500); });
+    document.addEventListener("DOMContentLoaded", dismissPwaSplash);
   }
-  setTimeout(dismissPwaSplash, 1200);
+  window.addEventListener("load", dismissPwaSplash);
+  document.addEventListener("pointerdown", dismissPwaSplash, { once: true });
+  setTimeout(dismissPwaSplash, 300);
 
   window.addEventListener("online", function () {
     var banner = document.getElementById("offline-banner");
