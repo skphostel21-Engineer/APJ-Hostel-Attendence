@@ -17,7 +17,7 @@ service cloud.firestore {
     }
 
     match /students/{uid} {
-      allow read: if isAdmin() || (signedIn() && (request.auth.uid == uid || resource.data.auth_uid == request.auth.uid));
+      allow read: if isAdmin() || (signedIn() && (resource == null || request.auth.uid == uid || resource.data.auth_uid == request.auth.uid));
       allow create, update, delete: if isAdmin();
     }
 
@@ -27,13 +27,17 @@ service cloud.firestore {
 
     match /attendance/{attendanceId} {
       allow read: if isAdmin()
-        || (signedIn() && resource.data.student_uid == request.auth.uid);
-      allow create, update, delete: if isAdmin();
+        || (signedIn() && (resource == null || resource.data.student_uid == request.auth.uid));
+      allow create: if isAdmin()
+        || (signedIn() && request.resource.data.student_uid == request.auth.uid);
+      allow update: if isAdmin()
+        || (signedIn() && resource.data.student_uid == request.auth.uid && request.resource.data.student_uid == request.auth.uid);
+      allow delete: if isAdmin();
     }
 
     match /pass_requests/{passId} {
       allow read: if isAdmin()
-        || (signedIn() && resource.data.student_uid == request.auth.uid);
+        || (signedIn() && (resource == null || resource.data.student_uid == request.auth.uid));
       allow create: if signedIn()
         && request.resource.data.student_uid == request.auth.uid
         && request.resource.data.status == 'PENDING';

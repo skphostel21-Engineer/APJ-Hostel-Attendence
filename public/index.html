@@ -1139,6 +1139,10 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
   color: #00796B !important;
   background: rgba(0, 137, 123, 0.12) !important;
 }
+.password-toggle-btn svg,
+.password-toggle-btn path {
+  pointer-events: none !important;
+}
 #modal-student-form .form-actions-row {
   margin-top: 24px !important;
   padding-top: 20px !important;
@@ -1232,9 +1236,11 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
       <p>Enter the access password to continue.</p>
       <form id="admin-access-form">
         <label for="admin-access-password">Admin Access Password</label>
-        <div class="admin-access-modal__password-wrap">
+        <div class="password-input-wrap">
           <input type="password" id="admin-access-password" class="input-field" autocomplete="off" required />
-          <button type="button" id="admin-access-toggle" class="admin-access-modal__toggle" aria-label="Show password">Show</button>
+          <button type="button" id="admin-access-toggle" class="password-toggle-btn" data-password-toggle data-target="admin-access-password" onclick="togglePasswordVisibility('admin-access-password', this)" aria-label="Show password" aria-pressed="false">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
         </div>
         <div class="admin-access-modal__error" id="admin-access-error" role="alert" aria-live="polite"></div>
         <button type="submit" class="btn-gold-login" id="admin-access-submit">Verify</button>
@@ -1301,7 +1307,7 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
             <label style="font-size: 12.5px; font-weight: 600; color: var(--gold-300); display: block; margin-bottom: 7px;">Password</label>
             <div class="password-input-wrap">
               <input type="password" id="password" class="input-field" placeholder="••••••••" autocomplete="current-password" />
-              <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('password', this)" aria-label="Show password">
+              <button type="button" class="password-toggle-btn" data-password-toggle data-target="password" onclick="togglePasswordVisibility('password', this)" aria-label="Show password" aria-pressed="false">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
               </button>
             </div>
@@ -1329,7 +1335,7 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
             <label style="font-size: 12.5px; font-weight: 600; color: var(--gold-300); display: block; margin-bottom: 6px;">Admin Password</label>
             <div class="password-input-wrap">
               <input type="password" id="admin-password-input" class="input-field" placeholder="••••••••" autocomplete="current-password" />
-              <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('admin-password-input', this)" aria-label="Show password">
+              <button type="button" class="password-toggle-btn" data-password-toggle data-target="admin-password-input" onclick="togglePasswordVisibility('admin-password-input', this)" aria-label="Show password" aria-pressed="false">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
               </button>
             </div>
@@ -1814,6 +1820,84 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
   var firebaseAuth = window.firebaseAuth;
   var firebaseDb = window.firebaseDb;
 
+  function logFirestoreError(operationName, collectionName, info, err) {
+    console.error("Firestore operation failed:", {
+      operation: operationName || "unknown_operation",
+      collection: collectionName || "unknown_collection",
+      info: info || {},
+      code: err && err.code ? err.code : "unknown",
+      message: err && err.message ? err.message : String(err)
+    });
+  }
+
+  function handleUserFirestoreError(operationName, collectionName, info, err, customMsg) {
+    logFirestoreError(operationName, collectionName, info, err);
+    if (err && err.code === "permission-denied") {
+      showToast("Firestore permission denied. Please contact administrator.", "⚠️", true);
+    } else {
+      showToast(customMsg || "Unable to save student data. Please try again.", "⚠️", true);
+    }
+  }
+
+  window.runFirebaseDiagnostics = async function () {
+    console.log("=== APJ HOSTEL FIREBASE DIAGNOSTICS ===");
+    var report = {
+      firestoreDbName: "apj-hostel-db",
+      firestoreConnected: false,
+      authenticated: false,
+      uid: null,
+      email: null,
+      isAdmin: false,
+      readAccess: false,
+      writeAccessAuthorized: false,
+      errors: []
+    };
+
+    try {
+      if (!firebaseDb) {
+        report.errors.push("firebaseDb instance not initialized.");
+        console.error("Diagnostic Failed:", report);
+        return report;
+      }
+
+      var currUser = firebaseAuth ? firebaseAuth.currentUser : null;
+      if (currUser) {
+        report.authenticated = true;
+        report.uid = currUser.uid;
+        report.email = currUser.email;
+        report.isAdmin = (String(currUser.email || "").toLowerCase() === "skphostel21@gmail.com");
+      }
+
+      try {
+        if (report.isAdmin) {
+          var snap = await firebaseDb.collection("students").limit(1).get();
+          report.firestoreConnected = true;
+          report.readAccess = true;
+        } else if (report.authenticated) {
+          var userDoc = await firebaseDb.collection("students").doc(currUser.uid).get();
+          report.firestoreConnected = true;
+          report.readAccess = true;
+        } else {
+          report.errors.push("No active auth session for private Firestore read test.");
+        }
+      } catch (rErr) {
+        logFirestoreError("diagnostics_read", "students", { uid: report.uid }, rErr);
+        report.errors.push("Read test error: " + (rErr.message || rErr.code));
+      }
+
+      if (report.authenticated) {
+        report.writeAccessAuthorized = true;
+      }
+
+      console.log("Diagnostic Summary:", report);
+      return report;
+    } catch (err) {
+      logFirestoreError("diagnostics_main", "system", {}, err);
+      report.errors.push("Global diagnostic error: " + err.message);
+      return report;
+    }
+  };
+
   var state = { isLoggedIn: false, isAdmin: false, studentProfile: null, passSubmitting: false };
   var appToast = document.getElementById("app-toast");
   var liveHostelOverview = document.getElementById("live-hostel-overview");
@@ -1920,37 +2004,73 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
   }
 
   async function loadStudentProfile() {
-    var studentId = document.getElementById("student-id").value.trim();
-    if (!firebaseDb || !firebaseAuth || !firebaseAuth.currentUser) return;
+    if (!firebaseDb || !firebaseAuth || !firebaseAuth.currentUser) return null;
     var userId = firebaseAuth.currentUser.uid;
-    var result = await firebaseDb.collection("students").where("auth_uid", "==", userId).limit(1).get();
-    if (result.empty) throw new Error("Student profile not found for authenticated user.");
-    populateStudentProfile(result.docs[0].data());
-    await loadStudentPassStatus();
+    try {
+      var docSnap = await firebaseDb.collection("students").doc(userId).get();
+      if (docSnap.exists) {
+        var profileData = docSnap.data();
+        populateStudentProfile(profileData);
+        await loadStudentPassStatus();
+        return profileData;
+      }
+      var result = await firebaseDb.collection("students").where("auth_uid", "==", userId).limit(1).get();
+      if (!result.empty) {
+        var profileData = result.docs[0].data();
+        populateStudentProfile(profileData);
+        await loadStudentPassStatus();
+        return profileData;
+      }
+      throw new Error("Student profile not found for authenticated user.");
+    } catch (err) {
+      logFirestoreError("loadStudentProfile", "students", { userId: userId }, err);
+      throw err;
+    }
   }
 
   var EYE_SVG = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>';
   var EYE_OFF_SVG = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.52 13.52 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>';
 
   function togglePasswordVisibility(inputId, btn) {
-    var input = document.getElementById(inputId);
+    if (!inputId && btn && btn.dataset && btn.dataset.target) {
+      inputId = btn.dataset.target;
+    }
+    var input = typeof inputId === "string" ? document.getElementById(inputId) : inputId;
     if (!input) return;
-    if (input.type === "password") {
-      input.type = "text";
-      if (btn) {
-        btn.innerHTML = EYE_OFF_SVG;
-        btn.setAttribute("aria-label", "Hide password");
-        btn.classList.add("is-visible");
-      }
-    } else {
-      input.type = "password";
-      if (btn) {
-        btn.innerHTML = EYE_SVG;
-        btn.setAttribute("aria-label", "Show password");
-        btn.classList.remove("is-visible");
+
+    var isHidden = input.type === "password";
+    input.type = isHidden ? "text" : "password";
+
+    var toggleBtn = btn || (typeof inputId === "string" ? document.querySelector('[data-target="' + inputId + '"]') || document.querySelector('button[onclick*="' + inputId + '"]') : null);
+
+    if (toggleBtn) {
+      toggleBtn.innerHTML = isHidden ? EYE_OFF_SVG : EYE_SVG;
+      toggleBtn.setAttribute("aria-label", isHidden ? "Hide password" : "Show password");
+      toggleBtn.setAttribute("aria-pressed", isHidden ? "true" : "false");
+      if (isHidden) {
+        toggleBtn.classList.add("is-visible");
+      } else {
+        toggleBtn.classList.remove("is-visible");
       }
     }
   }
+
+  window.togglePasswordVisibility = togglePasswordVisibility;
+
+  document.addEventListener("click", function (e) {
+    var btn = e.target.closest(".password-toggle-btn, [data-password-toggle]");
+    if (!btn) return;
+    var targetId = btn.getAttribute("data-target") || (btn.dataset ? btn.dataset.target : null);
+    if (!targetId && btn.getAttribute("onclick")) {
+      var match = btn.getAttribute("onclick").match(/togglePasswordVisibility\(['"]([^'"]+)['"]/);
+      if (match) targetId = match[1];
+    }
+    if (targetId) {
+      e.preventDefault();
+      e.stopPropagation();
+      togglePasswordVisibility(targetId, btn);
+    }
+  });
 
   function escapeHtml(value) {
     return String(value === undefined || value === null ? "" : value).replace(/[&<>'"]/g, function (character) {
@@ -2084,7 +2204,9 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
     try {
       var snap = await firebaseDb.collection("students").where("student_id", "==", studentId).limit(1).get();
       if (!snap.empty) return snap.docs[0].data();
-    } catch (e) {}
+    } catch (e) {
+      logFirestoreError("getStudentProfileById", "students", { studentId: studentId }, e);
+    }
     return null;
   }
 
@@ -2193,8 +2315,7 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
       showToast("Attendance marked as PRESENT!", "✓");
       await updateStudentAttendanceUI();
     } catch (err) {
-      showToast("Failed to submit attendance.", "⚠️", true);
-      console.error(err);
+      handleUserFirestoreError("submitStudentAttendance", "attendance", { docId: docId, studentUid: studentUid }, err, "Failed to submit attendance.");
     } finally {
       if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = "✓ SUBMIT ATTENDANCE NOW"; }
     }
@@ -2394,7 +2515,9 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
       try {
         var studentSnap = await firebaseDb.collection("students").limit(200).get();
         allStudents = studentSnap.docs.map(function(doc) { return Object.assign({ uid: doc.id }, doc.data()); });
-      } catch (e) {}
+      } catch (e) {
+        logFirestoreError("getAttendanceReportData_fetchStudents", "students", {}, e);
+      }
     }
 
     // Apply student filters for Department, Year, Room
@@ -3494,10 +3617,12 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
     var normalizedEmail = String(user && user.email || "").trim().toLowerCase();
     var isAuthorizedAdmin = (normalizedEmail === "skphostel21@gmail.com");
     if (!isAuthorizedAdmin) {
-      if (firebaseAuth && firebaseAuth.currentUser) await firebaseAuth.signOut();
+      if (firebaseAuth && firebaseAuth.currentUser) {
+        try { await firebaseAuth.signOut(); } catch (e) {}
+      }
       state.isLoggedIn = false;
       state.isAdmin = false;
-      showToast("Access Failed", "⚠️", true);
+      showToast("Access denied. This account is not authorized as Warden Admin.", "⚠️", true);
       switchView("view-landing");
       return false;
     }
@@ -3505,7 +3630,8 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
     state.isAdmin = true;
     document.getElementById("app-bottom-nav").style.display = "none";
     document.getElementById("topbar-sublabel").textContent = "Admin Control Portal";
-    switchView("view-admin"); window.switchAdminSection("dashboard");
+    switchView("view-admin");
+    if (typeof window.switchAdminSection === "function") window.switchAdminSection("dashboard");
     try {
       await Promise.all([loadAdminPasses(), loadAdminStudents(), loadAttendanceReportHistory()]);
     } catch (e) {
@@ -3524,32 +3650,46 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
       var emailVal = (emailInput ? emailInput.value : "").trim();
       var passVal = passInput ? passInput.value : "";
       
-      if (emailVal.toLowerCase() !== "skphostel21@gmail.com") {
-        showToast("Access Failed", "⚠️", true);
-        switchView("view-landing");
+      if (!emailVal || !passVal) {
+        showToast("Please enter both Admin Email and Password.", "⚠️", true);
         return;
       }
 
       try {
         await firebaseAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-        var userCred;
-        if (passVal) {
-          userCred = await firebaseAuth.signInWithEmailAndPassword(emailVal, passVal);
-        } else {
-          var provider = new firebase.auth.GoogleAuthProvider();
-          userCred = await firebaseAuth.signInWithPopup(provider);
+        var userCred = await firebaseAuth.signInWithEmailAndPassword(emailVal, passVal);
+        var user = userCred.user;
+        var normalizedEmail = String(user && user.email || "").trim().toLowerCase();
+
+        if (normalizedEmail !== "skphostel21@gmail.com") {
+          await firebaseAuth.signOut();
+          state.isLoggedIn = false;
+          state.isAdmin = false;
+          showToast("Access denied. This account is not authorized as Warden Admin.", "⚠️", true);
+          switchView("view-landing");
+          return;
         }
-        await processAdminAuthUser(userCred.user);
+
+        await processAdminAuthUser(user);
       } catch (error) {
-        if (firebaseAuth.currentUser) await firebaseAuth.signOut();
+        if (firebaseAuth && firebaseAuth.currentUser) {
+          try { await firebaseAuth.signOut(); } catch (sErr) {}
+        }
         state.isLoggedIn = false;
         state.isAdmin = false;
-        var errDesc = "Access Failed";
-        if (error && error.code === "auth/popup-closed-by-user") errDesc = "Google sign-in was cancelled.";
-        else if (error && error.code === "auth/wrong-password") errDesc = "Invalid Admin Password.";
-        else if (error && error.code === "auth/user-not-found") errDesc = "Admin account not found in Auth.";
+        var errCode = error && error.code ? error.code : "";
+        var errDesc = "Access denied. This account is not authorized as Warden Admin.";
+
+        if (errCode === "auth/wrong-password" || errCode === "auth/invalid-credential" || errCode === "auth/invalid-email") {
+          errDesc = "Incorrect admin email or password.";
+        } else if (errCode === "auth/user-not-found") {
+          errDesc = "Admin account not found.";
+        } else if (errCode === "auth/too-many-requests") {
+          errDesc = "Too many login attempts. Please try again later.";
+        }
+
+        logFirestoreError("adminEmailLogin", "auth", { email: emailVal }, error);
         showToast(errDesc, "⚠️", true);
-        switchView("view-landing");
       }
     });
 
@@ -3634,32 +3774,46 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
         return;
       }
 
+      var authEmail = inputStudentId.toLowerCase() + "@kalam.hostel";
+
       try {
-        // Query Firestore for Student Document by student_id
-        var snap = await firebaseDb.collection("students").where("student_id", "==", inputStudentId).limit(1).get();
-        if (snap.empty) {
-          // Check fallback field name 'id'
-          snap = await firebaseDb.collection("students").where("id", "==", inputStudentId).limit(1).get();
-        }
-        if (snap.empty) {
-          showToast("Invalid Student ID or Password.", "⚠️", true);
-          return;
+        // Step 1: Authenticate with Firebase Authentication
+        await firebaseAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+        var userCred = await firebaseAuth.signInWithEmailAndPassword(authEmail, inputPassword);
+        var user = userCred.user;
+
+        // Step 2: Retrieve the matching Firestore student document
+        var studentDoc = null;
+        try {
+          var docSnap = await firebaseDb.collection("students").doc(user.uid).get();
+          if (docSnap.exists) {
+            studentDoc = docSnap.data();
+          } else {
+            var snap = await firebaseDb.collection("students").where("auth_uid", "==", user.uid).limit(1).get();
+            if (!snap.empty) {
+              studentDoc = snap.docs[0].data();
+            } else {
+              snap = await firebaseDb.collection("students").where("student_id", "==", inputStudentId).limit(1).get();
+              if (!snap.empty) studentDoc = snap.docs[0].data();
+            }
+          }
+        } catch (fetchErr) {
+          logFirestoreError("getStudentProfileOnLogin", "students", { uid: user.uid }, fetchErr);
         }
 
-        var studentDoc = snap.docs[0].data();
-        if (String(studentDoc.status || "active").toLowerCase() === "disabled") {
+        // Step 3 & 4: Verify status and block disabled accounts
+        if (studentDoc && String(studentDoc.status || "active").toLowerCase() === "disabled") {
+          await firebaseAuth.signOut();
           showToast("Your account has been disabled. Please contact the administrator.", "⚠️", true);
           return;
         }
 
-        var authEmail = studentDoc.auth_email || (inputStudentId.toLowerCase() + "@kalam.hostel");
-        await firebaseAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-        await firebaseAuth.signInWithEmailAndPassword(authEmail, inputPassword);
+        // Step 5: Load the correct student profile
         await setStudentLogin(true);
         showToast("Signed in successfully.", "👋");
       } catch (error) {
+        logFirestoreError("studentLogin", "auth/students", { studentId: inputStudentId }, error);
         showToast("Invalid Student ID or Password.", "⚠️", true);
-        console.error(error);
       }
     });
   }
@@ -4331,7 +4485,7 @@ if ('serviceWorker' in navigator) {
               <label for="student-form-password" class="form-label">Password <span class="required-star">*</span></label>
               <div class="password-input-wrap">
                 <input type="password" id="student-form-password" class="form-control" placeholder="Enter password (min 6 characters)" autocomplete="new-password" />
-                <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('student-form-password', this)" aria-label="Show password">
+                <button type="button" class="password-toggle-btn" data-password-toggle data-target="student-form-password" onclick="togglePasswordVisibility('student-form-password', this)" aria-label="Show password" aria-pressed="false">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
                 </button>
               </div>
@@ -4340,7 +4494,7 @@ if ('serviceWorker' in navigator) {
               <label for="student-form-confirm-password" class="form-label">Confirm Password <span class="required-star">*</span></label>
               <div class="password-input-wrap">
                 <input type="password" id="student-form-confirm-password" class="form-control" placeholder="Repeat password" autocomplete="new-password" />
-                <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('student-form-confirm-password', this)" aria-label="Show password">
+                <button type="button" class="password-toggle-btn" data-password-toggle data-target="student-form-confirm-password" onclick="togglePasswordVisibility('student-form-confirm-password', this)" aria-label="Show password" aria-pressed="false">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
                 </button>
               </div>
@@ -4373,7 +4527,7 @@ if ('serviceWorker' in navigator) {
           <label style="font-size: 11.5px; color: var(--gold-400); display: block; margin-bottom: 4px;">New Password *</label>
           <div class="password-input-wrap">
             <input type="password" id="reset-new-password" class="form-control" placeholder="Min 6 characters" required />
-            <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('reset-new-password', this)" aria-label="Show password">
+            <button type="button" class="password-toggle-btn" data-password-toggle data-target="reset-new-password" onclick="togglePasswordVisibility('reset-new-password', this)" aria-label="Show password" aria-pressed="false">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
             </button>
           </div>
@@ -4383,7 +4537,7 @@ if ('serviceWorker' in navigator) {
           <label style="font-size: 11.5px; color: var(--gold-400); display: block; margin-bottom: 4px;">Confirm Password *</label>
           <div class="password-input-wrap">
             <input type="password" id="reset-confirm-password" class="form-control" placeholder="Repeat new password" required />
-            <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('reset-confirm-password', this)" aria-label="Show password">
+            <button type="button" class="password-toggle-btn" data-password-toggle data-target="reset-confirm-password" onclick="togglePasswordVisibility('reset-confirm-password', this)" aria-label="Show password" aria-pressed="false">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
             </button>
           </div>

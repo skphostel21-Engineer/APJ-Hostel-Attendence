@@ -40,7 +40,7 @@ test('5. admin authorization restricts strictly to skphostel21@gmail.com', () =>
 test('6. firestore.rules enforces deny-by-default, student isolation and client CRUD permissions', () => {
   assert.match(rulesSource, /match \/students\/\{uid\}[\s\S]*request\.auth\.uid == uid \|\| resource\.data\.auth_uid == request\.auth\.uid/);
   assert.match(rulesSource, /match \/pass_requests\/\{passId\}[\s\S]*request\.resource\.data\.status == 'PENDING'/);
-  assert.match(rulesSource, /match \/attendance\/\{attendanceId\}[\s\S]*allow create, update, delete: if isAdmin\(\);/);
+  assert.match(rulesSource, /match \/attendance\/\{attendanceId\}[\s\S]*request\.resource\.data\.student_uid == request\.auth\.uid/);
   assert.match(rulesSource, /match \/\{document=\*\*\}[\s\S]*allow read, write: if false;/);
 });
 
