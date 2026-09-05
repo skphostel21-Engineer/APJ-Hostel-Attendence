@@ -2087,6 +2087,15 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
     return isNaN(d.getTime()) ? new Date() : d;
   }
 
+  function getKolkataDateString(dateObj) {
+    var d = dateObj || new Date();
+    try {
+      return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kolkata" }).format(d);
+    } catch (e) {
+      return d.toISOString().slice(0, 10);
+    }
+  }
+
   function isOverdue(pass, businessNow) {
     if (String(pass.status).toUpperCase() !== "APPROVED" || String(pass.outside_status).toUpperCase() !== "OUTSIDE") return false;
     var expectedReturn = new Date(String(pass.expected_return_date || "") + "T" + String(pass.expected_return_time || "") + "+05:30");
@@ -2213,7 +2222,7 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
   
   function getAttendanceSessionState(targetDateStr) {
     var businessNow = getBusinessNow();
-    var todayStr = businessNow.toISOString().slice(0, 10);
+    var todayStr = getKolkataDateString(businessNow);
     var dateStr = targetDateStr || todayStr;
     
     // Attendance Session Window: Asia/Kolkata 3:00 PM (15:00) to 4:30 PM (16:30) IST
@@ -2259,7 +2268,7 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
     }
 
     var businessNow = getBusinessNow();
-    var todayKey = businessNow.toISOString().slice(0, 10);
+    var todayKey = getKolkataDateString(businessNow);
     var sessionState = getAttendanceSessionState(todayKey);
 
     if (sessionState.status !== "OPEN" && sessionState.status !== "CLOSING_SOON") {
@@ -2324,7 +2333,7 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
     if (!firebaseDb || !firebaseAuth || !firebaseAuth.currentUser) return;
 
     var businessNow = getBusinessNow();
-    var todayKey = businessNow.toISOString().slice(0, 10);
+    var todayKey = getKolkataDateString(businessNow);
     var sessionState = getAttendanceSessionState(todayKey);
 
     if (sessionBadge) {
@@ -2401,7 +2410,7 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
     if (!firebaseDb || !state.isAdmin) return null;
 
     var businessNow = getBusinessNow();
-    var queryDate = targetDateVal || businessNow.toISOString().slice(0, 10);
+    var queryDate = targetDateVal || getKolkataDateString(businessNow);
     var sessionKey = "StandardSession";
 
     // 1. Fetch all eligible active students
@@ -2496,7 +2505,7 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
 
   async function getAttendanceReportData(dateVal, deptVal, yearVal, roomVal, sessionVal) {
     if (!firebaseDb) return { records: [], total: 0, present: 0, absent: 0, presentList: [], absentList: [] };
-    var queryDate = dateVal || new Date().toISOString().slice(0, 10);
+    var queryDate = dateVal || getKolkataDateString();
     var sessionState = getAttendanceSessionState(queryDate);
 
     if (sessionState.isClosed && state.isAdmin) {
@@ -2523,7 +2532,7 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
     });
 
     // Query Firestore attendance records for date
-    var queryDate = dateVal || new Date().toISOString().slice(0, 10);
+    var queryDate = dateVal || getKolkataDateString();
     var attSnap = await firebaseDb.collection("attendance").where("date", "==", queryDate).get();
     var attMap = {};
     attSnap.docs.forEach(function (doc) {
@@ -2839,7 +2848,7 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
   async function saveAttendanceReportMetadata(dateStr, deptStr, yearStr, sessionStr, totalNum, presentNum, absentNum) {
     if (!firebaseDb || !state.isAdmin) return;
     try {
-      var dStr = dateStr || new Date().toISOString().slice(0, 10);
+      var dStr = dateStr || getKolkataDateString();
       var reportId = dStr + "_" + (deptStr || "ALL").replace(/\s+/g, "") + "_" + (yearStr || "ALL").replace(/\s+/g, "");
       var reportMeta = {
         date: dStr,
@@ -2936,7 +2945,7 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
 
   // Set default report filter date to today
   if (document.getElementById("report-filter-date")) {
-    document.getElementById("report-filter-date").value = new Date().toISOString().slice(0, 10);
+    document.getElementById("report-filter-date").value = getKolkataDateString();
   }
 
     if (!state.isAdmin || !firebaseAuth || !firebaseAuth.currentUser) {
@@ -2948,7 +2957,7 @@ h1, h2, h3, h4, p, span, label, button { overflow-wrap: anywhere; }
 
     if (feedbackEl) feedbackEl.textContent = 'Saving...';
     try {
-      var todayKey = new Date().toISOString().slice(0, 10);
+      var todayKey = getKolkataDateString();
       var docId = todayKey + "_" + studentId;
       await firebaseDb.collection("attendance").doc(docId).set({
         date: todayKey,
