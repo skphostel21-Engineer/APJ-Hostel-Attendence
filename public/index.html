@@ -669,7 +669,7 @@ select.form-control option, select.input-field option {
   </script>
 
   <!-- UNIQUE ROTATING CREST LOGO SPLASH SCREEN (TRIGGERED ON REFRESH) -->
-  <div id="pwa-splash-screen" class="pwa-splash is-hidden" aria-hidden="true">
+  <div id="pwa-splash-screen" class="pwa-splash is-hidden" aria-hidden="true" onclick="window.dismissPwaSplash && window.dismissPwaSplash()">
     <div class="pwa-splash__content">
       <div class="pwa-splash__logo-container">
         <div class="pwa-splash__ring-outer"></div>
@@ -686,6 +686,32 @@ select.form-control option, select.input-field option {
       <div class="pwa-splash__status-text" id="splash-status-text">Restoring Secure Session...</div>
     </div>
   </div>
+
+  <script>
+    (function () {
+      function earlyDismiss() {
+        var overrideStyle = document.getElementById("pwa-splash-override");
+        if (overrideStyle) {
+          try { overrideStyle.remove(); } catch (e) {}
+        }
+        var splash = document.getElementById("pwa-splash-screen");
+        if (splash) {
+          splash.classList.add("is-hidden");
+          splash.setAttribute("aria-hidden", "true");
+          splash.style.setProperty("opacity", "0", "important");
+          splash.style.setProperty("visibility", "hidden", "important");
+          splash.style.setProperty("pointer-events", "none", "important");
+          splash.style.setProperty("z-index", "-999999", "important");
+          setTimeout(function () {
+            splash.style.setProperty("display", "none", "important");
+          }, 350);
+        }
+      }
+      window.dismissPwaSplash = earlyDismiss;
+      document.addEventListener("pointerdown", earlyDismiss, { once: true });
+      setTimeout(earlyDismiss, 3500);
+    })();
+  </script>
 
 <div class="offline-banner offline-banner--offline" id="offline-banner" style="display: none;" role="status" aria-live="polite">⚡ You are currently offline</div>
 
@@ -4006,6 +4032,10 @@ if ('serviceWorker' in navigator) {
     });
   });
 }
+
+  document.addEventListener("pointerdown", dismissPwaSplash, { once: true });
+
+})();
 </script>
 
   <!-- MODAL: ADD / EDIT STUDENT -->
