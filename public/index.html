@@ -3205,14 +3205,28 @@ select.form-control option, select.input-field option {
     return "<div class=\"att-mark-card pass-admin-card\"><span class=\"status-chip status-chip--" + (overdue ? "pending" : String(pass.status).toLowerCase()) + "\" style=\"float:right;\">" + badge + "</span><div class=\"pass-admin-card__details\">" + details + "</div>" + actions + "</div>";
   }
 
-  async function loadAdminPasses() {
+  var adminPassesList = [];
+  async function loadAdminPasses(forceRefresh) {
     if (!firebaseDb || !firebaseAuth || !firebaseAuth.currentUser || !state.isAdmin) return;
+    if (!forceRefresh && adminPassesList && adminPassesList.length > 0) {
+      await renderAdminPassesFromCache();
+      return;
+    }
     try {
       var result = await firebaseDb.collection("pass_requests").orderBy("created_at", "desc").limit(20).get();
+      adminPassesList = result.docs.map(function (doc) {
+        return Object.assign({ id: doc.id }, doc.data());
+      });
+      await renderAdminPassesFromCache();
+    } catch (err) {
+      console.error("Error loading admin passes:", err);
+    }
+  }
+
+  async function renderAdminPassesFromCache() {
     var businessNow = await getBusinessNow();
     var pending = [], outside = [], history = [];
-    result.docs.forEach(function (doc) {
-      var pass = Object.assign({ id: doc.id }, doc.data());
+    adminPassesList.forEach(function (pass) {
       var status = String(pass.status || "").toUpperCase();
       if (status === "PENDING") pending.push(pass);
       else if (status === "APPROVED" && String(pass.outside_status || "").toUpperCase() === "OUTSIDE") outside.push(pass);
@@ -3222,9 +3236,7 @@ select.form-control option, select.input-field option {
       var element = document.getElementById(section[0]);
       if (element) element.innerHTML = section[1].length ? section[1].map(function (pass) { return renderPassCard(pass, section[2], businessNow); }).join("") : '<p class="pass-empty">No requests.</p>';
     });
-    } catch (err) {
-      console.error("Error loading admin passes:", err);
-    }
+    if (typeof window.updateDashboardMetrics === "function") window.updateDashboardMetrics();
   }
 
   
@@ -4142,8 +4154,14 @@ select.form-control option, select.input-field option {
     if (disabledEl) disabledEl.textContent = disabled;
   }
 
-  async function loadAdminStudents() {
+  async function loadAdminStudents(forceRefresh) {
     if (!firebaseDb || !firebaseAuth || !firebaseAuth.currentUser || !state.isAdmin) return;
+    if (!forceRefresh && adminStudentsList && adminStudentsList.length > 0) {
+      updateDynamicFilters();
+      updateStudentStats();
+      renderAdminStudentsTable();
+      return;
+    }
     try {
       var snap = await firebaseDb.collection("students").limit(200).get();
       adminStudentsList = snap.docs.map(function (doc) {
