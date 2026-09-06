@@ -302,23 +302,23 @@ button { cursor: pointer; border: none; background: none; }
 }
 
 /* PWA Splash Screen Branding */
-/* UNIQUE ROTATING GOLDEN CREST LOGO SPLASH SCREEN */
+/* UNIQUE ROTATING GOLDEN CREST LOGO SPLASH SCREEN (SHOWN ON PAGE REFRESH ONLY) */
 .pwa-splash {
   position: fixed;
   inset: 0;
   top: 0; left: 0; right: 0; bottom: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 999999;
+  z-index: -999999;
   background: radial-gradient(circle at 50% 40%, #132247 0%, #080D1A 85%);
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   text-align: center;
   transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.4s ease;
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .pwa-splash.is-hidden {
@@ -326,6 +326,7 @@ button { cursor: pointer; border: none; background: none; }
   visibility: hidden !important;
   pointer-events: none !important;
   z-index: -999999 !important;
+  display: none !important;
 }
 
 .pwa-splash__content {
@@ -1365,8 +1366,28 @@ select.form-control option, select.input-field option {
 </head>
 <body>
 
-  <!-- UNIQUE ROTATING CREST LOGO SPLASH SCREEN -->
-  <div id="pwa-splash-screen" class="pwa-splash" aria-hidden="false">
+  <script>
+    (function () {
+      try {
+        var isReload = false;
+        if (window.performance) {
+          if (performance.getEntriesByType) {
+            var nav = performance.getEntriesByType("navigation");
+            if (nav && nav.length > 0) isReload = (nav[0].type === "reload");
+          }
+          if (!isReload && performance.navigation) {
+            isReload = (performance.navigation.type === 1);
+          }
+        }
+        if (isReload) {
+          document.write('<style>#pwa-splash-screen { display: flex !important; opacity: 1 !important; visibility: visible !important; pointer-events: auto !important; z-index: 999999 !important; }</style>');
+        }
+      } catch (e) {}
+    })();
+  </script>
+
+  <!-- UNIQUE ROTATING CREST LOGO SPLASH SCREEN (TRIGGERED ON REFRESH) -->
+  <div id="pwa-splash-screen" class="pwa-splash is-hidden" aria-hidden="true">
     <div class="pwa-splash__content">
       <div class="pwa-splash__logo-container">
         <div class="pwa-splash__ring-outer"></div>
@@ -4602,12 +4623,14 @@ select.form-control option, select.input-field option {
 
   function dismissPwaSplash() {
     var splash = document.getElementById("pwa-splash-screen");
-    if (splash && !splash.classList.contains("is-hidden")) {
+    if (splash) {
       splash.classList.add("is-hidden");
       splash.setAttribute("aria-hidden", "true");
+      splash.style.opacity = "0";
+      splash.style.visibility = "hidden";
+      splash.style.pointerEvents = "none";
       setTimeout(function () {
         splash.style.display = "none";
-        splash.style.pointerEvents = "none";
       }, 450);
     }
   }
