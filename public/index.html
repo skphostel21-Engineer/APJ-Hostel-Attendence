@@ -555,6 +555,29 @@ select.form-control option, select.input-field option {
 
 .admin-content-body { padding: 24px; flex: 1; max-width: 1400px; width: 100%; margin: 0 auto; box-sizing: border-box; }
 
+.dash-clickable-card {
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.18s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.18s ease, border-color 0.18s ease;
+}
+.dash-clickable-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+}
+.dash-clickable-card:active {
+  transform: translateY(-1px);
+}
+.dash-card-hint {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  margin-top: 8px;
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
 @media (max-width: 900px) {
   .admin-sidebar { position: fixed; top: 0; bottom: 0; left: 0; height: 100vh; transform: translateX(-100%); z-index: 1000; }
   .admin-sidebar.is-open { transform: translateX(0); }
@@ -874,10 +897,10 @@ select.form-control option, select.input-field option {
           <nav class="admin-sidebar-menu">
             <button type="button" class="admin-nav-item is-active" data-section="dashboard" onclick="switchAdminSection('dashboard')">📊 Dashboard</button>
             <button type="button" class="admin-nav-item" data-section="students" onclick="switchAdminSection('students')">👨‍🎓 Student Management</button>
-            <button type="button" class="admin-nav-item" data-section="attendance" onclick="switchAdminSection('attendance')">📝 Attendance</button>
+            <button type="button" class="admin-nav-item" data-section="attendance" onclick="switchAdminSection('attendance')">📝 Attendance & Reports</button>
             <button type="button" class="admin-nav-item" data-section="outpass" onclick="switchAdminSection('outpass')">🎫 Out Pass Management</button>
-            <button type="button" class="admin-nav-item" data-section="reports" onclick="switchAdminSection('reports')">📄 Attendance Reports</button>
-            <button type="button" class="admin-nav-item" data-section="reporthistory" onclick="switchAdminSection('reporthistory')">📋 Report History</button>
+            <button type="button" class="admin-nav-item" data-section="reports" onclick="switchAdminSection('attendance')" style="display: none !important;" aria-hidden="true">📄 Attendance Reports</button>
+            <button type="button" class="admin-nav-item" data-section="reporthistory" onclick="switchAdminSection('attendance')" style="display: none !important;" aria-hidden="true">📋 Report History</button>
             <button type="button" class="admin-nav-item" data-section="account" onclick="switchAdminSection('account')">👤 Account Management</button>
             <button type="button" class="admin-nav-item" data-section="settings" onclick="switchAdminSection('settings')">⚙️ Settings</button>
             <button type="button" class="admin-nav-item" style="color: #F87171; margin-top: auto;" onclick="handleAdminLogout()">🚪 Sign Out</button>
@@ -903,25 +926,30 @@ select.form-control option, select.input-field option {
             <!-- SECTION 1: DASHBOARD -->
             <div class="admin-section is-active" id="admin-section-dashboard">
               <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 20px;">
-                <div class="card" style="padding: 18px; text-align: center; border-color: rgba(212, 175, 55, 0.4);">
+                <div class="card dash-clickable-card" onclick="openDashboardDrilldown('total')" title="Click to view all registered students" style="padding: 18px; text-align: center; border-color: rgba(212, 175, 55, 0.4);">
                   <div style="font-size: 13px; font-weight: 500; color: var(--ivory-dim);">Total Students</div>
                   <div style="font-size: 26px; font-weight: 700; color: var(--white); margin-top: 4px;" id="stat-total-students">0</div>
+                  <div class="dash-card-hint" style="color: var(--gold-400);">👆 Click to view list</div>
                 </div>
-                <div class="card" style="padding: 18px; text-align: center; border-color: rgba(16, 185, 129, 0.4);">
+                <div class="card dash-clickable-card" onclick="openDashboardDrilldown('present')" title="Click to view today's present students" style="padding: 18px; text-align: center; border-color: rgba(16, 185, 129, 0.4);">
                   <div style="font-size: 13px; font-weight: 500; color: var(--ivory-dim);">Presents</div>
                   <div style="font-size: 26px; font-weight: 700; color: #34D399; margin-top: 4px;" id="stat-dash-present">0</div>
+                  <div class="dash-card-hint" style="color: #34D399;">👆 Click to view list</div>
                 </div>
-                <div class="card" style="padding: 18px; text-align: center; border-color: rgba(239, 68, 68, 0.4);">
+                <div class="card dash-clickable-card" onclick="openDashboardDrilldown('absent')" title="Click to view today's absent students with phone numbers" style="padding: 18px; text-align: center; border-color: rgba(239, 68, 68, 0.4);">
                   <div style="font-size: 13px; font-weight: 500; color: var(--ivory-dim);">Absents</div>
                   <div style="font-size: 26px; font-weight: 700; color: #F87171; margin-top: 4px;" id="stat-dash-absent">0</div>
+                  <div class="dash-card-hint" style="color: #F87171;">👆 Click to view list & call</div>
                 </div>
-                <div class="card" style="padding: 18px; text-align: center; border-color: rgba(212, 175, 55, 0.4);">
+                <div class="card dash-clickable-card" onclick="openDashboardDrilldown('pending')" title="Click to view pending out pass requests" style="padding: 18px; text-align: center; border-color: rgba(212, 175, 55, 0.4);">
                   <div style="font-size: 13px; font-weight: 500; color: var(--ivory-dim);">Pending Out Passes</div>
                   <div style="font-size: 26px; font-weight: 700; color: var(--gold-400); margin-top: 4px;" id="stat-dash-pending-passes">0</div>
+                  <div class="dash-card-hint" style="color: var(--gold-400);">👆 Click to view list</div>
                 </div>
-                <div class="card" style="padding: 18px; text-align: center; border-color: rgba(59, 130, 246, 0.4);">
+                <div class="card dash-clickable-card" onclick="openDashboardDrilldown('outside')" title="Click to view students currently outside" style="padding: 18px; text-align: center; border-color: rgba(59, 130, 246, 0.4);">
                   <div style="font-size: 13px; font-weight: 500; color: var(--ivory-dim);">Currently Outside</div>
                   <div style="font-size: 26px; font-weight: 700; color: #60A5FA; margin-top: 4px;" id="stat-dash-outside-passes">0</div>
+                  <div class="dash-card-hint" style="color: #60A5FA;">👆 Click to view list</div>
                 </div>
               </div>
               <!-- Hidden compatibility elements for automated tests -->
@@ -950,7 +978,7 @@ select.form-control option, select.input-field option {
                   <select id="filter-student-year" class="form-control" style="font-size: 12.5px; padding: 8px 12px; height: 38px;">
                     <option value="">All Years</option>
                   </select>
-                  <select id="filter-student-status" class="form-control" style="font-size: 12.5px; padding: 8px 12px; height: 38px;">
+                  <select id="filter-student-status" class="form-control" style="display: none !important;" aria-hidden="true">
                     <option value="">All Statuses</option>
                     <option value="active">Active</option>
                     <option value="disabled">Disabled</option>
@@ -979,42 +1007,90 @@ select.form-control option, select.input-field option {
               </div>
             </div>
 
-            <!-- SECTION 3: ATTENDANCE -->
+            <!-- SECTION 3: ATTENDANCE & REPORTS (MERGED) -->
             <div class="admin-section" id="admin-section-attendance">
-              <div class="card">
-                <div class="card-header">
-                  <h3 class="card-title">MARK ATTENDANCE</h3>
-                  <span style="font-size: 11px; color: var(--gold-400);">One-Tap Marking</span>
-                </div>
-                <div style="margin-bottom: 12px;">
-                  <input type="text" id="admin-att-search" class="input-field" placeholder="Search Student (Name, ID, Room)..." />
-                </div>
-                <div id="admin-att-roster-list">
-                  <p style="padding: 18px; text-align: center; color: var(--ivory-dim); font-size: 13px;">Loading student attendance roster...</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- SECTION 4: OUT PASS MANAGEMENT -->
-            <div class="admin-section" id="admin-section-outpass">
-              <div class="card" style="border-color: rgba(16, 185, 129, 0.4);">
-                <div class="card-header"><h3 class="card-title">OUT PASS</h3><span style="font-size: 11px; color: var(--success);">Approval Desk</span></div>
-                <h4 class="pass-admin-section-title">Pending Requests</h4>
-                <div id="admin-pending-passes"><p class="pass-empty">No pending requests.</p></div>
-                <h4 class="pass-admin-section-title">Currently Outside</h4>
-                <div id="admin-outside-passes"><p class="pass-empty">No students currently outside.</p></div>
-                <h4 class="pass-admin-section-title">Pass History</h4>
-                <div id="admin-pass-history"><p class="pass-empty">No pass history.</p></div>
-              </div>
-            </div>
-
-            <!-- SECTION 5: ATTENDANCE REPORTS -->
-            <div class="admin-section" id="admin-section-reports">
-              <div class="card" id="card-admin-attendance-reports" style="border-color: rgba(212, 175, 55, 0.5); margin-bottom: 16px;">
+              <!-- TOP DOWNLOAD CARDS: 3 DEDICATED BUTTONS -->
+              <div class="card" style="border-color: rgba(212, 175, 55, 0.4); margin-bottom: 16px;">
                 <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                   <div>
-                    <h3 class="card-title">📊 Attendance Reports & Export</h3>
-                    <div style="font-size: 11.5px; color: var(--gold-400);">Generate, View, and Download Official Excel & PDF Reports</div>
+                    <h3 class="card-title">📥 Instant Report Downloads</h3>
+                    <div style="font-size: 11.5px; color: var(--gold-400);">Download Roster & Daily Attendance Reports Directly</div>
+                  </div>
+                  <span class="status-chip status-chip--approved" style="font-size: 11px;">Official Export Hub</span>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 14px;">
+                  <!-- BUTTON 1: Total Students Excel -->
+                  <button type="button" class="btn-gold-login" id="btn-download-total-excel" onclick="downloadTotalStudentsExcel()" style="height: auto; padding: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; text-align: center; margin: 0; background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.4); color: #93C5FD;">
+                    <div style="font-size: 22px;">📥</div>
+                    <div style="font-size: 13.5px; font-weight: 700; color: #FFFFFF;">Total Students Roster</div>
+                    <div style="font-size: 11px; color: #93C5FD; opacity: 0.9;">Excel Sheet (.xlsx)</div>
+                  </button>
+
+                  <!-- BUTTON 2: Today's Present Excel -->
+                  <button type="button" class="btn-gold-login" id="btn-download-present-excel" onclick="downloadTodayPresentExcel()" style="height: auto; padding: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; text-align: center; margin: 0; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.4); color: #6EE7B7;">
+                    <div style="font-size: 22px;">📊</div>
+                    <div style="font-size: 13.5px; font-weight: 700; color: #FFFFFF;">Today's Present Sheet</div>
+                    <div style="font-size: 11px; color: #6EE7B7; opacity: 0.9;">Excel Sheet (.xlsx)</div>
+                  </button>
+
+                  <!-- BUTTON 3: Today's Absentees PDF -->
+                  <button type="button" class="btn-gold-login" id="btn-download-absent-pdf" onclick="downloadTodayAbsenteesPdf()" style="height: auto; padding: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; text-align: center; margin: 0; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #FCA5A5;">
+                    <div style="font-size: 22px;">📄</div>
+                    <div style="font-size: 13.5px; font-weight: 700; color: #FFFFFF;">Today's Absentees Report</div>
+                    <div style="font-size: 11px; color: #FCA5A5; opacity: 0.9;">PDF (Name + College + Phone)</div>
+                  </button>
+                </div>
+              </div>
+
+              <!-- LIVE ATTENDANCE BREAKUP: PRESENTS & ABSENTEES LISTS -->
+              <div class="card" style="border-color: rgba(212, 175, 55, 0.35); margin-bottom: 16px;">
+                <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                  <div>
+                    <h3 class="card-title">📋 Today's Live Attendance Breakup</h3>
+                    <div style="font-size: 11.5px; color: var(--gold-400);" id="att-live-date-label">Today's Session</div>
+                  </div>
+                  <button type="button" class="btn-one-tap" onclick="refreshAdminAttendanceBreakup()" style="font-size: 11.5px; padding: 6px 12px; background: rgba(212, 175, 55, 0.15); border: 1px solid rgba(212, 175, 55, 0.4); color: var(--gold-400); border-radius: 6px;">🔄 Refresh Roster</button>
+                </div>
+
+                <!-- Search box for live attendance list -->
+                <div style="margin-top: 10px; margin-bottom: 14px;">
+                  <input type="text" id="admin-att-search" class="form-control" placeholder="🔍 Search today's attendance (Name, ID, Room, Phone)..." oninput="filterLiveAttendanceLists(this.value)" style="font-size: 12.5px; height: 38px;" />
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px;">
+                  <!-- PRESENT LIST -->
+                  <div style="background: rgba(16, 185, 129, 0.04); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 14px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid rgba(16, 185, 129, 0.2); padding-bottom: 8px;">
+                      <span style="font-size: 13.5px; font-weight: 700; color: #34D399;">🟢 Present Students</span>
+                      <span class="status-chip status-chip--approved" id="badge-present-count">0</span>
+                    </div>
+                    <div id="live-present-list" style="max-height: 420px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;">
+                      <p style="padding: 16px; text-align: center; color: var(--ivory-dim); font-size: 12.5px;">Loading present students...</p>
+                    </div>
+                  </div>
+
+                  <!-- ABSENT LIST -->
+                  <div style="background: rgba(239, 68, 68, 0.04); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; padding: 14px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid rgba(239, 68, 68, 0.2); padding-bottom: 8px;">
+                      <span style="font-size: 13.5px; font-weight: 700; color: #F87171;">🔴 Absent Students</span>
+                      <span class="status-chip status-chip--absent" id="badge-absent-count">0</span>
+                    </div>
+                    <div id="live-absent-list" style="max-height: 420px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;">
+                      <p style="padding: 16px; text-align: center; color: var(--ivory-dim); font-size: 12.5px;">Loading absent students...</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div id="admin-att-roster-list" style="display: none;"></div>
+              </div>
+
+              <!-- ADVANCED CUSTOM REPORT FILTERS (PRESERVED FOR CONTRACT TEST 17) -->
+              <div class="card" id="card-admin-attendance-reports" style="border-color: rgba(212, 175, 55, 0.35); margin-bottom: 16px;">
+                <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                  <div>
+                    <h3 class="card-title">🔍 Custom Date & Filtered Export</h3>
+                    <div style="font-size: 11.5px; color: var(--gold-400);">Generate Custom Filtered Reports by Date, College, Year, or Room</div>
                   </div>
                 </div>
 
@@ -1083,15 +1159,24 @@ select.form-control option, select.input-field option {
               </div>
             </div>
 
-            <!-- SECTION 6: REPORT HISTORY -->
-            <div class="admin-section" id="admin-section-reporthistory">
-              <div class="card">
-                <div class="card-header">
-                  <h3 class="card-title">📋 Report History</h3>
-                </div>
-                <p style="padding: 16px; color: var(--ivory-dim); font-size: 13px;">Daily current-day-only attendance is active. Past report archives are processed automatically at 4:30 PM IST.</p>
+            <!-- SECTION 4: OUT PASS MANAGEMENT -->
+            <div class="admin-section" id="admin-section-outpass">
+              <div class="card" style="border-color: rgba(16, 185, 129, 0.4);">
+                <div class="card-header"><h3 class="card-title">OUT PASS</h3><span style="font-size: 11px; color: var(--success);">Approval Desk</span></div>
+                <h4 class="pass-admin-section-title">Pending Requests</h4>
+                <div id="admin-pending-passes"><p class="pass-empty">No pending requests.</p></div>
+                <h4 class="pass-admin-section-title" style="margin-top: 20px;">Currently Outside</h4>
+                <div id="admin-outside-passes"><p class="pass-empty">No students currently outside.</p></div>
+                <!-- Pass history hidden as requested -->
+                <div id="admin-pass-history" style="display: none !important;" aria-hidden="true"><p class="pass-empty">No pass history.</p></div>
               </div>
             </div>
+
+            <!-- SECTION 5: ATTENDANCE REPORTS (ALIASED) -->
+            <div class="admin-section" id="admin-section-reports" style="display: none !important;" aria-hidden="true"></div>
+
+            <!-- SECTION 6: REPORT HISTORY (ALIASED) -->
+            <div class="admin-section" id="admin-section-reporthistory" style="display: none !important;" aria-hidden="true"></div>
 
             <!-- SECTION 7: ACCOUNT MANAGEMENT -->
             <div class="admin-section" id="admin-section-account">
@@ -2523,9 +2608,12 @@ select.form-control option, select.input-field option {
       "<br>Reason: " + escapeHtml(pass.reason);
     
     var isApproved = String(pass.status).toUpperCase() === "APPROVED";
+    var isOutside = isApproved && String(pass.outside_status || "").toUpperCase() === "OUTSIDE";
     var actions = "";
     if (isPending) {
       actions = "<div class=\"pass-admin-actions\"><button class=\"btn-one-tap btn-one-tap--present\" data-pass-action=\"approve\" data-pass-id=\"" + id + "\">APPROVE</button><button class=\"btn-one-tap btn-one-tap--absent\" data-pass-action=\"reject\" data-pass-id=\"" + id + "\">REJECT</button></div>";
+    } else if (isOutside) {
+      actions = "<div class=\"pass-admin-actions\" style=\"margin-top: 8px; display: flex; gap: 8px;\"><button type=\"button\" class=\"btn-one-tap btn-one-tap--present\" data-pass-action=\"return\" data-pass-id=\"" + id + "\" style=\"background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.5); color: #34D399; font-weight: 700; font-size: 11.5px; padding: 5px 12px;\">✓ Mark Returned</button><button type=\"button\" class=\"btn-one-tap\" data-pdf-action=\"download\" data-pass-id=\"" + id + "\" style=\"background: var(--navy-800); border: 1px solid var(--gold-400); color: var(--gold-300); font-size: 11px; padding: 4px 10px;\">📥 PDF</button></div>";
     } else if (isApproved) {
       actions = "<div class=\"pass-admin-actions\" style=\"margin-top: 8px; display: flex; gap: 8px;\"><button type=\"button\" class=\"btn-one-tap\" data-pdf-action=\"view\" data-pass-id=\"" + id + "\" style=\"background: var(--navy-800); border: 1px solid var(--gold-400); color: var(--gold-300); font-size: 11px; padding: 4px 10px;\">📄 View PDF</button><button type=\"button\" class=\"btn-one-tap\" data-pdf-action=\"download\" data-pass-id=\"" + id + "\" style=\"background: var(--navy-800); border: 1px solid var(--gold-400); color: var(--gold-300); font-size: 11px; padding: 4px 10px;\">📥 Download PDF</button></div>";
     }
@@ -2841,7 +2929,11 @@ select.form-control option, select.input-field option {
   document.addEventListener("click", async function (event) {
     var action = event.target.closest("[data-pass-action]");
     if (action) {
-      updatePassStatus(action.dataset.passId, action.dataset.passAction === "approve" ? "APPROVED" : "REJECTED");
+      if (action.dataset.passAction === "return") {
+        await markAdminPassReturned(action.dataset.passId);
+      } else {
+        updatePassStatus(action.dataset.passId, action.dataset.passAction === "approve" ? "APPROVED" : "REJECTED");
+      }
       return;
     }
 
@@ -3063,6 +3155,9 @@ select.form-control option, select.input-field option {
   window.switchAdminSection = function (sectionName) {
     var validSections = ['dashboard', 'students', 'attendance', 'outpass', 'reports', 'reporthistory', 'account', 'settings'];
     if (!validSections.includes(sectionName)) sectionName = 'dashboard';
+    if (sectionName === 'reports' || sectionName === 'reporthistory') {
+      sectionName = 'attendance';
+    }
 
     // Hide all admin sections
     document.querySelectorAll('.admin-section').forEach(function (sec) {
@@ -3090,10 +3185,10 @@ select.form-control option, select.input-field option {
     var titleMap = {
       dashboard: '📊 Admin Dashboard',
       students: '👨‍🎓 Student Management',
-      attendance: '📝 Attendance Marking & Roster',
+      attendance: '📝 Attendance & Reports',
       outpass: '🎫 Out Pass Management',
-      reports: '📄 Attendance Reports',
-      reporthistory: '📋 Report History',
+      reports: '📝 Attendance & Reports',
+      reporthistory: '📝 Attendance & Reports',
       account: '👤 Account Management',
       settings: '⚙️ System Settings'
     };
@@ -3108,12 +3203,11 @@ select.form-control option, select.input-field option {
       window.updateDashboardMetrics();
     } else if (sectionName === 'students' && typeof loadAdminStudents === 'function') {
       loadAdminStudents();
+    } else if (sectionName === 'attendance') {
+      if (typeof refreshAdminAttendanceBreakup === 'function') refreshAdminAttendanceBreakup();
+      if (typeof updateAttendanceReportSummary === 'function') updateAttendanceReportSummary();
     } else if (sectionName === 'outpass' && typeof loadAdminPasses === 'function') {
       loadAdminPasses();
-    } else if (sectionName === 'reporthistory' && typeof window.loadAttendanceReportHistory === 'function') {
-      window.loadAttendanceReportHistory();
-    } else if (sectionName === 'reports' && typeof updateAttendanceReportSummary === 'function') {
-      updateAttendanceReportSummary();
     }
   };
 
@@ -3131,11 +3225,12 @@ select.form-control option, select.input-field option {
     if (overlay) overlay.classList.remove('is-open');
   };
 
-  window.updateDashboardMetrics = function () {
+  window.updateDashboardMetrics = async function () {
+    var total = 0, active = 0, disabled = 0;
     if (typeof adminStudentsList !== 'undefined' && Array.isArray(adminStudentsList)) {
-      var total = adminStudentsList.length;
-      var active = adminStudentsList.filter(function (s) { return String(s.status || '').toLowerCase() !== 'disabled'; }).length;
-      var disabled = total - active;
+      total = adminStudentsList.length;
+      active = adminStudentsList.filter(function (s) { return String(s.status || '').toLowerCase() !== 'disabled'; }).length;
+      disabled = total - active;
 
       var totalEl = document.getElementById('stat-total-students');
       var activeEl = document.getElementById('stat-active-students');
@@ -3144,6 +3239,37 @@ select.form-control option, select.input-field option {
       if (totalEl) totalEl.textContent = total;
       if (activeEl) activeEl.textContent = active;
       if (disabledEl) disabledEl.textContent = disabled;
+    }
+
+    // Pass metrics
+    if (typeof adminPassesList !== 'undefined' && Array.isArray(adminPassesList)) {
+      var pendingCount = adminPassesList.filter(function (p) { return String(p.status || '').toUpperCase() === 'PENDING'; }).length;
+      var outsideCount = adminPassesList.filter(function (p) { return String(p.status || '').toUpperCase() === 'APPROVED' && String(p.outside_status || '').toUpperCase() === 'OUTSIDE'; }).length;
+      var pendingEl = document.getElementById('stat-dash-pending-passes');
+      var pendingCompatEl = document.getElementById('stat-dash-pending');
+      var outsideEl = document.getElementById('stat-dash-outside-passes');
+      if (pendingEl) pendingEl.textContent = pendingCount;
+      if (pendingCompatEl) pendingCompatEl.textContent = pendingCount;
+      if (outsideEl) outsideEl.textContent = outsideCount;
+    }
+
+    // Attendance metrics for today
+    if (firebaseDb && state && state.isAdmin) {
+      try {
+        var queryDate = typeof getKolkataDateString === 'function' ? getKolkataDateString() : new Date().toISOString().split('T')[0];
+        var attSnap = await firebaseDb.collection('attendance').where('date', '==', queryDate).get();
+        var presentCount = 0;
+        attSnap.docs.forEach(function (d) {
+          if (String(d.data().status || '').toUpperCase() === 'PRESENT') presentCount++;
+        });
+        var absentCount = Math.max(0, (active || total) - presentCount);
+        var presEl = document.getElementById('stat-dash-present');
+        var absEl = document.getElementById('stat-dash-absent');
+        if (presEl) presEl.textContent = presentCount;
+        if (absEl) absEl.textContent = absentCount;
+      } catch (e) {
+        console.warn("Could not load dashboard attendance counts:", e);
+      }
     }
   };
 
@@ -3167,6 +3293,587 @@ select.form-control option, select.input-field option {
     }
   };
 
+
+
+  // ==================================================
+  // ATTENDANCE & REPORTS ENGINE: 3 DEDICATED DOWNLOADS
+  // ==================================================
+
+  window.downloadTotalStudentsExcel = async function () {
+    var btn = document.getElementById("btn-download-total-excel");
+    if (btn) { btn.disabled = true; }
+    try {
+      await ensureXlsxLoaded();
+      var students = adminStudentsList && adminStudentsList.length ? adminStudentsList : [];
+      if (!students.length && firebaseDb) {
+        var snap = await firebaseDb.collection("students").limit(200).get();
+        students = snap.docs.map(function(doc) { return Object.assign({ uid: doc.id }, doc.data()); });
+      }
+      if (!students.length) {
+        showToast("No student records found.", "⚠️", true);
+        return;
+      }
+
+      var sheetRows = [
+        ["HOSTEL STUDENTS MASTER ROSTER — APJ ABDUL KALAM BLOCK"],
+        ["Total Students:", students.length],
+        ["Generated At:", new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }) + " IST"],
+        [],
+        ["S.No", "Student Name", "Student ID", "Room Number", "College", "Year / Dept", "Phone Number", "Parent Phone", "Status"]
+      ];
+
+      students.forEach(function (s, idx) {
+        sheetRows.push([
+          idx + 1,
+          s.student_name || s.name || "N/A",
+          String(s.student_id || s.id || "N/A"),
+          s.room_number || s.room || "N/A",
+          s.college || "N/A",
+          s.year_department || ((s.year || "") + " " + (s.department || "")).trim() || "N/A",
+          String(s.phone_number || s.phone || s.mobile || "N/A"),
+          String(s.parent_phone || s.parent_contact || "N/A"),
+          String(s.status || "active").toUpperCase()
+        ]);
+      });
+
+      var ws = XLSX.utils.aoa_to_sheet(sheetRows);
+      ws["!cols"] = [
+        { wch: 6 },  // S.No
+        { wch: 26 }, // Name
+        { wch: 18 }, // ID
+        { wch: 14 }, // Room
+        { wch: 22 }, // College
+        { wch: 18 }, // Year/Dept
+        { wch: 16 }, // Phone
+        { wch: 16 }, // Parent Phone
+        { wch: 12 }  // Status
+      ];
+
+      var wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Master Roster");
+      var todayStr = typeof getKolkataDateString === "function" ? getKolkataDateString() : new Date().toISOString().split("T")[0];
+      XLSX.writeFile(wb, "APJ_Hostel_Total_Students_Roster_" + todayStr + ".xlsx");
+      showToast("Total Students Excel downloaded successfully!", "📥");
+    } catch (e) {
+      console.error("Error generating total students excel:", e);
+      showToast("Failed to download Total Students Excel.", "⚠️", true);
+    } finally {
+      if (btn) btn.disabled = false;
+    }
+  };
+
+  window.downloadTodayPresentExcel = async function () {
+    var btn = document.getElementById("btn-download-present-excel");
+    if (btn) { btn.disabled = true; }
+    try {
+      await ensureXlsxLoaded();
+      var reportData = await getAttendanceReportData();
+      var presentList = reportData.presentList || [];
+
+      var sheetRows = [
+        ["HOSTEL TODAY'S PRESENT STUDENTS — APJ ABDUL KALAM BLOCK"],
+        ["Date:", reportData.date],
+        ["Session:", reportData.session],
+        ["Total Present:", presentList.length],
+        ["Generated At:", new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }) + " IST"],
+        [],
+        ["PRESENT STUDENTS"],
+        ["S.No", "Student Name", "Student ID", "Room Number", "College", "Year / Dept", "Mobile Number", "Status"]
+      ];
+
+      if (!presentList.length) {
+        sheetRows.push(["No students marked present yet for today's session."]);
+      } else {
+        presentList.forEach(function (s, idx) {
+          sheetRows.push([
+            idx + 1,
+            s.student_name || "N/A",
+            String(s.student_id || "N/A"),
+            s.room_number || "N/A",
+            s.college || "N/A",
+            s.year_department || "N/A",
+            String(s.mobile_number || "N/A"),
+            "PRESENT"
+          ]);
+        });
+      }
+
+      var ws = XLSX.utils.aoa_to_sheet(sheetRows);
+      ws["!cols"] = [
+        { wch: 6 },  // S.No
+        { wch: 26 }, // Name
+        { wch: 18 }, // ID
+        { wch: 14 }, // Room
+        { wch: 22 }, // College
+        { wch: 18 }, // Year/Dept
+        { wch: 18 }, // Mobile
+        { wch: 12 }  // Status
+      ];
+
+      var wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Today Present");
+      XLSX.writeFile(wb, "APJ_Hostel_Today_Present_" + reportData.date + ".xlsx");
+      showToast("Today's Present Excel downloaded successfully!", "📥");
+    } catch (e) {
+      console.error("Error generating present excel:", e);
+      showToast("Failed to download Present Excel.", "⚠️", true);
+    } finally {
+      if (btn) btn.disabled = false;
+    }
+  };
+
+  window.downloadTodayAbsenteesPdf = async function () {
+    var btn = document.getElementById("btn-download-absent-pdf");
+    if (btn) { btn.disabled = true; }
+    try {
+      await ensureJsPdfLoaded();
+      var reportData = await getAttendanceReportData();
+      var absentList = reportData.absentList || [];
+
+      var doc = new window.jspdf.jsPDF();
+
+      // Header
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(16);
+      doc.setTextColor(11, 31, 58);
+      doc.text("APJ ABDUL KALAM BLOCK", 105, 18, { align: "center" });
+
+      doc.setFontSize(13);
+      doc.setTextColor(201, 162, 39);
+      doc.text("HOSTEL DAILY ABSENTEES REPORT", 105, 26, { align: "center" });
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+      doc.setTextColor(55, 65, 81);
+      doc.text("Date: " + reportData.date, 14, 35);
+      doc.text("Session: " + reportData.session, 14, 41);
+      doc.text("Total Absentees: " + absentList.length, 140, 35);
+
+      // Summary notice box
+      doc.setDrawColor(239, 68, 68);
+      doc.setFillColor(254, 242, 242);
+      doc.roundedRect(14, 46, 182, 14, 2, 2, "FD");
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(9.5);
+      doc.setTextColor(185, 28, 28);
+      doc.text("CRITICAL NOTICE: The following students were marked ABSENT for today's roll call.", 18, 55);
+
+      // ABSENT STUDENTS SECTION
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(12);
+      doc.setTextColor(185, 28, 28);
+      doc.text("ABSENT STUDENTS", 14, 70);
+
+      var y = 76;
+
+      if (!absentList.length) {
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(11);
+        doc.setTextColor(16, 185, 129);
+        doc.text("✓ No absent students recorded today. 100% attendance!", 14, y + 6);
+      } else {
+        // Table Header: S.No, Student Name, College Name, Phone Number, Room No
+        doc.setFillColor(243, 244, 246);
+        doc.rect(14, y, 182, 8, "F");
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(9);
+        doc.setTextColor(31, 41, 55);
+        doc.text("S.No", 16, y + 5.5);
+        doc.text("Student Name", 30, y + 5.5);
+        doc.text("College Name", 80, y + 5.5);
+        doc.text("Phone Number", 136, y + 5.5);
+        doc.text("Room", 178, y + 5.5);
+        doc.setDrawColor(209, 213, 219);
+        doc.line(14, y + 8, 196, y + 8);
+        y += 8;
+
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(9);
+
+        absentList.forEach(function (s, idx) {
+          if (y > 275) {
+            doc.addPage();
+            y = 18;
+            doc.setFillColor(243, 244, 246);
+            doc.rect(14, y, 182, 8, "F");
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(9);
+            doc.setTextColor(31, 41, 55);
+            doc.text("S.No", 16, y + 5.5);
+            doc.text("Student Name", 30, y + 5.5);
+            doc.text("College Name", 80, y + 5.5);
+            doc.text("Phone Number", 136, y + 5.5);
+            doc.text("Room", 178, y + 5.5);
+            doc.line(14, y + 8, 196, y + 8);
+            y += 8;
+            doc.setFont("helvetica", "normal");
+          }
+
+          doc.setTextColor(17, 24, 39);
+          doc.text(String(idx + 1), 16, y + 5.5);
+          doc.text(String(s.student_name || "N/A").substring(0, 24), 30, y + 5.5);
+          doc.text(String(s.college || "N/A").substring(0, 26), 80, y + 5.5);
+          doc.text(String(s.mobile_number || "N/A"), 136, y + 5.5);
+          doc.text(String(s.room_number || "N/A"), 178, y + 5.5);
+          doc.setDrawColor(241, 245, 249);
+          doc.line(14, y + 7.5, 196, y + 7.5);
+          y += 8;
+        });
+      }
+
+      var todayStr = new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
+      doc.setFontSize(8);
+      doc.setTextColor(156, 163, 175);
+      doc.text("APJ Abdul Kalam Block Hostel · Auto-Generated on " + todayStr + " IST", 105, 287, { align: "center" });
+
+      doc.save("APJ_Hostel_Absentees_" + reportData.date + ".pdf");
+      showToast("Today's Absentees PDF downloaded!", "📥");
+    } catch (e) {
+      console.error("Error generating absentees PDF:", e);
+      showToast("Failed to download Absentees PDF.", "⚠️", true);
+    } finally {
+      if (btn) btn.disabled = false;
+    }
+  };
+
+  // ==================================================
+  // LIVE ATTENDANCE BREAKUP
+  // ==================================================
+
+  var liveAttendanceCache = null;
+
+  window.refreshAdminAttendanceBreakup = async function () {
+    var presListEl = document.getElementById("live-present-list");
+    var absListEl = document.getElementById("live-absent-list");
+    var presBadge = document.getElementById("badge-present-count");
+    var absBadge = document.getElementById("badge-absent-count");
+    var dateLabel = document.getElementById("att-live-date-label");
+
+    if (presListEl) presListEl.innerHTML = '<p style="padding: 16px; text-align: center; color: var(--ivory-dim); font-size: 12.5px;">Refreshing presents...</p>';
+    if (absListEl) absListEl.innerHTML = '<p style="padding: 16px; text-align: center; color: var(--ivory-dim); font-size: 12.5px;">Refreshing absentees...</p>';
+
+    try {
+      var reportData = await getAttendanceReportData();
+      liveAttendanceCache = reportData;
+
+      if (dateLabel) dateLabel.textContent = "Session: " + reportData.date + " · " + reportData.session;
+      if (presBadge) presBadge.textContent = reportData.present;
+      if (absBadge) absBadge.textContent = reportData.absent;
+
+      renderLiveAttendanceBreakupDOM(reportData.presentList, reportData.absentList);
+      if (typeof window.updateDashboardMetrics === "function") window.updateDashboardMetrics();
+    } catch (e) {
+      console.error("Error refreshing attendance breakup:", e);
+      if (presListEl) presListEl.innerHTML = '<p style="padding: 16px; text-align: center; color: var(--danger); font-size: 12.5px;">Failed to load presents.</p>';
+      if (absListEl) absListEl.innerHTML = '<p style="padding: 16px; text-align: center; color: var(--danger); font-size: 12.5px;">Failed to load absents.</p>';
+    }
+  };
+
+  function renderLiveAttendanceBreakupDOM(presents, absents) {
+    var presListEl = document.getElementById("live-present-list");
+    var absListEl = document.getElementById("live-absent-list");
+
+    if (presListEl) {
+      if (!presents || !presents.length) {
+        presListEl.innerHTML = '<div style="padding: 24px; text-align: center; color: var(--ivory-dim); font-size: 12.5px;">No students marked present yet.</div>';
+      } else {
+        presListEl.innerHTML = presents.map(function (s, i) {
+          return '<div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); border: 1px solid rgba(16,185,129,0.2); border-radius: 6px; padding: 8px 12px;">' +
+            '<div>' +
+              '<div style="font-weight: 600; color: #FFFFFF; font-size: 13px;">' + (i + 1) + '. ' + escapeHtml(s.student_name) + '</div>' +
+              '<div style="font-size: 11.5px; color: var(--ivory-dim); margin-top: 2px;">ID: <span style="color: var(--gold-400); font-family: monospace;">' + escapeHtml(s.student_id) + '</span> · Room: ' + escapeHtml(s.room_number) + ' · ' + escapeHtml(s.college) + '</div>' +
+            '</div>' +
+            '<span style="padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; background: rgba(16,185,129,0.15); color: #34D399; border: 1px solid rgba(16,185,129,0.4);">PRESENT</span>' +
+          '</div>';
+        }).join("");
+      }
+    }
+
+    if (absListEl) {
+      if (!absents || !absents.length) {
+        absListEl.innerHTML = '<div style="padding: 24px; text-align: center; color: #34D399; font-size: 12.5px;">✓ All students present! Zero absentees.</div>';
+      } else {
+        absListEl.innerHTML = absents.map(function (s, i) {
+          var phone = s.mobile_number || "Not Available";
+          var phoneHtml = (phone !== "Not Available" && phone !== "N/A") ?
+            '<a href="tel:' + escapeHtml(phone) + '" style="color: #60A5FA; text-decoration: underline; font-weight: 600; font-size: 12px; margin-left: 4px;">📞 Call (' + escapeHtml(phone) + ')</a>' :
+            '<span style="color: #94A3B8; font-size: 11.5px;">No Phone</span>';
+
+          return '<div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); border: 1px solid rgba(239,68,68,0.2); border-radius: 6px; padding: 8px 12px;">' +
+            '<div>' +
+              '<div style="font-weight: 600; color: #FFFFFF; font-size: 13px;">' + (i + 1) + '. ' + escapeHtml(s.student_name) + '</div>' +
+              '<div style="font-size: 11.5px; color: var(--ivory-dim); margin-top: 2px;">ID: <span style="color: var(--gold-400); font-family: monospace;">' + escapeHtml(s.student_id) + '</span> · Room: ' + escapeHtml(s.room_number) + ' · ' + escapeHtml(s.college) + '</div>' +
+              '<div style="margin-top: 3px;">' + phoneHtml + '</div>' +
+            '</div>' +
+            '<span style="padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; background: rgba(239,68,68,0.15); color: #F87171; border: 1px solid rgba(239,68,68,0.4);">ABSENT</span>' +
+          '</div>';
+        }).join("");
+      }
+    }
+  }
+
+  window.filterLiveAttendanceLists = function (query) {
+    if (!liveAttendanceCache) return;
+    var q = (query || "").trim().toLowerCase();
+    if (!q) {
+      renderLiveAttendanceBreakupDOM(liveAttendanceCache.presentList, liveAttendanceCache.absentList);
+      return;
+    }
+    var filteredPresents = (liveAttendanceCache.presentList || []).filter(function (s) {
+      return (s.student_name || "").toLowerCase().indexOf(q) !== -1 ||
+             (s.student_id || "").toLowerCase().indexOf(q) !== -1 ||
+             (s.room_number || "").toLowerCase().indexOf(q) !== -1 ||
+             (s.college || "").toLowerCase().indexOf(q) !== -1;
+    });
+    var filteredAbsents = (liveAttendanceCache.absentList || []).filter(function (s) {
+      return (s.student_name || "").toLowerCase().indexOf(q) !== -1 ||
+             (s.student_id || "").toLowerCase().indexOf(q) !== -1 ||
+             (s.room_number || "").toLowerCase().indexOf(q) !== -1 ||
+             (s.college || "").toLowerCase().indexOf(q) !== -1 ||
+             (s.mobile_number || "").toLowerCase().indexOf(q) !== -1;
+    });
+    renderLiveAttendanceBreakupDOM(filteredPresents, filteredAbsents);
+  };
+
+  // ==================================================
+  // DASHBOARD DRILL-DOWN MODAL & PASS ACTIONS
+  // ==================================================
+
+  var currentDrilldownRecords = [];
+  var currentDrilldownType = "";
+
+  async function markAdminPassReturned(passIdVal) {
+    if (!firebaseDb || !passIdVal) return;
+    try {
+      await firebaseDb.collection("pass_requests").doc(passIdVal).update({
+        outside_status: "RETURNED",
+        returned_at: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      if (typeof logAuditAction === "function") {
+        logAuditAction("OUTPASS_RETURNED", "pass_requests", passIdVal, "SUCCESS");
+      }
+      showToast("Student marked returned successfully.", "✓");
+      await loadAdminPasses(true);
+    } catch (e) {
+      console.error("Error marking pass returned:", e);
+      showToast("Failed to mark returned.", "⚠️", true);
+    }
+  }
+  window.markAdminPassReturned = markAdminPassReturned;
+
+  window.openDashboardDrilldown = async function (type) {
+    currentDrilldownType = type;
+    var modal = document.getElementById("modal-dashboard-drilldown");
+    var titleEl = document.getElementById("drilldown-modal-title");
+    var subEl = document.getElementById("drilldown-modal-subtitle");
+    var iconEl = document.getElementById("drilldown-modal-icon");
+    var bodyEl = document.getElementById("drilldown-table-body");
+    var countEl = document.getElementById("drilldown-count-label");
+    var searchInput = document.getElementById("drilldown-search-input");
+    if (searchInput) searchInput.value = "";
+
+    if (!modal) return;
+    openModalByTarget("modal-dashboard-drilldown");
+
+    if (bodyEl) {
+      bodyEl.innerHTML = '<tr><td colspan="7" style="padding: 24px; text-align: center; color: var(--ivory-dim);">Loading data...</td></tr>';
+    }
+
+    try {
+      if (type === "total") {
+        if (iconEl) iconEl.textContent = "👨‍🎓";
+        if (titleEl) titleEl.textContent = "All Registered Students";
+        if (subEl) subEl.textContent = "Complete hostel student directory";
+
+        var students = adminStudentsList && adminStudentsList.length ? adminStudentsList : [];
+        if (!students.length && firebaseDb) {
+          var snap = await firebaseDb.collection("students").limit(200).get();
+          students = snap.docs.map(function (doc) { return Object.assign({ uid: doc.id }, doc.data()); });
+          adminStudentsList = students;
+        }
+
+        currentDrilldownRecords = students.map(function (s) {
+          return {
+            name: s.student_name || s.name || "N/A",
+            id: s.student_id || s.id || "N/A",
+            room: s.room_number || s.room || "N/A",
+            dept: s.college || s.department || s.year_department || "N/A",
+            phone: s.phone_number || s.phone || s.mobile || "N/A",
+            status: String(s.status || "active").toUpperCase(),
+            isPass: false
+          };
+        });
+      } else if (type === "present" || type === "absent") {
+        if (type === "present") {
+          if (iconEl) iconEl.textContent = "🟢";
+          if (titleEl) titleEl.textContent = "Today's Present Students";
+          if (subEl) subEl.textContent = "Students marked present for today's roll call";
+        } else {
+          if (iconEl) iconEl.textContent = "🔴";
+          if (titleEl) titleEl.textContent = "Today's Absent Students";
+          if (subEl) subEl.textContent = "Students marked absent — click phone number to contact";
+        }
+
+        var reportData = await getAttendanceReportData();
+        var targetList = (type === "present") ? (reportData.presentList || []) : (reportData.absentList || []);
+
+        currentDrilldownRecords = targetList.map(function (s) {
+          return {
+            name: s.student_name || "N/A",
+            id: s.student_id || "N/A",
+            room: s.room_number || "N/A",
+            dept: s.college || s.year_department || "N/A",
+            phone: s.mobile_number || "N/A",
+            status: type === "present" ? "PRESENT" : "ABSENT",
+            isPass: false
+          };
+        });
+      } else if (type === "pending") {
+        if (iconEl) iconEl.textContent = "🎫";
+        if (titleEl) titleEl.textContent = "Pending Out Pass Requests";
+        if (subEl) subEl.textContent = "Pass requests awaiting warden approval";
+
+        if (!adminPassesList.length && typeof loadAdminPasses === "function") {
+          await loadAdminPasses(true);
+        }
+
+        var pendingPasses = adminPassesList.filter(function (p) {
+          return String(p.status || "").toUpperCase() === "PENDING";
+        });
+
+        currentDrilldownRecords = pendingPasses.map(function (p) {
+          return {
+            name: p.student_name || "N/A",
+            id: p.student_id || "N/A",
+            room: p.room_number || "N/A",
+            dept: (p.college || "") + (p.reason ? " (" + p.reason + ")" : ""),
+            phone: p.phone_number || "N/A",
+            status: "PENDING",
+            passId: p.id || passId(p),
+            isPendingPass: true
+          };
+        });
+      } else if (type === "outside") {
+        if (iconEl) iconEl.textContent = "🚶‍♂️";
+        if (titleEl) titleEl.textContent = "Students Currently Outside";
+        if (subEl) subEl.textContent = "Students currently outside the hostel campus";
+
+        if (!adminPassesList.length && typeof loadAdminPasses === "function") {
+          await loadAdminPasses(true);
+        }
+
+        var outsidePasses = adminPassesList.filter(function (p) {
+          return String(p.status || "").toUpperCase() === "APPROVED" && String(p.outside_status || "").toUpperCase() === "OUTSIDE";
+        });
+
+        currentDrilldownRecords = outsidePasses.map(function (p) {
+          return {
+            name: p.student_name || "N/A",
+            id: p.student_id || "N/A",
+            room: p.room_number || "N/A",
+            dept: (p.college || "") + " · Ret: " + (p.expected_return_date || "") + " " + (p.expected_return_time || ""),
+            phone: p.phone_number || "N/A",
+            status: "OUTSIDE",
+            passId: p.id || passId(p),
+            isOutsidePass: true
+          };
+        });
+      }
+
+      renderDrilldownRows(currentDrilldownRecords);
+    } catch (e) {
+      console.error("Error opening drill-down:", e);
+      if (bodyEl) {
+        bodyEl.innerHTML = '<tr><td colspan="7" style="padding: 24px; text-align: center; color: var(--danger);">Failed to load records.</td></tr>';
+      }
+    }
+  };
+
+  function renderDrilldownRows(records) {
+    var bodyEl = document.getElementById("drilldown-table-body");
+    var countEl = document.getElementById("drilldown-count-label");
+    if (!bodyEl) return;
+
+    if (countEl) countEl.textContent = "Showing " + records.length + " record" + (records.length === 1 ? "" : "s");
+
+    if (!records.length) {
+      bodyEl.innerHTML = '<tr><td colspan="7" style="padding: 24px; text-align: center; color: var(--ivory-dim);">No records found.</td></tr>';
+      return;
+    }
+
+    var html = records.map(function (r, idx) {
+      var statusColor = "#94A3B8";
+      if (r.status === "PRESENT" || r.status === "ACTIVE") statusColor = "#34D399";
+      else if (r.status === "ABSENT" || r.status === "DISABLED") statusColor = "#F87171";
+      else if (r.status === "PENDING") statusColor = "#FBBF24";
+      else if (r.status === "OUTSIDE") statusColor = "#60A5FA";
+
+      var phoneCell = escapeHtml(r.phone);
+      if (r.phone && r.phone !== "N/A" && r.phone !== "Not Available") {
+        phoneCell = '<a href="tel:' + escapeHtml(r.phone) + '" style="color: #60A5FA; text-decoration: underline; font-weight: 500;">📞 ' + escapeHtml(r.phone) + '</a>';
+      }
+
+      var actionCell = '<span style="display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; background: ' + statusColor + '22; color: ' + statusColor + '; border: 1px solid ' + statusColor + '66;">' + escapeHtml(r.status) + '</span>';
+
+      if (r.isPendingPass) {
+        actionCell = '<div style="display: flex; gap: 6px; justify-content: flex-end;">' +
+          '<button type="button" class="btn-one-tap" data-drilldown-pass-id="' + escapeHtml(r.passId) + '" data-drilldown-action="approve" style="padding: 3px 8px; font-size: 11px; background: rgba(16,185,129,0.2); border: 1px solid rgba(16,185,129,0.5); color: #34D399;">Approve</button>' +
+          '<button type="button" class="btn-one-tap" data-drilldown-pass-id="' + escapeHtml(r.passId) + '" data-drilldown-action="reject" style="padding: 3px 8px; font-size: 11px; background: rgba(239,68,68,0.2); border: 1px solid rgba(239,68,68,0.5); color: #FCA5A5;">Reject</button>' +
+          '</div>';
+      } else if (r.isOutsidePass) {
+        actionCell = '<button type="button" class="btn-one-tap" data-drilldown-pass-id="' + escapeHtml(r.passId) + '" data-drilldown-action="return" style="padding: 3px 8px; font-size: 11px; background: rgba(59,130,246,0.2); border: 1px solid rgba(59,130,246,0.5); color: #93C5FD;">Mark Returned</button>';
+      }
+
+      return '<tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">' +
+        '<td style="padding: 10px 12px; color: var(--ivory-dim);">' + (idx + 1) + '</td>' +
+        '<td style="padding: 10px 12px; font-weight: 600; color: var(--white);">' + escapeHtml(r.name) + '</td>' +
+        '<td style="padding: 10px 12px; font-family: monospace; color: var(--gold-400);">' + escapeHtml(r.id) + '</td>' +
+        '<td style="padding: 10px 12px;">' + escapeHtml(r.room) + '</td>' +
+        '<td style="padding: 10px 12px; color: var(--ivory-dim);">' + escapeHtml(r.dept) + '</td>' +
+        '<td style="padding: 10px 12px;">' + phoneCell + '</td>' +
+        '<td style="padding: 10px 12px; text-align: right;">' + actionCell + '</td>' +
+        '</tr>';
+    }).join("");
+
+    bodyEl.innerHTML = html;
+  }
+
+  window.filterDrilldownTable = function (query) {
+    var q = (query || "").trim().toLowerCase();
+    if (!q) {
+      renderDrilldownRows(currentDrilldownRecords);
+      return;
+    }
+    var filtered = currentDrilldownRecords.filter(function (r) {
+      return (r.name || "").toLowerCase().indexOf(q) !== -1 ||
+             (r.id || "").toLowerCase().indexOf(q) !== -1 ||
+             (r.room || "").toLowerCase().indexOf(q) !== -1 ||
+             (r.dept || "").toLowerCase().indexOf(q) !== -1 ||
+             (r.phone || "").toLowerCase().indexOf(q) !== -1;
+    });
+    renderDrilldownRows(filtered);
+  };
+
+  window.handleDrilldownPassAction = async function (passIdVal, action) {
+    if (action === "return") {
+      await markAdminPassReturned(passIdVal);
+    } else {
+      await updatePassStatus(passIdVal, action === "approve" ? "APPROVED" : "REJECTED");
+    }
+    await loadAdminPasses(true);
+    openDashboardDrilldown(currentDrilldownType);
+  };
+
+  document.addEventListener("click", async function (e) {
+    var btn = e.target.closest("[data-drilldown-action]");
+    if (btn) {
+      var pId = btn.dataset.drilldownPassId;
+      var act = btn.dataset.drilldownAction;
+      if (pId && act) {
+        await handleDrilldownPassAction(pId, act);
+      }
+    }
+  });
 
   async function processAdminAuthUser(user) {
     var normalizedEmail = String(user && user.email || "").trim().toLowerCase();
@@ -4159,7 +4866,55 @@ if ('serviceWorker' in navigator) {
     </div>
   </div>
 
-  <!-- MODAL: DELETE CONFIRMATION -->
+  <!-- MODAL: DASHBOARD DRILL-DOWN -->
+  <div class="admin-access-modal" id="modal-dashboard-drilldown" aria-hidden="true">
+    <div class="admin-access-backdrop" data-modal-close="dashboard-drilldown" onclick="closeModalByTarget('modal-dashboard-drilldown')"></div>
+    <div class="admin-access-card" style="max-width: 860px; width: 95%; max-height: 90vh; display: flex; flex-direction: column; text-align: left; background: #0D1527; border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 16px; padding: 22px; box-sizing: border-box;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span id="drilldown-modal-icon" style="font-size: 22px;">📊</span>
+            <h3 class="admin-access-title" id="drilldown-modal-title" style="margin: 0; font-size: 19px; color: var(--white);">Student Roster</h3>
+          </div>
+          <p class="admin-access-subtitle" id="drilldown-modal-subtitle" style="margin: 4px 0 0 0; font-size: 12.5px; color: var(--gold-400);">Detailed breakdown of hostel records</p>
+        </div>
+        <button type="button" class="admin-access-close" data-modal-close="dashboard-drilldown" onclick="closeModalByTarget('modal-dashboard-drilldown')" aria-label="Close modal">&times;</button>
+      </div>
+
+      <!-- Live Search in Modal -->
+      <div style="margin-bottom: 12px;">
+        <input type="text" id="drilldown-search-input" class="form-control" placeholder="🔍 Search by student name, ID, room, or phone..." oninput="filterDrilldownTable(this.value)" style="font-size: 13px; height: 38px; background: rgba(255, 255, 255, 0.05); border-color: rgba(212, 175, 55, 0.3);" />
+      </div>
+
+      <!-- Scrollable Table -->
+      <div style="flex: 1; overflow-y: auto; overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 8px; background: rgba(0, 0, 0, 0.2);">
+        <table class="student-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 12.5px; color: var(--white);">
+          <thead style="position: sticky; top: 0; background: #111B33; z-index: 2; box-shadow: 0 1px 3px rgba(0,0,0,0.5);">
+            <tr id="drilldown-table-head-row" style="border-bottom: 1px solid rgba(212, 175, 55, 0.3); color: var(--gold-400);">
+              <th style="padding: 10px 12px; font-weight: 600;">#</th>
+              <th style="padding: 10px 12px; font-weight: 600;">Student Name</th>
+              <th style="padding: 10px 12px; font-weight: 600;">Student ID</th>
+              <th style="padding: 10px 12px; font-weight: 600;">Room</th>
+              <th style="padding: 10px 12px; font-weight: 600;">College / Dept</th>
+              <th style="padding: 10px 12px; font-weight: 600;">Phone Number</th>
+              <th style="padding: 10px 12px; font-weight: 600; text-align: right;">Status / Action</th>
+            </tr>
+          </thead>
+          <tbody id="drilldown-table-body">
+            <tr><td colspan="7" style="padding: 24px; text-align: center; color: var(--ivory-dim);">Loading records...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Footer with counts & Close button -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px; padding-top: 10px; border-top: 1px solid rgba(212, 175, 55, 0.15);">
+        <span id="drilldown-count-label" style="font-size: 12px; color: var(--ivory-dim);">Showing 0 records</span>
+        <button type="button" class="btn-cancel" data-modal-close="dashboard-drilldown" onclick="closeModalByTarget('modal-dashboard-drilldown')">✕ Close</button>
+      </div>
+    </div>
+  </div>
+
+    <!-- MODAL: DELETE CONFIRMATION -->
   <div class="admin-access-modal" id="modal-delete-student" aria-hidden="true">
     <div class="admin-access-backdrop" data-modal-close="delete-student" onclick="closeModalByTarget('modal-delete-student')"></div>
     <div class="admin-access-card" style="max-width: 420px; text-align: left; background: #0D1527; border: 1px solid rgba(239, 68, 68, 0.4); border-top: 4px solid #EF4444; border-radius: 16px; padding: 24px;">
