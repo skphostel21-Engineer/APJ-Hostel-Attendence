@@ -31,18 +31,17 @@
 
   // Your web app's Firebase configuration
   const firebaseConfig = {
-    apiKey: "AIzaSyCSA6u2ivg-M1Mq4deEJScJq5cFKlxNefk",
-    authDomain: "hostel-project-77ab6.firebaseapp.com",
-    projectId: "hostel-project-77ab6",
-    storageBucket: "hostel-project-77ab6.firebasestorage.app",
-    messagingSenderId: "106206498818",
-    appId: "1:106206498818:web:be6530375e184ef91dd71b",
-    measurementId: "G-E72R3Z6BD9"
+    apiKey: "AIzaSyAbTePfoQuxulERQ16W6Q4-iTmlgJ3cYxU",
+    authDomain: "hostel-project-77ab6-3bd7f.firebaseapp.com",
+    projectId: "hostel-project-77ab6-3bd7f",
+    storageBucket: "hostel-project-77ab6-3bd7f.firebasestorage.app",
+    messagingSenderId: "821255400422",
+    appId: "1:821255400422:web:a104d0ec9dc72476dd4427"
   };
 
   // Initialize Firebase
   const app = firebase.initializeApp(firebaseConfig);
-  const analytics = firebase.analytics();
+  var analytics = (typeof firebase.analytics === "function") ? firebase.analytics() : null;
 
   // Expose for use by the rest of the (non-module) page scripts
   window.firebaseApp = app;
