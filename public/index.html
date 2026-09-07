@@ -671,8 +671,33 @@ select.form-control option, select.input-field option {
   background: var(--primary) !important; border: none !important; color: #FFFFFF !important;
   border-radius: 8px !important; height: 42px !important; padding: 0 24px !important; font-size: 13.5px !important; font-weight: 600 !important;
   box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05) !important; display: inline-flex !important; align-items: center !important; gap: 8px !important;
+  cursor: pointer !important; transition: all 0.2s ease !important;
 }
 #modal-student-form .btn-save:hover { background: var(--primary-hover) !important; }
+#modal-student-form .btn-save:disabled { opacity: 0.75 !important; cursor: not-allowed !important; }
+
+@keyframes btnSpinnerRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.btn-spinner {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  border: 2.2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #FFFFFF;
+  border-radius: 50%;
+  animation: btnSpinnerRotate 0.65s linear infinite;
+  vertical-align: middle;
+}
+.student-row-new {
+  animation: studentRowHighlight 2.5s ease-out;
+}
+@keyframes studentRowHighlight {
+  0% { background-color: rgba(37, 99, 166, 0.28) !important; }
+  60% { background-color: rgba(37, 99, 166, 0.12) !important; }
+  100% { background-color: transparent; }
+}
 </style>
 </head>
 <body>
@@ -4346,7 +4371,8 @@ select.form-control option, select.input-field option {
       var displayCollege = s.college || s.college_name || s.department || "N/A";
       var displayYearDept = s.year_department || ((s.year || "") + (s.department ? " - " + s.department : ""));
 
-      return '<tr style="border-bottom: 1px solid rgba(212,175,55,0.1);">' +
+      var rowClass = s._isNew ? ' class="student-row-new"' : '';
+      return '<tr' + rowClass + ' style="border-bottom: 1px solid rgba(212,175,55,0.1);">' +
         '<td style="padding: 10px; font-weight: 600; color: var(--white);">' + escapeHtml(s.student_name || s.name || "N/A") + '</td>' +
         '<td style="padding: 10px; font-family: monospace; color: var(--gold-400);">' + escapeHtml(s.student_id || s.id || s.studentId || "N/A") + '</td>' +
         '<td style="padding: 10px;">' + escapeHtml(s.room_number || s.room || s.roomNumber || "N/A") + '</td>' +
@@ -4450,10 +4476,14 @@ select.form-control option, select.input-field option {
       try {
         await firebaseDb.collection("students").doc(pendingDeleteStudentUid).delete();
         logAuditAction("DELETE_STUDENT", "students", pendingDeleteStudentUid, "SUCCESS");
-        showToast("Student deleted successfully.", "✓");
-        closeModalByTarget("modal-delete-student");
+        var delUid = pendingDeleteStudentUid;
         pendingDeleteStudentUid = null;
-        await loadAdminStudents();
+        adminStudentsList = adminStudentsList.filter(function (s) { return s.uid !== delUid; });
+        updateDynamicFilters();
+        updateStudentStats();
+        renderAdminStudentsTable();
+        closeModalByTarget("modal-delete-student");
+        loadAdminStudents(true).catch(function (e) { console.warn(e); });
       } catch (err) {
         showToast("Could not delete student.", "⚠️", true);
         console.error(err);
@@ -4514,7 +4544,7 @@ select.form-control option, select.input-field option {
 
       var saveBtn = document.getElementById("btn-save-student");
       saveBtn.disabled = true;
-      saveBtn.textContent = "Saving...";
+      saveBtn.innerHTML = '<span class="btn-spinner"></span> <span>Saving Student...</span>';
 
       try {
         if (!uid) {
@@ -4522,13 +4552,13 @@ select.form-control option, select.input-field option {
           if (!password || password.length < 6) {
             errEl.textContent = "Password must be at least 6 characters.";
             saveBtn.disabled = false;
-            saveBtn.textContent = "Save Student";
+            saveBtn.innerHTML = "🔒 Save Student";
             return;
           }
           if (password !== confirmPassword) {
             errEl.textContent = "Password and Confirm Password do not match.";
             saveBtn.disabled = false;
-            saveBtn.textContent = "Save Student";
+            saveBtn.innerHTML = "🔒 Save Student";
             return;
           }
 
@@ -4554,9 +4584,23 @@ select.form-control option, select.input-field option {
             created_at: firebase.firestore.FieldValue.serverTimestamp(),
             updatedAt: firebase.firestore.FieldValue.serverTimestamp()
           };
+          // 1. Direct Save to Firestore
           await firebaseDb.collection("students").doc(authRes.uid).set(newStudentDoc);
           logAuditAction("ADD_STUDENT", "students", authRes.uid, "SUCCESS", { student_id: studentId, name: name });
-          showToast("Student account created successfully.", "✓");
+
+          // 2. Instant Table Update (0ms UI lag)
+          var clientStudentItem = Object.assign({}, newStudentDoc, {
+            _isNew: true
+          });
+          adminStudentsList = adminStudentsList.filter(function (s) {
+            return (s.student_id || s.id || s.studentId || "").toUpperCase() !== studentId.toUpperCase();
+          });
+          adminStudentsList.unshift(clientStudentItem);
+          updateDynamicFilters();
+          updateStudentStats();
+          renderAdminStudentsTable();
+
+          showToast("Student '" + name + "' added successfully!", "✓");
         } else {
           // Editing Existing Student
           var updateDoc = {
@@ -4575,18 +4619,30 @@ select.form-control option, select.input-field option {
             mobileNumber: mobile,
             updatedAt: firebase.firestore.FieldValue.serverTimestamp()
           };
+          // 1. Direct Update to Firestore
           await firebaseDb.collection("students").doc(uid).update(updateDoc);
           logAuditAction("EDIT_STUDENT", "students", uid, "SUCCESS", { student_id: studentId, name: name });
+
+          // 2. Instant Table Update
+          var sIndex = adminStudentsList.findIndex(function (s) { return s.uid === uid; });
+          if (sIndex !== -1) {
+            adminStudentsList[sIndex] = Object.assign({}, adminStudentsList[sIndex], updateDoc, { _isNew: true });
+          }
+          updateDynamicFilters();
+          updateStudentStats();
+          renderAdminStudentsTable();
+
           showToast("Student profile updated successfully.", "✓");
         }
         closeModalByTarget("modal-student-form");
-        await loadAdminStudents();
+        // Background sync with Firestore server
+        loadAdminStudents(true).catch(function (e) { console.warn("Background loadAdminStudents:", e); });
       } catch (err) {
         errEl.textContent = err.message || "Failed to save student record.";
         console.error(err);
       } finally {
         saveBtn.disabled = false;
-        saveBtn.textContent = "Save Student";
+        saveBtn.innerHTML = "🔒 Save Student";
       }
     });
   }
