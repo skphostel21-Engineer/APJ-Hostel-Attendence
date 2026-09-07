@@ -4067,7 +4067,14 @@ select.form-control option, select.input-field option {
         return;
       }
 
-      var authEmail = inputStudentId.toLowerCase() + "@kalam.hostel";
+      var cleanId = inputStudentId.toLowerCase().trim();
+      var authEmail = cleanId.indexOf("@") !== -1 ? cleanId : (cleanId + "@kalam.hostel");
+
+      var submitBtn = e.target.querySelector('button[type="submit"]');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="btn-spinner"></span> <span>Logging In...</span>';
+      }
 
       try {
         // Step 1: Authenticate with Firebase Authentication
@@ -4086,7 +4093,7 @@ select.form-control option, select.input-field option {
             if (!snap.empty) {
               studentDoc = snap.docs[0].data();
             } else {
-              snap = await firebaseDb.collection("students").where("student_id", "==", inputStudentId).limit(1).get();
+              snap = await firebaseDb.collection("students").where("student_id", "==", inputStudentId.toUpperCase().trim()).limit(1).get();
               if (!snap.empty) studentDoc = snap.docs[0].data();
             }
           }
@@ -4107,6 +4114,11 @@ select.form-control option, select.input-field option {
       } catch (error) {
         logFirestoreError("studentLogin", "auth/students", { studentId: inputStudentId }, error);
         showToast("Invalid Student ID or Password.", "⚠️", true);
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = 'LOGIN';
+        }
       }
     });
   }
