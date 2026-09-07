@@ -27,6 +27,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-analytics-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
+<!-- Client PDF Library -->
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script>
 
   // Your web app's Firebase configuration
@@ -1792,10 +1794,17 @@ select.form-control option, select.input-field option {
   }
 
   async function loadStudentPassStatus() {
-    if (!firebaseDb || !firebaseAuth || !firebaseAuth.currentUser || !state.studentProfile) return;
-    var studentId = getProfileValue(state.studentProfile, ["student_id", "id"]);
-    var result = await firebaseDb.collection("pass_requests").where("student_uid", "==", firebaseAuth.currentUser.uid).orderBy("created_at", "desc").limit(1).get();
-    if (!result.empty) setStudentPassStatus(result.docs[0].data(), await getBusinessNow());
+    if (!firebaseDb || !firebaseAuth || !firebaseAuth.currentUser) return;
+    try {
+      var result = await firebaseDb.collection("pass_requests").where("student_uid", "==", firebaseAuth.currentUser.uid).orderBy("created_at", "desc").limit(1).get();
+      if (!result.empty) {
+        var doc = result.docs[0];
+        var passData = Object.assign({ id: doc.id, pass_id: doc.id }, doc.data());
+        setStudentPassStatus(passData, await getBusinessNow());
+      }
+    } catch (e) {
+      console.error("Error loading student pass status:", e);
+    }
   }
 
   if (studentPassForm) {
@@ -1846,8 +1855,8 @@ select.form-control option, select.input-field option {
         var docRef = await firebaseDb.collection("pass_requests").add(newPassDoc);
         state.passSubmitting = false;
         if (submitButton) { submitButton.disabled = false; submitButton.textContent = "SUBMIT REQUEST"; }
-        var createdPass = Object.assign({ id: docRef.id }, newPassDoc);
-        setStudentPassStatus(createdPass, getBusinessNow());
+        var createdPass = Object.assign({ id: docRef.id, pass_id: docRef.id }, newPassDoc);
+        setStudentPassStatus(createdPass, await getBusinessNow());
         showToast("Out Pass Request Submitted", "✓");
       } catch (err) {
         state.passSubmitting = false;
@@ -2757,18 +2766,26 @@ select.form-control option, select.input-field option {
     // Strict 1-Page A4 PDF Document (210mm x 297mm)
     var doc = new window.jspdf.jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
     
-    // Top Logo: SKP Group Logo extracted from element preserving aspect ratio
-    var logoImg = document.getElementById("topbar-secret-logo");
-    if (logoImg && logoImg.src) {
-      try {
-        var imgH = 20;
-        var imgW = 20 * ((logoImg.naturalWidth || 100) / (logoImg.naturalHeight || 100));
-        if (imgW > 50) imgW = 50;
+    // Top Logo: draw using Canvas to produce clean PNG for jsPDF
+    try {
+      var logoImg = document.getElementById("topbar-secret-logo") || document.getElementById("login-logo-trigger");
+      if (logoImg && logoImg.complete && (logoImg.naturalWidth || logoImg.width) > 0) {
+        var nw = logoImg.naturalWidth || logoImg.width || 100;
+        var nh = logoImg.naturalHeight || logoImg.height || 100;
+        var canvas = document.createElement("canvas");
+        canvas.width = nw;
+        canvas.height = nh;
+        var ctx = canvas.getContext("2d");
+        ctx.drawImage(logoImg, 0, 0, nw, nh);
+        var pngData = canvas.toDataURL("image/png");
+        var imgH = 18;
+        var imgW = 18 * (nw / nh);
+        if (imgW > 45) imgW = 45;
         var imgX = (210 - imgW) / 2;
-        try { doc.addImage(logoImg.src, "WEBP", imgX, 10, imgW, imgH); } catch(e) { doc.addImage(logoImg, imgX, 10, imgW, imgH); }
-      } catch (e) {
-        console.warn("Logo addImage failed:", e);
+        doc.addImage(pngData, "PNG", imgX, 10, imgW, imgH);
       }
+    } catch (e) {
+      console.warn("Logo addImage bypassed:", e);
     }
 
     // Header Titles
@@ -3022,16 +3039,41 @@ select.form-control option, select.input-field option {
 
   async function downloadApprovedPassPdf() {
     var button = document.getElementById("download-out-pass-pdf");
-    if (!firebaseDb || !firebaseAuth || !firebaseAuth.currentUser || !button || !button.dataset.passId) return;
-    var passId = button.dataset.passId;
+    var origHtml = button ? button.innerHTML : "📥 DOWNLOAD OUT PASS PDF";
+    if (button) {
+      button.disabled = true;
+      button.innerHTML = '<span class="btn-spinner"></span> <span>Generating PDF...</span>';
+    }
     try {
-      var docSnap = await firebaseDb.collection("pass_requests").doc(passId).get();
-      if (!docSnap.exists) throw new Error("pass-not-found");
-      var pass = Object.assign({ id: docSnap.id }, docSnap.data());
+      if (!firebaseDb || !firebaseAuth || !firebaseAuth.currentUser) throw new Error("Please log in first.");
+      var passId = button ? button.dataset.passId : null;
+      var pass = null;
+      if (passId) {
+        var docSnap = await firebaseDb.collection("pass_requests").doc(passId).get();
+        if (docSnap.exists) pass = Object.assign({ id: docSnap.id, pass_id: docSnap.id }, docSnap.data());
+      }
+      if (!pass) {
+        var snap = await firebaseDb.collection("pass_requests")
+          .where("student_uid", "==", firebaseAuth.currentUser.uid)
+          .where("status", "==", "APPROVED")
+          .limit(1)
+          .get();
+        if (!snap.empty) {
+          pass = Object.assign({ id: snap.docs[0].id, pass_id: snap.docs[0].id }, snap.docs[0].data());
+        }
+      }
+      if (!pass) {
+        throw new Error("No approved pass found.");
+      }
       await generateOutPassPdf(pass, "download");
     } catch (error) {
       showToast("Approved pass could not be downloaded.", "⚠️", true);
       console.error(error);
+    } finally {
+      if (button) {
+        button.disabled = false;
+        button.innerHTML = origHtml;
+      }
     }
   }
 
@@ -3039,16 +3081,41 @@ select.form-control option, select.input-field option {
 
   async function viewApprovedPassPdf() {
     var button = document.getElementById("view-out-pass-pdf");
-    if (!firebaseDb || !firebaseAuth || !firebaseAuth.currentUser || !button || !button.dataset.passId) return;
-    var passId = button.dataset.passId;
+    var origHtml = button ? button.innerHTML : "📄 VIEW OUT PASS PDF";
+    if (button) {
+      button.disabled = true;
+      button.innerHTML = '<span class="btn-spinner"></span> <span>Opening PDF...</span>';
+    }
     try {
-      var docSnap = await firebaseDb.collection("pass_requests").doc(passId).get();
-      if (!docSnap.exists) throw new Error("pass-not-found");
-      var pass = Object.assign({ id: docSnap.id }, docSnap.data());
+      if (!firebaseDb || !firebaseAuth || !firebaseAuth.currentUser) throw new Error("Please log in first.");
+      var passId = button ? button.dataset.passId : null;
+      var pass = null;
+      if (passId) {
+        var docSnap = await firebaseDb.collection("pass_requests").doc(passId).get();
+        if (docSnap.exists) pass = Object.assign({ id: docSnap.id, pass_id: docSnap.id }, docSnap.data());
+      }
+      if (!pass) {
+        var snap = await firebaseDb.collection("pass_requests")
+          .where("student_uid", "==", firebaseAuth.currentUser.uid)
+          .where("status", "==", "APPROVED")
+          .limit(1)
+          .get();
+        if (!snap.empty) {
+          pass = Object.assign({ id: snap.docs[0].id, pass_id: snap.docs[0].id }, snap.docs[0].data());
+        }
+      }
+      if (!pass) {
+        throw new Error("No approved pass found.");
+      }
       await generateOutPassPdf(pass, "view");
     } catch (error) {
       showToast("Approved pass could not be opened.", "⚠️", true);
       console.error(error);
+    } finally {
+      if (button) {
+        button.disabled = false;
+        button.innerHTML = origHtml;
+      }
     }
   }
 
