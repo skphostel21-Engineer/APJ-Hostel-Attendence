@@ -1760,20 +1760,34 @@ select.form-control option, select.input-field option {
     var status = String(pass.status || "PENDING").toUpperCase();
     var overdue = isOverdue(pass, businessNow || new Date());
     chip.textContent = overdue ? "OVERDUE" : status;
-    chip.className = "status-chip status-chip--" + (overdue ? "pending" : status.toLowerCase());
-    message.textContent = status === "REJECTED" ? "Out Pass Rejected" : status === "APPROVED" && String(pass.outside_status).toUpperCase() === "RETURNED" ? "Returned" : status === "APPROVED" && String(pass.outside_status).toUpperCase() === "OUTSIDE" ? "Currently Outside" : "Waiting for Warden Approval";
+    chip.className = "status-chip status-chip--" + (overdue ? "pending" : (status === "APPROVED" ? "approved" : (status === "REJECTED" ? "absent" : "pending")));
+    
+    if (status === "REJECTED") {
+      message.innerHTML = '<span style="color: #F87171; font-weight: 700; font-size: 14px;">❌ Out Pass Request REJECTED</span><br><span style="font-size: 12px; color: var(--ivory-dim);">Your request was not approved by Warden Admin.</span>';
+    } else if (status === "APPROVED") {
+      var outsideState = String(pass.outside_status || "").toUpperCase();
+      if (outsideState === "RETURNED") {
+        message.innerHTML = '<span style="color: #34D399; font-weight: 700; font-size: 14px;">✓ Pass Completed & Returned</span>';
+      } else {
+        message.innerHTML = '<span style="color: #34D399; font-weight: 700; font-size: 14px;">✅ Out Pass APPROVED!</span><br><span style="font-size: 12px; color: var(--gold-300);">Approved by Warden. Click below to view or download your official Gate Pass PDF.</span>';
+      }
+    } else {
+      message.innerHTML = '<span style="color: #FBBF24; font-weight: 700; font-size: 14px;">⏳ Waiting for Warden Approval</span><br><span style="font-size: 12px; color: var(--ivory-dim);">Your out pass request is pending review.</span>';
+    }
+
+    var passDocId = pass.id || pass.pass_id || (typeof passId === "function" ? passId(pass) : "");
+
     if (download) {
       download.style.display = status === "APPROVED" ? "block" : "none";
-      download.dataset.passId = status === "APPROVED" ? passId(pass) : "";
+      download.dataset.passId = status === "APPROVED" ? passDocId : "";
     }
-    var viewBtn = document.getElementById("view-out-pass-pdf");
     if (viewBtn) {
       viewBtn.style.display = status === "APPROVED" ? "block" : "none";
-      viewBtn.dataset.passId = status === "APPROVED" ? passId(pass) : "";
+      viewBtn.dataset.passId = status === "APPROVED" ? passDocId : "";
     }
     if (returned) {
       returned.style.display = status === "APPROVED" && String(pass.outside_status).toUpperCase() === "OUTSIDE" ? "block" : "none";
-      returned.dataset.passId = returned.style.display === "block" ? passId(pass) : "";
+      returned.dataset.passId = returned.style.display === "block" ? passDocId : "";
     }
   }
 
@@ -2937,19 +2951,9 @@ select.form-control option, select.input-field option {
       if (typeof logAuditAction === "function") {
         logAuditAction(status === "APPROVED" ? "APPROVE_OUTPASS" : "REJECT_OUTPASS", "pass_requests", id, "SUCCESS");
       }
-      showToast(status === "APPROVED" ? "Out pass approved successfully." : "Out pass rejected.", status === "APPROVED" ? "✓" : "✕", status !== "APPROVED");
+      showToast(status === "APPROVED" ? "Out pass approved. Pass sent to Student Portal." : "Out pass request rejected.", status === "APPROVED" ? "✓" : "✕", status !== "APPROVED");
       
-      if (status === "APPROVED") {
-        try {
-          var updatedDoc = await firebaseDb.collection("pass_requests").doc(id).get();
-          if (updatedDoc.exists) {
-            var passData = Object.assign({ id: updatedDoc.id }, updatedDoc.data(), { approved_at_str: nowStr });
-            await generateOutPassPdf(passData, "view");
-          }
-        } catch (e) {
-          console.error("Auto PDF open failed:", e);
-        }
-      }
+      // Admin should NOT download PDF; PDF is generated on Student Panel upon approval
       loadAdminPasses();
     } catch (err) {
       showToast("Pass status update failed.", "⚠️", true);
@@ -3033,11 +3037,31 @@ select.form-control option, select.input-field option {
 
   document.getElementById("download-out-pass-pdf").addEventListener("click", downloadApprovedPassPdf);
 
+  async function viewApprovedPassPdf() {
+    var button = document.getElementById("view-out-pass-pdf");
+    if (!firebaseDb || !firebaseAuth || !firebaseAuth.currentUser || !button || !button.dataset.passId) return;
+    var passId = button.dataset.passId;
+    try {
+      var docSnap = await firebaseDb.collection("pass_requests").doc(passId).get();
+      if (!docSnap.exists) throw new Error("pass-not-found");
+      var pass = Object.assign({ id: docSnap.id }, docSnap.data());
+      await generateOutPassPdf(pass, "view");
+    } catch (error) {
+      showToast("Approved pass could not be opened.", "⚠️", true);
+      console.error(error);
+    }
+  }
+
+  var viewOutPassBtn = document.getElementById("view-out-pass-pdf");
+  if (viewOutPassBtn) {
+    viewOutPassBtn.addEventListener("click", viewApprovedPassPdf);
+  }
+
   setInterval(function () {
     if (document.hidden) return;
     if (state.isAdmin) loadAdminPasses();
     else if (state.isLoggedIn) loadStudentPassStatus();
-  }, 60000);
+  }, 10000);
 
   var btnDownloadFullExcel = document.getElementById("btn-download-full-excel");
   if (btnDownloadFullExcel) {
