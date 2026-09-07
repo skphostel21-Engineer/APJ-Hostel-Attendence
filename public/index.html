@@ -31,12 +31,12 @@
 
   // Your web app's Firebase configuration
   const firebaseConfig = {
-    apiKey: "AIzaSyAbTePfoQuxulERQ16W6Q4-iTmlgJ3cYxU",
-    authDomain: "hostel-project-77ab6-3bd7f.firebaseapp.com",
-    projectId: "hostel-project-77ab6-3bd7f",
-    storageBucket: "hostel-project-77ab6-3bd7f.firebasestorage.app",
-    messagingSenderId: "821255400422",
-    appId: "1:821255400422:web:a104d0ec9dc72476dd4427"
+    apiKey: "AIzaSyAKlpZLtS8eNdFXPbDvFlRSgHx78Tc6w3A",
+    authDomain: "hostel-attendence-5b599.firebaseapp.com",
+    projectId: "hostel-attendence-5b599",
+    storageBucket: "hostel-attendence-5b599.firebasestorage.app",
+    messagingSenderId: "1047817042041",
+    appId: "1:1047817042041:web:5f7e60084ffc7e3b0d3ca8"
   };
 
   // Initialize Firebase
@@ -52,7 +52,14 @@
       console.warn("Firebase auth persistence setup:", err);
     });
   }
-  window.firebaseDb = firebase.app().firestore("apj-hostel-db");
+  // Connect to Firestore (default database for Spark plan, with fallback support)
+  window.firebaseDb = (function () {
+    try {
+      return firebase.app().firestore();
+    } catch (e) {
+      return firebase.app().firestore("apj-hostel-db");
+    }
+  })();
   </script>
 <style>
 /* MASTER COLOR SYSTEM & UNIFIED DESIGN TOKENS */
@@ -1429,7 +1436,7 @@ select.form-control option, select.input-field option {
   window.runFirebaseDiagnostics = async function () {
     console.log("=== APJ HOSTEL FIREBASE DIAGNOSTICS ===");
     var report = {
-      firestoreDbName: "apj-hostel-db",
+      firestoreDbName: "(default)",
       firestoreConnected: false,
       authenticated: false,
       uid: null,

@@ -1,6 +1,6 @@
 {
   "firestore": {
-    "database": "apj-hostel-db",
+    "database": "(default)",
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
   },

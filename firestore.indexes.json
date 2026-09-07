@@ -31,16 +31,6 @@
         { "fieldPath": "outside_status", "order": "ASCENDING" },
         { "fieldPath": "status", "order": "ASCENDING" }
       ]
-    },
-    {
-      "collectionGroup": "daily_reports",
-      "queryScope": "COLLECTION",
-      "fields": [{ "fieldPath": "report_date", "order": "DESCENDING" }]
-    },
-    {
-      "collectionGroup": "email_recipients",
-      "queryScope": "COLLECTION",
-      "fields": [{ "fieldPath": "enabled", "order": "ASCENDING" }]
     }
   ],
   "fieldOverrides": []
